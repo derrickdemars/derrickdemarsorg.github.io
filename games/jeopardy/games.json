@@ -1,0 +1,98 @@
+{
+  "classes": [
+    "Geometry",
+    "Algebra I",
+    "Algebra III",
+    "7th Grade Math",
+    "8th Grade Math",
+    "Algebra II"
+  ],
+  "games": [
+    {
+      "id": "percents",
+      "classes": [
+        "7th Grade Math"
+      ],
+      "title": "Percents",
+      "subtitle": "Discounts, tax, tip, and markups",
+      "categories": [
+        "Percent Basics",
+        "Discounts & Markdowns",
+        "Tax, Tip & Fees",
+        "Multi-Step",
+        "Strategy"
+      ],
+      "live": "games/Play.dc.html?bank=percents",
+      "offline": "games/offline/7th Grade Math - Percents.html"
+    },
+    {
+      "id": "equations",
+      "classes": [
+        "8th Grade Math"
+      ],
+      "title": "One and Two-Step Equations",
+      "subtitle": "Solving with inverse operations",
+      "categories": [
+        "Add & Subtract",
+        "Multiply & Divide",
+        "Two-Step",
+        "Strategy",
+        "Vocabulary"
+      ],
+      "live": "games/Play.dc.html?bank=equations",
+      "offline": "games/offline/8th Grade Math - One and Two-Step Equations.html"
+    },
+    {
+      "id": "trig",
+      "classes": [
+        "Geometry"
+      ],
+      "title": "Intro to Trigonometry",
+      "subtitle": "Special right triangles and right-triangle trig",
+      "categories": [
+        "Special Right Triangles",
+        "Trig Ratios",
+        "Find the Angle",
+        "Find the Side",
+        "Strategy"
+      ],
+      "live": "games/Play.dc.html?bank=trig",
+      "offline": "games/offline/Geometry - Intro to Trigonometry.html"
+    },
+    {
+      "id": "quadratics",
+      "classes": [
+        "Algebra II"
+      ],
+      "title": "Solving Quadratics",
+      "subtitle": "X-intercepts, square roots, factoring, completing the square",
+      "categories": [
+        "X-Intercepts",
+        "Square Roots",
+        "Factoring",
+        "Completing the Square",
+        "Strategy"
+      ],
+      "live": "games/Play.dc.html?bank=quadratics",
+      "offline": "games/offline/Algebra II - Solving Quadratics.html"
+    },
+    {
+      "id": "parent-functions",
+      "classes": [
+        "Algebra III"
+      ],
+      "title": "Parent Functions and Transformations",
+      "subtitle": "Describe, name, and write transformed functions",
+      "categories": [
+        "Describe the Transformations",
+        "Name the Parent",
+        "Write the Equation (Graph)",
+        "Write the Equation (Description)",
+        "Parent Function Facts",
+        "Vocabulary & Concepts"
+      ],
+      "live": "games/Play.dc.html?bank=parent-functions",
+      "offline": "games/offline/Algebra III - Parent Functions and Transformations.html"
+    }
+  ]
+}

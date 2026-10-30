@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<div style="position:relative;z-index:50;font-family:var(--font);color:var(--ink);line-height:1.4;view-transition-name:site-header;">
+  <header ref="{{ headerRef }}" style="display:flex;align-items:center;gap:12px;padding:{{ hPad }};overflow:hidden;background:var(--surface);border-bottom:1px solid var(--line);transition:padding var(--dur) ease;">
+    <a href="./" aria-label="Dr. DeMars Math Hub, go to Home" style="display:flex;align-items:center;gap:10px;color:var(--ink);text-decoration:none;padding:4px;flex:none;">
+      <span class="material-symbols-rounded" aria-hidden="true" style="width:{{ logoPx }};height:{{ logoPx }};border-radius:12px;background:var(--ink);color:var(--bg);display:grid;place-items:center;font-size:{{ logoIcon }};transition:width var(--dur) ease,height var(--dur) ease;">functions</span>
+      <sc-if value="{{ showBrand }}" hint-placeholder-val="{{ true }}"><span style="font-weight:700;font-size:18px;line-height:1.2;white-space:nowrap;">Dr. DeMars<sc-if value="{{ showSub }}" hint-placeholder-val="{{ true }}"><br><span style="font-weight:400;font-size:14px;color:var(--muted);">Math Hub</span></sc-if></span></sc-if>
+    </a>
+    <sc-if value="{{ navInline }}" hint-placeholder-val="{{ true }}">
+      <nav ref="{{ navRef }}" aria-label="Main" style="display:flex;gap:{{ navGap }};flex:1;justify-content:center;align-items:center;min-width:0;overflow:hidden;">
+        <sc-for list="{{ nav }}" as="n" hint-placeholder-count="6">
+          <sc-if value="{{ n.isLink }}">
+            <a href="{{ n.href }}" target="{{ n.target }}" aria-current="{{ n.current }}" style="display:flex;align-items:center;gap:6px;min-height:48px;padding:{{ navPad }};border-radius:12px;background:{{ n.bg }};color:{{ n.color }};font-size:{{ navFs }};font-weight:700;text-decoration:none;white-space:nowrap;flex:none;transition:transform var(--dur) ease;box-shadow:none;" style-hover="transform:translateY(var(--lift)) scale(var(--grow));"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:22px;">{{ n.icon }}</span><span style="text-decoration:{{ n.deco }};text-decoration-thickness:3px;text-underline-offset:6px;">{{ n.text }}</span></a>
+          </sc-if>
+          <sc-if value="{{ n.soon }}">
+            <span aria-disabled="true" title="{{ n.label }}: coming soon" style="display:flex;align-items:center;gap:6px;min-height:48px;padding:{{ soonPad }};color:var(--muted);font-size:{{ navFs }};font-weight:700;white-space:nowrap;flex:none;cursor:default;"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:22px;opacity:0.7;">{{ n.icon }}</span><span style="display:flex;flex-direction:column;line-height:1.1;">{{ n.text }}<span style="font-size:12px;font-weight:700;letter-spacing:0.04em;">SOON</span></span></span>
+          </sc-if>
+        </sc-for>
+      </nav>
+    </sc-if>
+    <sc-if value="{{ compact }}"><span style="flex:1;"></span></sc-if>
+    <button onClick="{{ toggleReader }}" aria-expanded="{{ readerOpen }}" aria-label="Reader settings" title="Reader settings" style="display:flex;align-items:center;justify-content:center;gap:6px;min-width:48px;min-height:48px;padding:{{ btnPad }};border-radius:12px;border:2px solid var(--line);background:var(--surface);color:var(--ink);font-size:16px;font-weight:700;cursor:pointer;flex:none;box-sizing:border-box;"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:22px;">text_fields</span><sc-if value="{{ btnText }}" hint-placeholder-val="{{ true }}">Reader</sc-if></button>
+    <button onClick="{{ lockClick }}" aria-label="{{ lockLabel }}" title="{{ lockLabel }}" style="display:flex;align-items:center;justify-content:center;gap:6px;min-width:48px;min-height:48px;padding:{{ btnPad }};border-radius:12px;border:2px solid var(--line);background:var(--surface);color:var(--ink);font-size:16px;font-weight:700;cursor:pointer;flex:none;box-sizing:border-box;"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:22px;">{{ lockIcon }}</span><sc-if value="{{ btnText }}" hint-placeholder-val="{{ true }}">{{ lockText }}</sc-if></button>
+    <sc-if value="{{ compact }}">
+      <button onClick="{{ toggleMenu }}" aria-expanded="{{ menuOpen }}" aria-label="Menu" style="display:flex;align-items:center;justify-content:center;gap:6px;min-width:48px;min-height:48px;padding:{{ menuPad }};border-radius:12px;border:2px solid var(--ink);background:var(--ink);color:var(--bg);font-size:16px;font-weight:700;cursor:pointer;flex:none;box-sizing:border-box;"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:22px;">{{ menuIcon }}</span><sc-if value="{{ menuText }}">Menu</sc-if></button>
+    </sc-if>
+  </header>
+
+  <sc-if value="{{ drawerOpen }}">
+    <nav aria-label="Menu" style="display:flex;flex-direction:column;gap:6px;max-height:calc(100vh - 140px);overflow-y:auto;padding:16px clamp(16px,3vw,32px) 20px;background:var(--surface);border-bottom:1px solid var(--line);">
+      <sc-for list="{{ nav }}" as="n">
+        <sc-if value="{{ n.isLink }}"><a href="{{ n.href }}" target="{{ n.target }}" aria-current="{{ n.current }}" style="display:flex;align-items:center;gap:12px;min-height:54px;padding:0 16px;border-radius:14px;background:{{ n.bg }};color:{{ n.color }};font-size:19px;font-weight:700;text-decoration:none;transition:transform var(--dur) ease;box-shadow:none;" style-hover="transform:translateY(var(--lift)) scale(var(--grow));"><span class="material-symbols-rounded" aria-hidden="true">{{ n.icon }}</span><span style="text-decoration:{{ n.deco }};text-decoration-thickness:3px;text-underline-offset:6px;">{{ n.label }}</span></a></sc-if>
+        <sc-if value="{{ n.soon }}"><span aria-disabled="true" style="display:flex;align-items:center;gap:12px;min-height:54px;padding:0 16px;color:var(--muted);font-size:19px;font-weight:700;"><span class="material-symbols-rounded" aria-hidden="true" style="opacity:0.7;">{{ n.icon }}</span>{{ n.label }}<span style="font-size:13px;font-weight:700;padding:2px 8px;border-radius:999px;border:1.5px solid currentColor;">Soon</span></span></sc-if>
+      </sc-for>
+    </nav>
+  </sc-if>
+
+
+  <sc-if value="{{ signOutSoon }}">
+    <div role="status" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:10px clamp(16px,3vw,32px);background:var(--ink);color:var(--bg);">
+      <span class="material-symbols-rounded" aria-hidden="true">schedule</span>
+      <span style="flex:1;min-width:200px;font-size:17px;font-weight:700;">Signing out in {{ countdown }}.</span>
+      <button onClick="{{ stay }}" style="min-height:44px;padding:0 16px;border-radius:12px;border:2px solid var(--bg);background:var(--bg);color:var(--ink);font-size:16px;font-weight:700;cursor:pointer;">Stay signed in</button>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ readerOpen }}">
+    <div role="dialog" aria-label="Reader settings" style="position:absolute;top:calc(100% + 8px);right:16px;width:380px;max-width:calc(100vw - 32px);max-height:calc(100vh - 120px);overflow-y:auto;box-sizing:border-box;background:var(--surface);border:2px solid var(--line);border-radius:24px;padding:22px;display:flex;flex-direction:column;gap:18px;box-shadow:0 20px 60px rgba(0,0,0,0.45);">
+      <div style="display:flex;align-items:center;justify-content:space-between;"><h2 style="margin:0;font-size:22px;">Reader settings</h2><button onClick="{{ toggleReader }}" aria-label="Close reader settings" style="display:grid;place-items:center;width:44px;height:44px;border-radius:12px;border:2px solid var(--line);background:none;color:var(--ink);cursor:pointer;"><span class="material-symbols-rounded" aria-hidden="true">close</span></button></div>
+      <sc-for list="{{ readerRows }}" as="row" hint-placeholder-count="4">
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div style="font-size:15px;font-weight:700;color:var(--muted);">{{ row.label }}</div>
+          <div style="display:flex;gap:6px;">
+            <sc-for list="{{ row.opts }}" as="o">
+              <button onClick="{{ o.pick }}" aria-pressed="{{ o.on }}" style="flex:1;min-height:46px;padding:0 10px;border-radius:12px;border:2px solid {{ o.border }};background:{{ o.bg }};color:{{ o.color }};font-size:16px;font-weight:700;cursor:pointer;">{{ o.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+      </sc-for>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div style="font-size:15px;font-weight:700;color:var(--muted);">Read aloud</div>
+        <div style="display:flex;gap:6px;">
+          <button onClick="{{ readPage }}" style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;min-height:46px;border-radius:12px;border:2px solid var(--ink);background:var(--ink);color:var(--bg);font-size:16px;font-weight:700;cursor:pointer;"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:20px;">volume_up</span>Read this page</button>
+          <button onClick="{{ stopReading }}" style="display:flex;align-items:center;justify-content:center;gap:6px;min-height:46px;padding:0 14px;border-radius:12px;border:2px solid var(--line);background:none;color:var(--ink);font-size:16px;font-weight:700;cursor:pointer;"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:20px;">stop</span>Stop</button>
+        </div>
+      </div>
+      <div style="font-size:15px;color:var(--muted);">Your choices are saved on this device.</div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ signinOpen }}">
+    <div onClick="{{ backdropClick }}" style="position:fixed;inset:0;z-index:100;background:rgba(0,0,0,0.65);display:flex;justify-content:center;align-items:flex-start;overflow-y:auto;padding:max(24px,6vh) 16px 24px;box-sizing:border-box;">
+      <div role="dialog" aria-modal="true" aria-labelledby="pin-title" data-pin-card="1" style="width:400px;max-width:100%;box-sizing:border-box;background:var(--surface);border:2px solid var(--line);border-radius:28px;padding:28px;display:flex;flex-direction:column;gap:18px;">
+        <div style="display:flex;align-items:center;gap:12px;"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:36px;">lock</span><h2 id="pin-title" style="margin:0;font-size:28px;">Sign in</h2></div>
+        <p style="margin:0;font-size:18px;color:var(--muted);">Teachers and substitutes: enter your 4-digit PIN.</p>
+        <div role="img" aria-label="{{ pinAria }}" style="display:flex;gap:12px;justify-content:center;">
+          <sc-for list="{{ pinBoxes }}" as="b" hint-placeholder-count="4">
+            <span style="width:64px;height:72px;border-radius:16px;border:{{ b.border }};background:var(--surface2);display:grid;place-items:center;box-sizing:border-box;"><span style="width:18px;height:18px;border-radius:50%;background:{{ b.dot }};"></span></span>
+          </sc-for>
+        </div>
+        <div aria-live="assertive" style="min-height:26px;text-align:center;font-size:17px;font-weight:700;">{{ pinErr }}</div>
+        <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;">
+          <sc-for list="{{ keys }}" as="k" hint-placeholder-count="12">
+            <sc-if value="{{ k.isKey }}"><button onClick="{{ k.press }}" aria-label="{{ k.aria }}" style="min-height:64px;border-radius:16px;border:2px solid var(--line);background:var(--surface2);color:var(--ink);font-size:28px;font-weight:700;cursor:pointer;display:grid;place-items:center;" style-active="background:var(--line);">{{ k.label }}<sc-if value="{{ k.isIcon }}"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:28px;">backspace</span></sc-if></button></sc-if>
+            <sc-if value="{{ k.isGap }}"><span></span></sc-if>
+          </sc-for>
+        </div>
+        <button onClick="{{ closeSignin }}" style="min-height:56px;border-radius:14px;border:2px solid var(--line);background:none;color:var(--ink);font-size:18px;font-weight:700;cursor:pointer;">Cancel</button>
+        <p style="margin:0;font-size:15px;color:var(--muted);text-align:center;">Students and guardians will sign in a different way later.</p>
+      </div>
+    </div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:420},&quot;active&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;home&quot;,&quot;games&quot;,&quot;planner&quot;,&quot;settings&quot;,&quot;subs&quot;,&quot;none&quot;],&quot;default&quot;:&quot;home&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+const HUB_DEFAULT = {theme:'dark',font:'standard',contrast:false,motion:true,teacher:false,teacherLeft:0,signOutSoon:false};
+const CS_MAP = {g7:'courses/grade-7/',g8:'courses/grade-8/',alg1:'courses/algebra-i/',geo:'courses/geometry/',alg2:'courses/algebra-ii/',alg3:'courses/algebra-iii/',feud:'games/family-feud/',jeopardy:'games/jeopardy/',planner:'planner/'};
+const NAV = [
+  {id:'home',label:'Home',short:'Home',icon:'home',href:'./'},
+  {id:'subs',label:'Substitute',short:'Subs',icon:'badge',href:'subs/'},
+  {id:'games',label:'Games',short:'Games',icon:'sports_esports',href:'games/',teacherOnly:'signedIn'},
+  {id:'planner',label:'Lesson Planner',short:'Planner',icon:'edit_calendar',href:'planner/',liveHref:'/planner/',teacherOnly:true},
+  {id:'aids',label:'Memory Aids',short:'Aids',icon:'lightbulb',href:'aids/'},
+  {id:'learn',label:'How We Learn',short:'Learn',icon:'diversity_3',href:'learn/'},
+  {id:'about',label:'About',short:'About',icon:'info',href:'about/'},
+  {id:'settings',label:'Settings',short:'Settings',icon:'settings',href:'settings/',teacherOnly:true}
+];
+
+class Component extends DCLogic {
+  headerRef = React.createRef();
+  navRef = React.createRef();
+  guessTier(w){ return w >= 1024 ? 0 : 6; }
+  state = {
+    tier: this.guessTier(window.innerWidth || 1280),
+    hub: (window.HubState && window.HubState.get()) || HUB_DEFAULT,
+    w: window.innerWidth || 1280, y: window.scrollY || 0,
+    menuOpen:false, readerOpen:false, signinOpen:false,
+    pin:'', pinErr:'', checking:false
+  };
+  componentDidMount(){
+    this.onHub = () => { if (!window.HubState) return; const hub = window.HubState.get(); this.setState(s => hub.signedIn !== s.hub.signedIn || hub.role !== s.hub.role ? {hub, tier: this.guessTier(s.w)} : {hub}); };
+    this.onResize = () => { const w = this.headerRef.current ? this.headerRef.current.clientWidth : window.innerWidth; if (w && w !== this.state.w) this.setState({w, tier: this.guessTier(w)}); };
+    this.refit = () => this.setState(s => ({tier: this.guessTier(s.w)}));
+    try { document.fonts && document.fonts.ready.then(() => this.refit()); document.fonts && document.fonts.addEventListener('loadingdone', this.refit); } catch(e){}
+    if (window.ResizeObserver && this.headerRef.current){ this.ro = new ResizeObserver(() => this.onResize()); this.ro.observe(this.headerRef.current); }
+    this.onResize();
+    this.onScroll = () => {
+      if (this.raf) return;
+      this.raf = requestAnimationFrame(() => {
+        this.raf = 0;
+        const y = window.scrollY, slim = this.state.slim;
+        // hysteresis: wider than the height change, so the bar can't flip back and forth near the top
+        const next = slim ? y > 4 : y > 64;
+        if (next !== slim) this.setState({slim: next});
+      });
+    };
+    this.onSignin = e => this.openPin(e && e.detail);
+    this.onKey = e => {
+      if (this.state.signinOpen){
+        if (/^[0-9]$/.test(e.key)){ e.preventDefault(); this.addDigit(e.key); }
+        else if (e.key === 'Backspace'){ e.preventDefault(); this.backspace(); }
+        else if (e.key === 'Escape') this.closePin();
+        return;
+      }
+      if (e.key === 'Escape') this.setState({readerOpen:false, menuOpen:false});
+    };
+    window.addEventListener('hubchange', this.onHub);
+    window.addEventListener('hubstate-ready', this.onHub);
+    window.addEventListener('resize', this.onResize);
+    window.addEventListener('scroll', this.onScroll, {passive:true});
+    window.addEventListener('hub-signin', this.onSignin);
+    window.addEventListener('keydown', this.onKey);
+    this.onHub();
+  }
+  componentDidUpdate(){ this.fit(); }
+  fit(){
+    if (this.state.tier >= 6) return;
+    if (document.fonts && document.fonts.status === 'loading') return;
+    const hd = this.headerRef.current, nv = this.navRef.current;
+    const over = (nv && nv.scrollWidth > nv.clientWidth + 1) || (hd && hd.scrollWidth > hd.clientWidth + 1);
+    if (over) this.setState(s => ({tier: Math.min(6, s.tier + 1)}));
+  }
+  componentWillUnmount(){
+    if (this.ro) this.ro.disconnect();
+    try { document.fonts && document.fonts.removeEventListener('loadingdone', this.refit); } catch(e){}
+    window.removeEventListener('hubchange', this.onHub);
+    window.removeEventListener('hubstate-ready', this.onHub);
+    window.removeEventListener('resize', this.onResize);
+    window.removeEventListener('scroll', this.onScroll);
+    window.removeEventListener('hub-signin', this.onSignin);
+    window.removeEventListener('keydown', this.onKey);
+  }
+  set(patch){
+    if (window.HubState) window.HubState.set(patch);
+    else this.setState(s => ({hub:{...s.hub, ...patch}}));
+  }
+  openPin(opts){ this.closeOnCancel = opts && opts.cancelTo || null; this.setState({signinOpen:true, readerOpen:false, menuOpen:false, pin:'', pinErr:''}); }
+  closePin(){ const to = this.closeOnCancel; this.closeOnCancel = null; this.setState({signinOpen:false, pin:'', pinErr:''}); if (to) location.href = to; }
+  backspace(){ if (!this.state.checking) this.setState(s => ({pin:s.pin.slice(0,-1), pinErr:''})); }
+  addDigit(d){
+    if (this.state.checking || this.state.pin.length >= 4) return;
+    const pin = this.state.pin + d;
+    this.setState({pin, pinErr:''});
+    if (pin.length === 4) this.submit(pin);
+  }
+  async submit(pin){
+    this.setState({checking:true});
+    const r = window.HubState ? await window.HubState.checkPin(pin) : {ok:false, message:"That PIN didn't work. Try again."};
+    if (r.ok) { this.closeOnCancel = null; this.setState({checking:false, signinOpen:false, pin:'', pinErr:''}); }
+    else setTimeout(() => this.setState({checking:false, pin:'', pinErr: r.message}), 250);
+  }
+  readPage(){
+    const el = document.getElementById('main');
+    if (!el || !window.speechSynthesis) return;
+    speechSynthesis.cancel();
+    const clone = el.cloneNode(true);
+    clone.querySelectorAll('.material-symbols-rounded,[aria-hidden="true"]').forEach(n => n.remove());
+    const u = new SpeechSynthesisUtterance(clone.innerText); u.rate = 0.95; speechSynthesis.speak(u);
+  }
+  renderVals(){
+    const s = this.state, h = s.hub, light = h.theme === 'light';
+    const active = this.props.active ?? 'home';
+    const t = s.tier, compact = t >= 6, tiny = s.w < 440;
+    const slim = !!s.slim;
+    const sel = on => on ? {bg:'var(--ink)',color:'var(--bg)',border:'var(--ink)'} : {bg:'transparent',color:'var(--ink)',border:'var(--line)'};
+    const navSel = id => active === id ? {bg:'var(--ink)',color:'var(--bg)',current:'page',deco:'none'} : {bg:'transparent',color:'var(--ink)',current:undefined,deco:'none'};
+    const seg = (label, opts) => ({label, opts: opts.map(o => ({...o, ...sel(o.on)}))});
+    const side = 'clamp(16px,3vw,32px)';
+    const mins = Math.max(1, Math.ceil((h.teacherLeft || 0) / 60000));
+    const keys = ['1','2','3','4','5','6','7','8','9','','0','del'].map(k => k === '' ? {isGap:true, isKey:false} :
+      k === 'del' ? {isKey:true, isGap:false, isIcon:true, label:'', aria:'Delete last digit', press:() => this.backspace()} :
+      {isKey:true, isGap:false, isIcon:false, label:k, aria:k, press:() => this.addDigit(k)});
+    return {
+      headerRef: this.headerRef, navRef: this.navRef,
+      hPad: (slim ? '6px ' : '14px ') + side,
+      tPad: (slim ? '4px ' : '10px ') + side,
+      logoPx: slim ? '34px' : '42px', logoIcon: slim ? '22px' : '28px',
+      showSub: !slim && !tiny, showBrand: compact || t < 4,
+      navFs: t >= 2 ? '14px' : t >= 1 ? '15px' : '16px', navPad: t >= 3 ? '0 7px' : '0 12px', soonPad: t >= 3 ? '0 6px' : '0 10px', navGap: t >= 3 ? '0px' : '2px',
+      navInline: !compact, compact,
+      nav: NAV.filter(n => !n.teacherOnly || (n.teacherOnly === 'signedIn' ? h.signedIn : h.teacher)).map(n => { const live = !!n.liveHref && /(^|\.)derrickdemars\.org$/.test(location.hostname); return {...n, href: live ? n.liveHref : n.href, target: live ? '_blank' : undefined, isLink:!n.soon, soon:!!n.soon, text: n.label, ...navSel(n.id)}; }),
+      teacher: !!h.teacher,
+      signOutSoon: !!h.signOutSoon, countdown: (() => { const sec = Math.max(0, Math.ceil((h.teacherLeft || 0) / 1000)); return Math.floor(sec / 60) + ':' + String(sec % 60).padStart(2, '0'); })(),
+      stay: () => window.HubState && window.HubState.extend(),
+      btnText: t < 5 && !compact ? true : false, btnPad: t < 5 && !compact ? '0 14px' : '0',
+      menuOpen: s.menuOpen, drawerOpen: compact && s.menuOpen, menuIcon: s.menuOpen ? 'close' : 'menu',
+      menuText: !tiny, menuPad: tiny ? '0' : '0 14px',
+      toggleMenu: () => this.setState(st => ({menuOpen:!st.menuOpen, readerOpen:false})),
+      readerOpen: s.readerOpen,
+      toggleReader: () => this.setState(st => ({readerOpen:!st.readerOpen, menuOpen:false})),
+      lockIcon: h.signedIn ? 'lock_open' : 'lock',
+      lockText: h.signedIn ? 'Sign out' : 'Sign in',
+      lockLabel: h.signedIn ? 'Sign out' : 'Sign in with PIN',
+      lockClick: () => h.signedIn ? this.set({signedIn:false}) : this.openPin(),
+      signinOpen: s.signinOpen,
+      closeSignin: () => this.closePin(),
+      backdropClick: e => { if (e.target === e.currentTarget) this.closePin(); },
+      pinBoxes: [0,1,2,3].map(i => ({dot: i < s.pin.length ? 'var(--ink)' : 'transparent', border: i === s.pin.length ? '3px solid var(--ink)' : '2px solid var(--line)'})),
+      pinAria: `${s.pin.length} of 4 digits entered`,
+      pinErr: s.pinErr, keys,
+      readerRows: [
+        seg('Theme', [{label:'Dark',on:!light,pick:()=>this.set({theme:'dark'})},{label:'Light',on:light,pick:()=>this.set({theme:'light'})}]),
+        seg('Font', [{label:'Standard',on:h.font!=='dys',pick:()=>this.set({font:'standard'})},{label:'Dyslexia-friendly',on:h.font==='dys',pick:()=>this.set({font:'dys'})}]),
+        seg('High contrast', [{label:'Off',on:!h.contrast,pick:()=>this.set({contrast:false})},{label:'On',on:!!h.contrast,pick:()=>this.set({contrast:true})}]),
+        seg('Motion', [{label:'On',on:!!h.motion,pick:()=>this.set({motion:true})},{label:'Off',on:!h.motion,pick:()=>this.set({motion:false})}])
+      ],
+      readPage: () => this.readPage(),
+      stopReading: () => { try { speechSynthesis.cancel(); } catch(e){} },
+      showTop: s.y > 600,
+      toTop: () => window.scrollTo({top:0, behavior: h.motion ? 'smooth' : 'auto'})
+    };
+  }
+}
+</script>
+</body>
+</html>

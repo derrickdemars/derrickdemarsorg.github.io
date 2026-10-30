@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<base href="/">
+<script>window.HUB_LAUNCH=true;</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>@view-transition{navigation:auto;}</style>
+<script src="hub-state.js"></script>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<title>About | Dr. DeMars | Math Hub</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,500,1,0">
+<link rel="stylesheet" href="https://fonts.cdnfonts.com/css/opendyslexic">
+<script src="hub-state.js"></script>
+<style>
+:root{--bg:#131317;--surface:#1c1c22;--surface2:#27272f;--line:#33333c;--ink:#f3f2ee;--muted:#b6b5bf;--font:"Helvetica Neue",Helvetica,Arial,sans-serif;--lh:1.5;--ls:0;--lift:-3px;--dur:160ms;--tileborder:0px solid transparent;--grow:1.02;--fade:300ms;--shape-hover:0.34;--glow:0 0 0 1px rgba(255,255,255,0.12),0 0 20px rgba(255,255,255,0.12);--cg-geo:var(--glow);--cg-alg1:var(--glow);--cg-alg2:var(--glow);--cg-alg3:var(--glow);--cg-g7:var(--glow);--cg-g8:var(--glow);--t-g7:oklch(0.86 0.12 150);--t-g8:oklch(0.84 0.09 250);--t-alg1:oklch(0.86 0.11 60);--t-geo:oklch(0.83 0.1 300);--t-alg2:oklch(0.83 0.1 25);--t-alg3:oklch(0.92 0.12 95);color-scheme:dark;}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);line-height:var(--lh);letter-spacing:var(--ls);}
+a{color:var(--ink);}
+a:hover{color:var(--ink);}
+:focus-visible{outline:3px solid var(--ink);outline-offset:3px;}
+a:focus-visible,button:focus-visible{box-shadow:var(--glow);}
+@keyframes hubfade{from{opacity:0}to{opacity:1}}
+::view-transition-old(root),::view-transition-new(root){animation-duration:var(--vt,280ms);animation-timing-function:cubic-bezier(0.45,0,0.55,1);}
+::view-transition-group(site-header){animation-duration:0s;}
+button,textarea,input{font:inherit;letter-spacing:inherit;}
+</style>
+</helmet>
+<div style="min-height:100vh;display:flex;flex-direction:column;background:var(--bg);color:var(--ink);font-family:var(--font);">
+  <a href="about/#main" style="position:absolute;left:16px;top:-120px;z-index:200;padding:14px 20px;border-radius:12px;background:var(--ink);color:var(--bg);font-size:17px;font-weight:700;text-decoration:none;" style-focus="top:16px;">Skip to main content</a>
+  <dc-import name="Site Header" active="about" hint-size="100%,76px" style="position:sticky;top:0;z-index:50;display:block;"></dc-import>
+  <main id="main" tabindex="-1" style="animation:hubfade var(--fade) ease both;flex:1;width:100%;max-width:1200px;margin:0 auto;box-sizing:border-box;padding:32px clamp(16px,4vw,48px) 56px;display:flex;flex-direction:column;gap:24px;outline:none;">
+
+    <section style="display:flex;flex-wrap:wrap;gap:24px 32px;align-items:center;">
+      <div style="flex:1 1 420px;min-width:0;display:flex;flex-direction:column;gap:12px;">
+        <div style="font-size:16px;font-weight:700;color:var(--muted);">About</div>
+        <h1 style="margin:0;font-size:clamp(32px,4.5vw,44px);line-height:1.1;">Dr. Derrick DeMars</h1>
+        <a href="mailto:ddemars@innovaprep.org" style="align-self:flex-start;display:flex;align-items:center;gap:8px;min-height:48px;padding:0 18px;border-radius:14px;border:2px solid var(--ink);background:var(--ink);color:var(--bg);font-size:17px;font-weight:700;text-decoration:none;transition:transform var(--dur) ease,box-shadow var(--dur) ease;" style-hover="transform:translateY(var(--lift)) scale(var(--grow));box-shadow:var(--glow);" style-active="box-shadow:var(--glow);"><span class="material-symbols-rounded" aria-hidden="true">mail</span>ddemars@innovaprep.org</a>
+      </div>
+    </section>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(clamp(calc(50% - 8px),calc((620px - 100%) * 1000),100%),1fr));gap:16px;align-items:stretch;">
+      <section aria-labelledby="ab-exp" style="background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:20px;display:flex;flex-direction:column;gap:10px;">
+        <div style="display:flex;align-items:center;gap:10px;"><span class="material-symbols-rounded" aria-hidden="true" style="width:40px;height:40px;border-radius:12px;background:var(--surface2);display:grid;place-items:center;font-size:24px;">workspace_premium</span><h2 id="ab-exp" style="margin:0;font-size:21px;">Experience</h2></div>
+        <p style="margin:0;font-size:16px;text-wrap:pretty;">I teach 7th Grade Math through Algebra III. I built each of my courses myself and matched them to state standards. My students have grown on benchmark tests every year, and I was named Teacher of the Year in 2024–2025 and again in 2025–2026. I hold a PhD in mathematics and have helped train a student teacher.</p>
+      </section>
+
+      <section aria-labelledby="ab-approach" style="background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:20px;display:flex;flex-direction:column;gap:10px;">
+        <div style="display:flex;align-items:center;gap:10px;"><span class="material-symbols-rounded" aria-hidden="true" style="width:40px;height:40px;border-radius:12px;background:var(--surface2);display:grid;place-items:center;font-size:24px;">school</span><h2 id="ab-approach" style="margin:0;font-size:21px;">Teaching approach</h2></div>
+        <p style="margin:0;font-size:16px;text-wrap:pretty;">Challenging work and support go together. Every lesson has more than one way in, extra help that fades as students grow more confident, and feedback clear enough to act on. Clear structure gives every student a strong start without limiting how far they can go.</p>
+      </section>
+
+      <section aria-labelledby="ab-school" style="background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:20px;display:flex;flex-direction:column;gap:10px;">
+        <div style="display:flex;align-items:center;gap:10px;"><span class="material-symbols-rounded" aria-hidden="true" style="width:40px;height:40px;border-radius:12px;background:var(--surface2);display:grid;place-items:center;font-size:24px;">apartment</span><h2 id="ab-school" style="margin:0;font-size:21px;">Innova Prep</h2></div>
+        <p style="margin:0;font-size:16px;flex:1;text-wrap:pretty;">Innova Preparatory School specializes in educating students with autism, dyslexia, and ADHD. It is a small non-public school in Hattiesburg.</p>
+        <a href="https://www.innovaprep.org/" target="_blank" rel="noopener" style="align-self:flex-start;display:flex;align-items:center;gap:6px;min-height:44px;padding:0 14px;border-radius:12px;border:2px solid var(--line);color:var(--ink);text-decoration:none;font-size:15px;font-weight:700;transition:transform var(--dur) ease,box-shadow var(--dur) ease;" style-hover="transform:translateY(var(--lift)) scale(var(--grow));box-shadow:var(--glow);" style-active="box-shadow:var(--glow);">Visit innovaprep.org<span class="material-symbols-rounded" aria-hidden="true" style="font-size:18px;">open_in_new</span></a>
+      </section>
+
+      <section aria-labelledby="ab-learn" style="background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:20px;display:flex;flex-direction:column;gap:10px;">
+        <div style="display:flex;align-items:center;gap:10px;"><span class="material-symbols-rounded" aria-hidden="true" style="width:40px;height:40px;border-radius:12px;background:var(--surface2);display:grid;place-items:center;font-size:24px;">diversity_3</span><h2 id="ab-learn" style="margin:0;font-size:21px;">How We Learn</h2></div>
+        <p style="margin:0;font-size:16px;flex:1;text-wrap:pretty;">These three learning differences share many traits. The diagram shows what is unique to each, what they have in common, and the strengths each one brings.</p>
+        <a href="learn/" style="align-self:flex-start;display:flex;align-items:center;gap:6px;min-height:44px;padding:0 14px;border-radius:12px;border:2px solid var(--line);color:var(--ink);text-decoration:none;font-size:15px;font-weight:700;transition:transform var(--dur) ease,box-shadow var(--dur) ease;" style-hover="transform:translateY(var(--lift)) scale(var(--grow));box-shadow:var(--glow);" style-active="box-shadow:var(--glow);">Open the diagram<span class="material-symbols-rounded" aria-hidden="true" style="font-size:18px;">arrow_forward</span></a>
+      </section>
+    </div>
+  </main>
+  <dc-import name="Site Footer" hint-size="100%,110px"></dc-import>
+</div>
+</x-dc>
+</body>
+</html>

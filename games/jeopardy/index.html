@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<script src="/hub-state.js"></script>
+<script src="./theme.js"></script>
+<script src="./lock.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Atkinson+Hyperlegible:wght@400;700&family=Lexend:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--jp-bg:#060a4a;--jp-panel:#0a1cc7;--jp-panel-hover:#1a2ee0;--jp-border:#3a4ae0;--jp-accent:#ffcc33;--jp-accent-hover:#ffd966;--jp-text:#fff;--jp-muted:#c5caff;--jp-ink:#000;--jp-head-bg:#0a1cc7;--jp-accent2:#ffcc33;--jp-font:'Atkinson Hyperlegible',system-ui,sans-serif;--jp-head:Oswald,sans-serif;--jp-scale:1}
+html,body{margin:0;padding:0;background:var(--jp-bg);color:var(--jp-text);font-family:var(--jp-font);min-height:100vh}
+*{box-sizing:border-box}
+a{color:var(--jp-accent)}a:hover{color:var(--jp-accent-hover)}
+button,input{font-family:inherit}
+input::placeholder{color:var(--jp-muted);opacity:1}
+</style>
+</helmet>
+
+<div style="min-height:100vh;display:grid;grid-template-columns:minmax(220px,280px) minmax(0,1fr)">
+  <nav aria-label="Classes" style="background:var(--jp-panel);border-right:3px solid var(--jp-ink);box-shadow:inset -2px 0 0 var(--jp-border);display:flex;flex-direction:column;padding:20px 14px;gap:10px">
+    <div style="font-family:var(--jp-head);font-weight:700;font-size:calc(30px * var(--jp-scale));letter-spacing:.06em;text-transform:uppercase;color:var(--jp-accent);text-shadow:2px 2px 0 var(--jp-ink);line-height:1.05;padding:0 10px 14px">DeMars Jeopardy</div>
+    <sc-for list="{{ classes }}" as="c" hint-placeholder-count="6">
+      <button onClick="{{ c.select }}" aria-current="{{ c.current }}" style="display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;min-height:56px;text-align:left;background:{{ c.bg }};color:{{ c.color }};border:3px solid var(--jp-ink);box-shadow:inset 0 0 0 2px {{ c.ring }};padding:10px 14px;font-family:var(--jp-head);font-weight:700;font-size:calc(21px * var(--jp-scale));letter-spacing:.04em;text-transform:uppercase;cursor:pointer;line-height:1.1" style-hover="background:var(--jp-panel-hover)">
+        <span>{{ c.name }}</span>
+        <span style="font-family:var(--jp-font);font-size:calc(15px * var(--jp-scale));font-weight:700;min-width:30px;height:30px;border-radius:15px;display:inline-flex;align-items:center;justify-content:center;background:var(--jp-bg);color:var(--jp-text);padding:0 8px">{{ c.count }}</span>
+      </button>
+    </sc-for>
+    <div style="flex:1 1 auto"></div>
+    <div style="display:flex;flex-direction:column;gap:8px;padding:0 4px">
+      <sc-if value="{{ teacher }}" hint-placeholder-val="{{ false }}">
+        <x-import component-from-global-scope="jp-settings" hint-size="100%,44px"></x-import>
+      </sc-if>
+      <x-import component-from-global-scope="jp-lock-badge" hint-size="100%,0px"></x-import>
+      <button onClick="{{ toggleTeacher }}" title="{{ lockTitle }}" style="background:transparent;color:var(--jp-text);border:2px solid var(--jp-border);border-radius:6px;padding:10px 12px;font-size:calc(15px * var(--jp-scale));font-weight:700;cursor:pointer;min-height:44px;text-align:left" style-hover="background:var(--jp-panel-hover)">{{ lockLabel }}</button>
+    </div>
+  </nav>
+
+  <main style="padding:24px 32px 40px;display:flex;flex-direction:column;gap:22px;min-width:0">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap">
+      <div>
+        <div style="font-size:calc(15px * var(--jp-scale));letter-spacing:.14em;text-transform:uppercase;color:var(--jp-muted);font-weight:700">Class</div>
+        <h1 style="margin:0;font-family:var(--jp-head);font-weight:700;font-size:calc(44px * var(--jp-scale));letter-spacing:.04em;text-transform:uppercase;color:var(--jp-accent);text-shadow:3px 3px 0 var(--jp-ink);line-height:1">{{ cls }}</h1>
+      </div>
+      <sc-if value="{{ teacher }}" hint-placeholder-val="{{ false }}">
+        <input type="search" value="{{ search }}" onChange="{{ setSearch }}" placeholder="Search games or topics" aria-label="Search games" style="background:var(--jp-panel);color:var(--jp-text);border:2px solid var(--jp-border);border-radius:6px;padding:10px 14px;font-size:calc(17px * var(--jp-scale));min-width:260px;min-height:44px"></input>
+      </sc-if>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,360px),1fr));gap:18px">
+      <sc-for list="{{ cards }}" as="g" hint-placeholder-count="2">
+        <article data-screen-label="{{ g.title }}" style="background:var(--jp-panel);border:3px solid var(--jp-ink);box-shadow:inset 0 0 0 2px {{ g.ring }};padding:20px 22px 22px;display:flex;flex-direction:column;gap:14px">
+          <div>
+            <h2 style="margin:0 0 4px;font-family:var(--jp-head);font-weight:700;font-size:calc(28px * var(--jp-scale));letter-spacing:.03em;text-transform:uppercase;color:var(--jp-accent);text-shadow:2px 2px 0 var(--jp-ink);line-height:1.1;text-wrap:balance">{{ g.title }}</h2>
+            <div style="font-size:calc(16px * var(--jp-scale));color:var(--jp-text);line-height:1.4;text-wrap:pretty">{{ g.subtitle }}</div>
+          </div>
+          <sc-if value="{{ teacher }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;flex-wrap:wrap;gap:6px">
+              <sc-for list="{{ g.categories }}" as="k" hint-placeholder-count="5">
+                <span style="background:var(--jp-bg);color:var(--jp-text);border:1px solid var(--jp-border);border-radius:4px;padding:4px 9px;font-size:calc(14px * var(--jp-scale));font-weight:700;letter-spacing:.03em;text-transform:uppercase;line-height:1.3;display:inline-flex;align-items:center;white-space:nowrap">{{ k.name }}</span>
+              </sc-for>
+            </div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:auto">
+              <button onClick="{{ g.play }}" style="flex:1 1 140px;background:var(--jp-accent);color:var(--jp-bg);border:none;border-radius:8px;padding:12px 20px;font-family:var(--jp-head);font-weight:700;font-size:calc(22px * var(--jp-scale));letter-spacing:.06em;text-transform:uppercase;cursor:pointer;box-shadow:3px 3px 0 var(--jp-ink);min-height:48px" style-hover="background:var(--jp-accent-hover)">&#9654; Play</button>
+              <a href="{{ g.offline }}" download="{{ true }}" style="display:inline-flex;align-items:center;justify-content:center;background:transparent;color:var(--jp-text);border:2px solid var(--jp-border);border-radius:8px;padding:12px 18px;font-size:calc(16px * var(--jp-scale));font-weight:700;text-decoration:none;min-height:48px" style-hover="background:var(--jp-panel-hover);color:var(--jp-text)">Download</a>
+            </div>
+          </sc-if>
+          <sc-if value="{{ locked }}" hint-placeholder-val="{{ true }}">
+            <button onClick="{{ openSignIn }}" style="margin-top:auto;display:inline-flex;align-items:center;gap:8px;align-self:flex-start;background:var(--jp-bg);color:var(--jp-muted);border:2px solid var(--jp-border);border-radius:8px;padding:10px 16px;font-size:calc(15px * var(--jp-scale));font-weight:700;cursor:pointer;min-height:44px" style-hover="color:var(--jp-text);border-color:var(--jp-accent)">&#128274; Teacher sign-in required</button>
+          </sc-if>
+        </article>
+      </sc-for>
+      <sc-if value="{{ empty }}" hint-placeholder-val="{{ false }}">
+        <div style="border:3px dashed var(--jp-border);padding:28px 24px;display:flex;flex-direction:column;gap:10px;min-height:220px;justify-content:center">
+          <div style="font-family:var(--jp-head);font-weight:700;font-size:calc(26px * var(--jp-scale));letter-spacing:.03em;text-transform:uppercase;color:var(--jp-muted);line-height:1.1">{{ emptyTitle }}</div>
+          <div style="font-size:calc(16px * var(--jp-scale));color:var(--jp-text);line-height:1.5;text-wrap:pretty">{{ emptyBody }}</div>
+        </div>
+      </sc-if>
+    </div>
+  </main>
+</div>
+<sc-if value="{{ signInOpen }}" hint-placeholder-val="{{ false }}">
+  <x-import component-from-global-scope="jp-lock-screen" title="DeMars Jeopardy" cancelable="1" hint-size="0px,0px"></x-import>
+</sc-if>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { data: null, cls: 'Geometry', teacher: false, search: '', focus: 0, signInOpen: false };
+  unlocked() { return !!(window.JPLock && JPLock.isUnlocked()); }
+  componentDidMount() {
+    fetch('./games.json', { cache: 'no-store' }).then(r => r.json()).then(data => this.setState({ data })).catch(() => this.setState({ data: { classes: [], games: [] } }));
+    this.setState({ teacher: this.unlocked() });
+    this._theme = () => this.forceUpdate();
+    window.addEventListener('jp-theme-change', this._theme);
+    this._lock = () => this.setState(s => ({ teacher: this.unlocked(), signInOpen: this.unlocked() ? false : s.signInOpen, search: this.unlocked() ? s.search : '' }));
+    window.addEventListener('jp-lock-change', this._lock);
+    this._cancel = () => this.setState({ signInOpen: false });
+    window.addEventListener('jp-lock-cancel', this._cancel);
+    this._key = e => this.onKey(e);
+    window.addEventListener('keydown', this._key);
+  }
+  componentWillUnmount() { window.removeEventListener('jp-theme-change', this._theme); window.removeEventListener('jp-lock-change', this._lock); window.removeEventListener('jp-lock-cancel', this._cancel); window.removeEventListener('keydown', this._key); }
+  classes() { return (this.state.data && this.state.data.classes) || ['Geometry', 'Algebra I', 'Algebra III', '7th Grade Math', '8th Grade Math', 'Algebra II']; }
+  gamesFor(cls) {
+    const all = (this.state.data && this.state.data.games) || [];
+    const q = this.state.teacher ? this.state.search.trim().toLowerCase() : '';
+    return all.filter(g => g.classes.includes(cls)).filter(g => !q || (g.title + ' ' + g.subtitle + ' ' + g.categories.join(' ')).toLowerCase().includes(q));
+  }
+  play(g) { if (!this.unlocked()) { this.setState({ signInOpen: true }); return; } window.location.href = g.live; }
+  onKey(e) {
+    if (e.target && /INPUT|TEXTAREA/.test(e.target.tagName)) return;
+    if (this.state.signInOpen) return;
+    if (document.querySelector('jp-settings') && document.querySelector('jp-settings').open) return;
+    const cl = this.classes(), ci = cl.indexOf(this.state.cls), cards = this.gamesFor(this.state.cls);
+    if (e.key === 'ArrowDown') { e.preventDefault(); this.setState({ cls: cl[(ci + 1) % cl.length], focus: 0 }); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); this.setState({ cls: cl[(ci - 1 + cl.length) % cl.length], focus: 0 }); }
+    else if (e.key === 'ArrowRight') { e.preventDefault(); if (cards.length) this.setState({ focus: (this.state.focus + 1) % cards.length }); }
+    else if (e.key === 'ArrowLeft') { e.preventDefault(); if (cards.length) this.setState({ focus: (this.state.focus - 1 + cards.length) % cards.length }); }
+    else if (e.key === 'Enter' && this.state.teacher) { const g = cards[this.state.focus]; if (g) this.play(g); }
+  }
+  renderVals() {
+    const s = this.state, cl = this.classes(), all = (s.data && s.data.games) || [];
+    const classes = cl.map(name => ({
+      name, count: all.filter(g => g.classes.includes(name)).length, current: name === s.cls ? 'page' : undefined,
+      bg: name === s.cls ? 'var(--jp-bg)' : 'var(--jp-panel)', color: name === s.cls ? 'var(--jp-accent)' : 'var(--jp-text)', ring: name === s.cls ? 'var(--jp-accent)' : 'var(--jp-border)',
+      select: () => this.setState({ cls: name, focus: 0 }),
+    }));
+    const games = this.gamesFor(s.cls);
+    const cards = games.map((g, i) => ({
+      title: g.title, subtitle: g.subtitle, offline: g.offline, categories: g.categories.map(name => ({ name })),
+      ring: i === s.focus ? 'var(--jp-accent)' : 'var(--jp-border)',
+      play: () => this.play(g),
+    }));
+    const loaded = !!s.data, hasGames = all.some(g => g.classes.includes(s.cls));
+    return {
+      classes, cls: s.cls, cards, teacher: s.teacher, locked: !s.teacher, search: s.search, signInOpen: s.signInOpen,
+      setSearch: e => this.setState({ search: e.target.value, focus: 0 }),
+      empty: loaded && games.length === 0,
+      emptyTitle: hasGames ? 'No matches' : 'No games yet for ' + s.cls,
+      emptyBody: hasGames ? 'Try a different search.' : 'Add one entry to games.json with this class name and it will appear here.',
+      lockLabel: s.teacher ? '\u{1F513} Lock' : '\u{1F512} Sign in',
+      lockTitle: s.teacher ? 'Lock the dashboard and games' : 'Teacher sign in',
+      toggleTeacher: () => { if (s.teacher) { JPLock.lock(); } else this.setState({ signInOpen: true }); },
+      openSignIn: () => this.setState({ signInOpen: true }),
+    };
+  }
+}
+</script>
+</body>
+</html>

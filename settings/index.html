@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<base href="/">
+<script>window.HUB_LAUNCH=true;</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>@view-transition{navigation:auto;}</style>
+<script src="hub-state.js"></script>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<title>Settings | Dr. DeMars | Math Hub</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,500,1,0">
+<link rel="stylesheet" href="https://fonts.cdnfonts.com/css/opendyslexic">
+<script src="hub-state.js"></script>
+<style>
+:root{--bg:#131317;--surface:#1c1c22;--surface2:#27272f;--line:#33333c;--ink:#f3f2ee;--muted:#b6b5bf;--font:"Helvetica Neue",Helvetica,Arial,sans-serif;--lh:1.5;--ls:0;--lift:-3px;--dur:160ms;--tileborder:0px solid transparent;--grow:1.02;--fade:300ms;--glow:0 0 0 1px rgba(255,255,255,0.12),0 0 20px rgba(255,255,255,0.12);color-scheme:dark;}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);line-height:var(--lh);letter-spacing:var(--ls);}
+a{color:var(--ink);}
+a:hover{color:var(--ink);}
+:focus-visible{outline:3px solid var(--ink);outline-offset:3px;}
+@keyframes hubfade{from{opacity:0}to{opacity:1}}
+::view-transition-old(root),::view-transition-new(root){animation-duration:var(--vt,280ms);animation-timing-function:cubic-bezier(0.45,0,0.55,1);}
+::view-transition-group(site-header){animation-duration:0s;}
+button,textarea,input{font:inherit;letter-spacing:inherit;}
+</style>
+</helmet>
+<div style="min-height:100vh;display:flex;flex-direction:column;background:var(--bg);color:var(--ink);font-family:var(--font);">
+  <a href="settings/#main" style="position:absolute;left:16px;top:-120px;z-index:200;padding:14px 20px;border-radius:12px;background:var(--ink);color:var(--bg);font-size:17px;font-weight:700;text-decoration:none;" style-focus="top:16px;">Skip to main content</a>
+  <dc-import name="Site Header" active="settings" hint-size="100%,76px" style="position:sticky;top:0;z-index:50;display:block;"></dc-import>
+  <main id="main" tabindex="-1" style="animation:hubfade var(--fade) ease both;flex:1;width:100%;max-width:960px;margin:0 auto;box-sizing:border-box;padding:32px clamp(16px,4vw,48px) 56px;display:flex;flex-direction:column;gap:20px;outline:none;">
+    <div style="display:flex;flex-direction:column;gap:6px;">
+      <div style="font-size:16px;font-weight:700;color:var(--muted);">Teacher only</div>
+      <h1 style="margin:0;font-size:clamp(32px,4.5vw,44px);line-height:1.1;">Settings</h1>
+    </div>
+
+    <sc-if value="{{ locked }}" hint-placeholder-val="{{ false }}">
+      <section style="background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:24px;display:flex;flex-direction:column;gap:14px;align-items:flex-start;">
+        <p style="margin:0;font-size:18px;">Sign in with the teacher PIN to change settings.</p>
+        <button onClick="{{ signIn }}" style="display:flex;align-items:center;gap:8px;min-height:48px;padding:0 18px;border-radius:14px;border:2px solid var(--ink);background:var(--ink);color:var(--bg);font-size:17px;font-weight:700;cursor:pointer;"><span class="material-symbols-rounded" aria-hidden="true">lock</span>Sign in</button>
+      </section>
+    </sc-if>
+
+    <sc-if value="{{ unlocked }}" hint-placeholder-val="{{ true }}">
+      <section aria-labelledby="st-conn" style="background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:20px;display:flex;gap:14px;align-items:flex-start;">
+        <span class="material-symbols-rounded" aria-hidden="true" style="width:44px;height:44px;border-radius:12px;background:var(--surface2);display:grid;place-items:center;font-size:24px;flex:none;">{{ connIcon }}</span>
+        <div style="display:flex;flex-direction:column;gap:4px;min-width:0;">
+          <h2 id="st-conn" style="margin:0;font-size:21px;">{{ connTitle }}</h2>
+          <p style="margin:0;font-size:16px;color:var(--muted);text-wrap:pretty;">{{ connText }}</p>
+        </div>
+      </section>
+
+      <section aria-labelledby="st-pins" style="background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:20px;display:flex;flex-direction:column;gap:14px;">
+        <h2 id="st-pins" style="margin:0;font-size:21px;">PINs</h2>
+        <sc-for list="{{ pinRows }}" as="r" hint-placeholder-count="2">
+          <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;">
+            <label for="{{ r.id }}" style="flex:0 0 150px;font-size:17px;font-weight:700;">{{ r.label }}</label>
+            <input id="{{ r.id }}" type="password" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="4 digits" value="{{ r.value }}" onChange="{{ r.onChange }}" disabled="{{ offline }}" style="width:180px;min-height:48px;box-sizing:border-box;padding:0 14px;border-radius:12px;border:2px solid var(--line);background:var(--surface2);color:var(--ink);font-size:18px;letter-spacing:0.3em;">
+            <button onClick="{{ r.save }}" disabled="{{ offline }}" style="min-height:48px;padding:0 18px;border-radius:12px;border:2px solid var(--line);background:transparent;color:var(--ink);font-size:16px;font-weight:700;cursor:pointer;opacity:{{ dimOffline }};transition:transform var(--dur) ease,box-shadow var(--dur) ease;" style-hover="transform:translateY(var(--lift));box-shadow:var(--glow);">Save</button>
+            <span role="status" style="font-size:15px;color:var(--muted);">{{ r.msg }}</span>
+          </div>
+        </sc-for>
+        <p style="margin:0;font-size:15px;color:var(--muted);">PINs are exactly 4 digits, and the two must be different. Changes take effect at the next sign-in.</p>
+      </section>
+
+      <section aria-labelledby="st-files" style="background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:20px;display:flex;flex-direction:column;gap:14px;">
+        <h2 id="st-files" style="margin:0;font-size:21px;">Protected files</h2>
+        <p style="margin:0;font-size:16px;color:var(--muted);">Answer keys and sub notes. Only signed-in users can open them. Up to 24 MB each.</p>
+        <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;">
+          <input type="file" ref="{{ fileRef }}" disabled="{{ offline }}" aria-label="Choose a file" style="font-size:16px;max-width:100%;">
+          <input type="text" placeholder="Title (e.g. Geometry Unit 3 key)" value="{{ title }}" onChange="{{ setTitle }}" disabled="{{ offline }}" aria-label="File title" style="flex:1 1 220px;min-height:48px;box-sizing:border-box;padding:0 14px;border-radius:12px;border:2px solid var(--line);background:var(--surface2);color:var(--ink);font-size:16px;">
+          <label style="display:flex;align-items:center;gap:8px;min-height:48px;font-size:16px;cursor:pointer;"><input type="checkbox" checked="{{ forSubs }}" onChange="{{ toggleSubs }}" disabled="{{ offline }}" style="width:22px;height:22px;">Substitutes can open</label>
+          <button onClick="{{ upload }}" disabled="{{ offline }}" style="display:flex;align-items:center;gap:6px;min-height:48px;padding:0 18px;border-radius:12px;border:2px solid var(--ink);background:var(--ink);color:var(--bg);font-size:16px;font-weight:700;cursor:pointer;opacity:{{ dimOffline }};"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:20px;">upload</span>{{ uploadText }}</button>
+        </div>
+        <span role="status" style="font-size:15px;color:var(--muted);">{{ fileMsg }}</span>
+        <sc-if value="{{ hasFiles }}" hint-placeholder-val="{{ false }}">
+          <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;">
+            <sc-for list="{{ files }}" as="f" hint-placeholder-count="2">
+              <li style="display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;padding:10px 12px;border-radius:14px;background:var(--surface2);">
+                <span style="flex:1 1 200px;min-width:0;font-size:16px;font-weight:700;">{{ f.title }}</span>
+                <span style="font-size:14px;color:var(--muted);">{{ f.who }}</span>
+                <a href="{{ f.url }}" target="_blank" rel="noopener" style="display:flex;align-items:center;min-height:44px;padding:0 12px;border-radius:10px;border:2px solid var(--line);color:var(--ink);text-decoration:none;font-size:15px;font-weight:700;">Open</a>
+                <button onClick="{{ f.remove }}" aria-label="{{ f.removeLabel }}" style="min-height:44px;padding:0 12px;border-radius:10px;border:2px solid var(--line);background:transparent;color:var(--ink);font-size:15px;font-weight:700;cursor:pointer;">Delete</button>
+              </li>
+            </sc-for>
+          </ul>
+        </sc-if>
+      </section>
+
+      <section aria-labelledby="st-bridge" style="background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:20px;display:flex;flex-direction:column;gap:12px;">
+        <h2 id="st-bridge" style="margin:0;font-size:21px;">Lesson Planner data</h2>
+        <p style="margin:0;font-size:16px;color:var(--muted);text-wrap:pretty;">Upload plugin-bridge.json from your computer's "shared data" folder whenever it changes. The online planner reads it from here.</p>
+        <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;">
+          <input type="file" accept=".json,application/json" ref="{{ bridgeRef }}" disabled="{{ offline }}" aria-label="Choose plugin-bridge.json" style="font-size:16px;max-width:100%;">
+          <button onClick="{{ uploadBridge }}" disabled="{{ offline }}" style="display:flex;align-items:center;gap:6px;min-height:48px;padding:0 18px;border-radius:12px;border:2px solid var(--line);background:transparent;color:var(--ink);font-size:16px;font-weight:700;cursor:pointer;opacity:{{ dimOffline }};"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:20px;">upload</span>Upload</button>
+          <span role="status" style="font-size:15px;color:var(--muted);">{{ bridgeMsg }}</span>
+        </div>
+      </section>
+
+      <section aria-labelledby="st-notes" style="background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:20px;display:flex;flex-direction:column;gap:12px;">
+        <h2 id="st-notes" style="margin:0;font-size:21px;">Notes for substitutes</h2>
+        <p style="margin:0;font-size:16px;color:var(--muted);">Shown on the Substitutes page after a sub signs in. Put anything private here, not in the page code.</p>
+        <textarea value="{{ notes }}" onChange="{{ setNotes }}" disabled="{{ offline }}" rows="6" aria-label="Notes for substitutes" style="width:100%;box-sizing:border-box;padding:12px 14px;border-radius:12px;border:2px solid var(--line);background:var(--surface2);color:var(--ink);font-size:16px;resize:vertical;"></textarea>
+        <div style="display:flex;align-items:center;gap:14px;">
+          <button onClick="{{ saveNotes }}" disabled="{{ offline }}" style="min-height:48px;padding:0 18px;border-radius:12px;border:2px solid var(--line);background:transparent;color:var(--ink);font-size:16px;font-weight:700;cursor:pointer;opacity:{{ dimOffline }};">Save notes</button>
+          <span role="status" style="font-size:15px;color:var(--muted);">{{ notesMsg }}</span>
+        </div>
+      </section>
+    </sc-if>
+  </main>
+  <dc-import name="Site Footer" hint-size="100%,110px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { teacher: false, server: false, pin: { teacher: '', sub: '' }, pinMsg: { teacher: '', sub: '' }, files: [], title: '', forSubs: false, fileMsg: '', notes: '', notesMsg: '', uploading: false };
+  fileRef = React.createRef();
+  bridgeRef = React.createRef();
+  uploadBridge(){
+    const f = this.bridgeRef.current && this.bridgeRef.current.files && this.bridgeRef.current.files[0];
+    if (!f) return this.setState({ bridgeMsg: 'Choose the file first.' });
+    f.text().then(t => { let data; try { data = JSON.parse(t); } catch (e) { return this.setState({ bridgeMsg: "That file isn't valid JSON." }); }
+      return window.HubState.api('/api/planner/bridge', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) })
+        .then(d => this.setState({ bridgeMsg: d && d.ok ? 'Uploaded.' : 'Not uploaded.' })); })
+      .catch(() => this.setState({ bridgeMsg: "Can't reach the server." }));
+  }
+  componentDidMount(){
+    this.onHub = () => {
+      const H = window.HubState; if (!H) return;
+      const v = H.get(), was = this.state.teacher;
+      this.setState({ teacher: !!v.teacher, server: !!v.serverMode });
+      if (v.teacher && !was && v.serverMode) this.load();
+    };
+    window.addEventListener('hubchange', this.onHub);
+    window.addEventListener('hubstate-ready', this.onHub);
+    this.onHub();
+  }
+  componentWillUnmount(){ window.removeEventListener('hubchange', this.onHub); window.removeEventListener('hubstate-ready', this.onHub); }
+  load(){
+    const H = window.HubState;
+    H.api('/api/files').then(d => this.setState({ files: (d && d.files) || [] })).catch(() => {});
+    H.api('/api/content/sub-page').then(d => this.setState({ notes: (d && d.content && d.content.notes) || '' })).catch(() => {});
+  }
+  savePin(role){
+    const pin = this.state.pin[role];
+    const say = m => this.setState(s => ({ pinMsg: { ...s.pinMsg, [role]: m } }));
+    if (!/^\d{4}$/.test(pin)) return say('Enter exactly 4 digits.');
+    window.HubState.api('/api/pins', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ role, pin }) })
+      .then(d => { say(d && d.ok ? 'Saved.' : (d && d.message) || 'Not saved.'); if (d && d.ok) this.setState(s => ({ pin: { ...s.pin, [role]: '' } })); })
+      .catch(() => say("Can't reach the server."));
+  }
+  upload(){
+    const input = this.fileRef.current, file = input && input.files && input.files[0];
+    if (!file) return this.setState({ fileMsg: 'Choose a file first.' });
+    const name = file.name.replace(/[^\w.\- ]/g, '_').slice(0, 120);
+    this.setState({ uploading: true, fileMsg: '' });
+    window.HubState.api('/api/file/' + encodeURIComponent(name), { method: 'POST', body: file, headers: { 'Content-Type': file.type || 'application/octet-stream', 'X-Title': this.state.title || file.name, 'X-Roles': this.state.forSubs ? 'teacher,sub' : 'teacher' } })
+      .then(d => { this.setState({ uploading: false, fileMsg: d && d.ok ? 'Uploaded.' : (d && d.message) || 'Upload failed.', title: '' }); if (input) input.value = ''; this.load(); })
+      .catch(() => this.setState({ uploading: false, fileMsg: "Can't reach the server." }));
+  }
+  remove(name){
+    if (!window.confirm('Delete this file?')) return;
+    window.HubState.api('/api/file/' + encodeURIComponent(name), { method: 'DELETE' }).then(() => this.load()).catch(() => {});
+  }
+  saveNotes(){
+    window.HubState.api('/api/content/sub-page', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ notes: this.state.notes }) })
+      .then(d => this.setState({ notesMsg: d && d.ok ? 'Saved.' : 'Not saved.' }))
+      .catch(() => this.setState({ notesMsg: "Can't reach the server." }));
+  }
+  renderVals(){
+    const s = this.state, off = !s.server;
+    const H = window.HubState;
+    return {
+      locked: !s.teacher, unlocked: s.teacher,
+      signIn: () => H && H.openSignin(),
+      offline: off ? true : undefined,
+      dimOffline: off ? '0.5' : '1',
+      connIcon: off ? 'cloud_off' : 'cloud_done',
+      connTitle: off ? 'Preview mode' : 'Connected to the sign-in server',
+      connText: off ? 'PINs are checked in the browser, so these tools are turned off. Follow SECURITY-SETUP.md to connect the Cloudflare Worker.' : 'PINs, protected files and sub notes are checked and stored on the server.',
+      pinRows: ['teacher', 'sub'].map(role => ({
+        id: 'pin-' + role, label: role === 'teacher' ? 'Teacher PIN' : 'Substitute PIN',
+        value: s.pin[role], msg: s.pinMsg[role],
+        onChange: e => { const v = e.target.value.replace(/\D/g, '').slice(0, 4); this.setState(st => ({ pin: { ...st.pin, [role]: v }, pinMsg: { ...st.pinMsg, [role]: '' } })); },
+        save: () => this.savePin(role)
+      })),
+      fileRef: this.fileRef,
+      bridgeRef: this.bridgeRef, uploadBridge: () => this.uploadBridge(), bridgeMsg: s.bridgeMsg || '',
+      title: s.title, setTitle: e => this.setState({ title: e.target.value }),
+      forSubs: s.forSubs, toggleSubs: e => this.setState({ forSubs: e.target.checked }),
+      upload: () => this.upload(),
+      uploadText: s.uploading ? 'Uploading…' : 'Upload',
+      fileMsg: s.fileMsg,
+      hasFiles: s.files.length > 0,
+      files: s.files.map(f => ({
+        title: f.title || f.name,
+        who: (f.roles || []).includes('sub') ? 'Teacher + substitutes' : 'Teacher only',
+        url: H ? H.fileUrl(f.name) : '#',
+        remove: () => this.remove(f.name),
+        removeLabel: 'Delete ' + (f.title || f.name)
+      })),
+      notes: s.notes, setNotes: e => this.setState({ notes: e.target.value, notesMsg: '' }),
+      saveNotes: () => this.saveNotes(), notesMsg: s.notesMsg
+    };
+  }
+}
+</script>
+</body>
+</html>

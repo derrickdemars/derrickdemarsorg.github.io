@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<script src="/hub-state.js"></script>
+<script src="../theme.js"></script>
+<script src="../lock.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<style>
+:root{--jp-bg:#060a4a;--jp-panel:#0a1cc7;--jp-panel-hover:#1a2ee0;--jp-border:#3a4ae0;--jp-accent:#ffcc33;--jp-accent-hover:#ffd966;--jp-text:#fff;--jp-muted:#c5caff;--jp-ink:#000;--jp-head-bg:#0a1cc7;--jp-accent2:#ffcc33;--jp-font:'Atkinson Hyperlegible',system-ui,sans-serif;--jp-head:Oswald,sans-serif;--jp-scale:1}
+html,body{margin:0;padding:0;background:var(--jp-bg);color:var(--jp-text);font-family:var(--jp-font);min-height:100vh}
+*{box-sizing:border-box}
+a{color:var(--jp-accent)}a:hover{color:var(--jp-text)}
+button,input{font-family:inherit}
+@keyframes confettiFall{to{transform:translateY(115vh) rotate(720deg)}}
+@keyframes popIn{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+@keyframes fadeUp{0%{opacity:1;transform:translateY(0)}70%{opacity:1}100%{opacity:0;transform:translateY(-18px)}}
+@media print{[data-noprint]{display:none !important}html,body{background:#fff;color:#000000}}
+</style>
+</helmet>
+
+<sc-if value="{{ hasError }}" hint-placeholder-val="{{ false }}">
+<div style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:40px;text-align:center">
+  <div style="font-family:var(--jp-head);font-weight:700;font-size:calc(34px * var(--jp-scale));text-transform:uppercase;letter-spacing:.04em;color:var(--jp-accent)">This game can't load</div>
+  <div style="font-size:calc(19px * var(--jp-scale));line-height:1.5;max-width:720px;white-space:pre-line;text-wrap:pretty">{{ errorText }}</div>
+  <a href="../" style="background:var(--jp-panel);color:var(--jp-text);border:2px solid var(--jp-border);border-radius:6px;padding:10px 16px;font-size:calc(16px * var(--jp-scale));font-weight:700;text-decoration:none">&larr; Dashboard</a>
+</div>
+</sc-if>
+
+<sc-if value="{{ isLoading }}" hint-placeholder-val="{{ false }}">
+<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;font-family:var(--jp-head);font-size:calc(28px * var(--jp-scale));text-transform:uppercase;letter-spacing:.08em;color:var(--jp-muted)">Loading game…</div>
+</sc-if>
+
+<sc-if value="{{ locked }}" hint-placeholder-val="{{ false }}">
+  <x-import component-from-global-scope="jp-lock-screen" title="{{ title }}" hint-size="0px,0px"></x-import>
+</sc-if>
+
+<sc-if value="{{ isBoard }}" hint-placeholder-val="{{ true }}">
+<div aria-hidden="{{ locked }}" style="height:100vh;overflow:hidden;display:flex;flex-direction:column;padding:12px 16px 12px;gap:10px;filter:{{ boardFilter }};pointer-events:{{ boardPointer }}">
+  <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+    <div style="font-family:var(--jp-head);font-weight:700;font-size:calc(clamp(20px,3vh,30px) * var(--jp-scale));letter-spacing:.04em;text-transform:uppercase;color:var(--jp-accent);text-shadow:2px 2px 0 var(--jp-ink);flex:1 1 auto">{{ title }}</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <a href="../" style="background:var(--jp-panel);color:var(--jp-text);border:2px solid var(--jp-border);border-radius:6px;padding:8px 14px;font-size:calc(15px * var(--jp-scale));font-weight:700;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;line-height:1.2" style-hover="background:var(--jp-panel-hover)">&larr; Dashboard</a>
+      <x-import component-from-global-scope="jp-settings" hint-size="120px,40px"></x-import>
+      <x-import component-from-global-scope="jp-lock-badge" hint-size="0px,0px"></x-import>
+      <button onClick="{{ lockNow }}" title="Lock the game; PIN required to continue" style="background:var(--jp-panel);color:var(--jp-text);border:2px solid var(--jp-border);border-radius:6px;padding:8px 14px;font-size:calc(15px * var(--jp-scale));font-weight:700;cursor:pointer" style-hover="background:var(--jp-panel-hover)">&#128274; Lock</button>
+      <button onClick="{{ toggleMute }}" style="background:var(--jp-panel);color:var(--jp-text);border:2px solid var(--jp-border);border-radius:6px;padding:8px 14px;font-size:calc(15px * var(--jp-scale));font-weight:700;cursor:pointer" style-hover="background:var(--jp-panel-hover)">{{ muteLabel }}</button>
+      <button onClick="{{ undo }}" disabled="{{ noUndo }}" style="background:var(--jp-panel);color:var(--jp-text);border:2px solid var(--jp-border);border-radius:6px;padding:8px 14px;font-size:calc(15px * var(--jp-scale));font-weight:700;cursor:pointer;opacity:{{ undoOpacity }}" style-hover="background:var(--jp-panel-hover)">Undo</button>
+      <button onClick="{{ redo }}" disabled="{{ noRedo }}" style="background:var(--jp-panel);color:var(--jp-text);border:2px solid var(--jp-border);border-radius:6px;padding:8px 14px;font-size:calc(15px * var(--jp-scale));font-weight:700;cursor:pointer;opacity:{{ redoOpacity }}" style-hover="background:var(--jp-panel-hover)">Redo</button>
+      <sc-if value="{{ hasModes }}" hint-placeholder-val="{{ false }}">
+        <button onClick="{{ cycleMode }}" title="Cycle answer types" style="background:var(--jp-panel);color:var(--jp-accent);border:2px solid var(--jp-border);border-radius:6px;padding:8px 14px;font-size:calc(15px * var(--jp-scale));font-weight:700;cursor:pointer" style-hover="background:var(--jp-panel-hover)">{{ modeLabel }}</button>
+      </sc-if>
+      <button onClick="{{ shuffle }}" style="background:var(--jp-panel);color:var(--jp-text);border:2px solid var(--jp-border);border-radius:6px;padding:8px 14px;font-size:calc(15px * var(--jp-scale));font-weight:700;cursor:pointer" style-hover="background:var(--jp-panel-hover)">Shuffle Numbers</button>
+      <button onClick="{{ showKey }}" style="background:var(--jp-panel);color:var(--jp-text);border:2px solid var(--jp-border);border-radius:6px;padding:8px 14px;font-size:calc(15px * var(--jp-scale));font-weight:700;cursor:pointer" style-hover="background:var(--jp-panel-hover)">Answer Key</button>
+      <button onClick="{{ nextTurn }}" style="background:var(--jp-panel);color:var(--jp-text);border:2px solid var(--jp-border);border-radius:6px;padding:8px 14px;font-size:calc(15px * var(--jp-scale));font-weight:700;cursor:pointer" style-hover="background:var(--jp-panel-hover)">Next Turn</button>
+      <sc-if value="{{ canAddTeam }}" hint-placeholder-val="{{ true }}">
+        <button onClick="{{ addTeam }}" style="background:var(--jp-panel);color:var(--jp-text);border:2px solid var(--jp-border);border-radius:6px;padding:8px 14px;font-size:calc(15px * var(--jp-scale));font-weight:700;cursor:pointer" style-hover="background:var(--jp-panel-hover)">+ Team</button>
+      </sc-if>
+      <sc-if value="{{ canRemoveTeam }}" hint-placeholder-val="{{ false }}">
+        <button onClick="{{ removeTeam }}" title="Remove the last team" style="background:var(--jp-panel);color:var(--jp-text);border:2px solid var(--jp-border);border-radius:6px;padding:8px 14px;font-size:calc(15px * var(--jp-scale));font-weight:700;cursor:pointer" style-hover="background:var(--jp-panel-hover)">&minus; Team</button>
+      </sc-if>
+      <button onClick="{{ resetGame }}" style="background:transparent;color:var(--jp-accent);border:2px solid var(--jp-accent);border-radius:6px;padding:8px 14px;font-size:calc(15px * var(--jp-scale));font-weight:700;cursor:pointer" style-hover="background:var(--jp-accent);color:var(--jp-bg)">Reset Game</button>
+    </div>
+  </div>
+
+  <div style="flex:1 1 auto;display:grid;grid-template-columns:repeat({{ cols }},minmax(0,1fr));grid-template-rows:minmax(0,{{ headRow }}) repeat(5,minmax(0,1fr));gap:6px;min-height:0">
+    <sc-for list="{{ categories }}" as="c" hint-placeholder-count="5">
+      <div style="background:var(--jp-head-bg);border:3px solid var(--jp-ink);box-shadow:inset 0 0 0 2px var(--jp-border);display:flex;align-items:center;justify-content:center;text-align:center;padding:4px 6px;font-family:var(--jp-head);font-weight:700;font-size:calc({{ headFont }} * var(--jp-scale));line-height:1.05;letter-spacing:.02em;text-transform:uppercase;min-height:0;overflow:hidden;text-wrap:balance;overflow-wrap:anywhere;hyphens:auto;color:var(--jp-text)">{{ c.name }}</div>
+    </sc-for>
+    <sc-for list="{{ tiles }}" as="t" hint-placeholder-count="25">
+      <button onClick="{{ t.open }}" style="background:var(--jp-panel);border:3px solid var(--jp-ink);box-shadow:inset 0 0 0 2px var(--jp-border);display:flex;align-items:center;justify-content:center;font-family:var(--jp-head);font-weight:700;font-size:calc(clamp(20px,min(4vw,7vh),60px) * var(--jp-scale));color:var(--jp-accent);text-shadow:3px 3px 0 var(--jp-ink);min-height:0;cursor:pointer;opacity:{{ t.opacity }};pointer-events:{{ t.pointer }}" style-hover="background:var(--jp-panel-hover);box-shadow:inset 0 0 0 2px var(--jp-accent)">{{ t.label }}</button>
+    </sc-for>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;flex:0 0 auto">
+    <sc-for list="{{ teams }}" as="team" hint-placeholder-count="2">
+      <div onClick="{{ team.select }}" title="Click to make this team active" style="background:var(--jp-panel);border:3px solid var(--jp-ink);box-shadow:inset 0 0 0 2px {{ team.ring }};padding:8px 12px;display:flex;flex-direction:column;align-items:center;gap:4px;position:relative;cursor:pointer">
+        <div style="font-size:calc(11px * var(--jp-scale));letter-spacing:.14em;text-transform:uppercase;color:var(--jp-accent);font-weight:700;height:14px">{{ team.turnLabel }}</div>
+        <sc-if value="{{ team.editing }}" hint-placeholder-val="{{ false }}">
+          <input autoFocus="{{ true }}" defaultValue="{{ team.name }}" onBlur="{{ team.commit }}" onKeyDown="{{ team.keydown }}" onClick="{{ stop }}" style="background:var(--jp-bg);border:1px solid var(--jp-accent);border-radius:4px;color:var(--jp-text);font-family:var(--jp-head);font-size:calc(clamp(14px,2.2vh,20px) * var(--jp-scale));text-transform:uppercase;letter-spacing:.04em;text-align:center;padding:2px 8px;width:100%;max-width:220px"></input>
+        </sc-if>
+        <sc-if value="{{ team.notEditing }}" hint-placeholder-val="{{ true }}">
+          <button onClick="{{ team.rename }}" title="Click to rename" style="background:none;border:none;color:var(--jp-text);font-family:var(--jp-head);font-weight:500;font-size:calc(clamp(14px,2.2vh,20px) * var(--jp-scale));letter-spacing:.04em;text-transform:uppercase;cursor:text;padding:0;border-bottom:1px dashed var(--jp-border)" style-hover="color:var(--jp-accent)">{{ team.name }}</button>
+        </sc-if>
+        <div style="font-family:var(--jp-head);font-weight:700;font-size:calc(clamp(26px,4.5vh,44px) * var(--jp-scale));color:var(--jp-accent);text-shadow:2px 2px 0 var(--jp-ink);line-height:1">{{ team.scoreText }}</div>
+        <sc-if value="{{ team.flash }}" hint-placeholder-val="{{ false }}">
+          <div style="position:absolute;right:14px;top:28px;font-family:var(--jp-head);font-weight:700;font-size:calc(22px * var(--jp-scale));color:#f87171;animation:fadeUp 2.5s ease-out forwards;pointer-events:none">{{ team.flashText }}</div>
+        </sc-if>
+        <div style="display:flex;gap:6px">
+          <button onClick="{{ team.sub }}" style="background:var(--jp-bg);color:var(--jp-text);border:1px solid var(--jp-border);border-radius:4px;padding:4px 10px;font-size:calc(14px * var(--jp-scale));font-weight:700;cursor:pointer" style-hover="border-color:var(--jp-accent)">{{ stepMinus }}</button>
+          <button onClick="{{ team.add }}" style="background:var(--jp-bg);color:var(--jp-text);border:1px solid var(--jp-border);border-radius:4px;padding:4px 10px;font-size:calc(14px * var(--jp-scale));font-weight:700;cursor:pointer" style-hover="border-color:var(--jp-accent)">{{ stepPlus }}</button>
+          <button onClick="{{ team.edit }}" style="background:var(--jp-bg);color:var(--jp-text);border:1px solid var(--jp-border);border-radius:4px;padding:4px 10px;font-size:calc(14px * var(--jp-scale));font-weight:700;cursor:pointer" style-hover="border-color:var(--jp-accent)">Edit</button>
+        </div>
+      </div>
+    </sc-for>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isKey }}" hint-placeholder-val="{{ false }}">
+<div style="min-height:100vh;background:#fff;color:#111;padding:32px 40px;max-width:1000px;margin:0 auto">
+  <div data-noprint="1" style="display:flex;gap:10px;margin-bottom:20px">
+    <button onClick="{{ showBoard }}" style="background:#1f2937;color:#ffffff;border:none;border-radius:6px;padding:10px 16px;font-size:15px;font-weight:700;cursor:pointer">Back to Board</button>
+    <button onClick="{{ printKey }}" style="background:#fff;color:#1f2937;border:2px solid #1f2937;border-radius:6px;padding:10px 16px;font-size:15px;font-weight:700;cursor:pointer">Print</button>
+  </div>
+  <h1 style="font-family:var(--jp-head);font-weight:700;font-size:28px;margin:0 0 4px;text-transform:uppercase;letter-spacing:.04em">{{ title }}: Teacher Answer Key</h1>
+  <div style="font-size:14px;color:#555;margin-bottom:24px">Problem set {{ seedLabel }}. Daily Double: {{ ddLabel }}. {{ modeName }}</div>
+  <sc-for list="{{ keyCats }}" as="kc" hint-placeholder-count="5">
+    <div style="margin-bottom:22px;break-inside:avoid">
+      <h2 style="font-family:var(--jp-head);font-weight:700;font-size:20px;margin:0 0 8px;color:#1f2937;text-transform:uppercase;letter-spacing:.04em;border-bottom:2px solid #1f2937;padding-bottom:4px">{{ kc.name }}</h2>
+      <sc-for list="{{ kc.items }}" as="it" hint-placeholder-count="5">
+        <div style="display:grid;grid-template-columns:64px minmax(0,1fr) minmax(0,1fr);gap:12px;padding:7px 0;border-bottom:1px solid #e5e5e5;font-size:15px;line-height:1.5">
+          <div style="font-weight:700;color:#1f2937">{{ it.value }}</div>
+          <div style="white-space:pre-line"><sc-if value="{{ it.hasFig }}" hint-placeholder-val="{{ false }}"><div style="width:150px;margin-bottom:6px;color:#1f2937">{{ it.fig }}</div></sc-if>{{ it.qEl }}</div>
+          <div style="font-weight:700;white-space:pre-line">{{ it.aEl }}</div>
+        </div>
+      </sc-for>
+    </div>
+  </sc-for>
+</div>
+</sc-if>
+
+<sc-if value="{{ showWager }}" hint-placeholder-val="{{ false }}">
+<div style="position:fixed;inset:0;background:var(--jp-bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;z-index:55;padding:32px;text-align:center;animation:popIn .25s ease-out">
+  <div style="font-family:var(--jp-head);font-weight:700;font-size:calc(clamp(40px,8vw,110px) * var(--jp-scale));color:var(--jp-accent2);text-shadow:4px 4px 0 var(--jp-ink);line-height:1;letter-spacing:.04em;text-transform:uppercase">Daily Double</div>
+  <div style="font-size:calc(22px * var(--jp-scale));color:var(--jp-muted)">{{ wagerTeamName }}, wager between $200 and {{ wagerMaxText }}</div>
+  <input type="number" defaultValue="{{ wagerDefault }}" onChange="{{ setWager }}" min="200" max="{{ wagerMax }}" step="100" style="background:var(--jp-panel);border:2px solid var(--jp-accent);border-radius:8px;color:var(--jp-text);font-family:var(--jp-head);font-weight:700;font-size:calc(44px * var(--jp-scale));text-align:center;padding:8px 16px;width:260px"></input>
+  <div style="display:flex;gap:12px">
+    <button onClick="{{ back }}" style="background:transparent;color:var(--jp-text);border:2px solid var(--jp-border);border-radius:8px;padding:12px 24px;font-size:calc(17px * var(--jp-scale));font-weight:700;cursor:pointer" style-hover="border-color:var(--jp-accent)">&larr; Back</button>
+    <button onClick="{{ confirmWager }}" style="background:var(--jp-accent);color:var(--jp-bg);border:none;border-radius:8px;padding:12px 32px;font-family:var(--jp-head);font-weight:700;font-size:calc(22px * var(--jp-scale));letter-spacing:.04em;text-transform:uppercase;cursor:pointer;box-shadow:3px 3px 0 var(--jp-ink)" style-hover="background:var(--jp-accent-hover)">Lock wager</button>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ showQuestion }}" hint-placeholder-val="{{ false }}">
+<div style="position:fixed;inset:0;background:var(--jp-panel);display:flex;flex-direction:column;padding:20px 32px;z-index:50;animation:popIn .25s ease-out">
+  <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap">
+    <div>
+      <div style="font-family:var(--jp-head);font-weight:700;font-size:calc(22px * var(--jp-scale));letter-spacing:.06em;text-transform:uppercase;color:var(--jp-text)">{{ cur.category }}</div>
+      <div style="font-family:var(--jp-head);font-weight:700;font-size:calc(34px * var(--jp-scale));color:var(--jp-accent);text-shadow:2px 2px 0 var(--jp-ink);line-height:1.1">{{ cur.valueText }}</div>
+      <div style="display:flex;gap:10px;align-items:center;margin-top:6px;flex-wrap:wrap">
+        <div style="font-size:calc(14px * var(--jp-scale));letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:{{ answeringColor }}">{{ answeringLabel }}</div>
+        <sc-if value="{{ calcAllowed }}" hint-placeholder-val="{{ false }}">
+          <div style="font-size:calc(13px * var(--jp-scale));letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:var(--jp-bg);background:var(--jp-accent);border-radius:4px;padding:3px 8px">Calculator OK</div>
+        </sc-if>
+        <sc-if value="{{ isDD }}" hint-placeholder-val="{{ false }}">
+          <div style="font-size:calc(13px * var(--jp-scale));letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:var(--jp-bg);background:var(--jp-accent2);border-radius:4px;padding:3px 8px">Daily Double</div>
+        </sc-if>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+      <button onClick="{{ back }}" title="Return to the board without using this tile (Esc)" style="background:transparent;color:var(--jp-text);border:2px solid var(--jp-border);border-radius:6px;padding:6px 12px;font-size:calc(14px * var(--jp-scale));font-weight:700;cursor:pointer" style-hover="border-color:var(--jp-accent)">&larr; Back</button>
+      <sc-if value="{{ hasRef }}" hint-placeholder-val="{{ false }}">
+        <button onClick="{{ toggleRef }}" style="background:transparent;color:var(--jp-text);border:2px solid var(--jp-border);border-radius:6px;padding:6px 12px;font-size:calc(14px * var(--jp-scale));font-weight:700;cursor:pointer" style-hover="border-color:var(--jp-accent)">{{ refLabel }}</button>
+      </sc-if>
+      <button onClick="{{ addTime }}" title="Add 45 seconds (R)" style="background:transparent;color:var(--jp-text);border:2px solid var(--jp-border);border-radius:6px;padding:6px 12px;font-size:calc(14px * var(--jp-scale));font-weight:700;cursor:pointer" style-hover="border-color:var(--jp-accent)">+45s</button>
+      <button onClick="{{ toggleTimer }}" style="background:transparent;color:var(--jp-text);border:2px solid var(--jp-border);border-radius:6px;padding:6px 12px;font-size:calc(14px * var(--jp-scale));font-weight:700;cursor:pointer" style-hover="border-color:var(--jp-accent)">{{ timerBtnLabel }}</button>
+      <div style="font-family:var(--jp-head);font-weight:700;font-size:calc(56px * var(--jp-scale));line-height:1;min-width:110px;text-align:right;color:{{ timerColor }};text-shadow:2px 2px 0 var(--jp-ink)">{{ timeText }}</div>
+    </div>
+  </div>
+
+  <sc-if value="{{ refOpen }}" hint-placeholder-val="{{ false }}">
+    <div style="align-self:flex-end;background:var(--jp-bg);border:1px solid var(--jp-border);border-radius:8px;padding:10px 14px;margin-top:8px;font-size:calc(16px * var(--jp-scale));line-height:1.5;display:grid;grid-template-columns:auto auto auto auto;gap:4px 18px;text-align:center">
+      <div></div><div style="color:var(--jp-accent);font-weight:700">{{ refD30 }}</div><div style="color:var(--jp-accent);font-weight:700">{{ refD45 }}</div><div style="color:var(--jp-accent);font-weight:700">{{ refD60 }}</div>
+      <div style="color:var(--jp-muted);font-weight:700;text-align:left">sin</div><div>{{ refHalf }}</div><div>{{ refR2 }}</div><div>{{ refR3 }}</div>
+      <div style="color:var(--jp-muted);font-weight:700;text-align:left">cos</div><div>{{ refR3 }}</div><div>{{ refR2 }}</div><div>{{ refHalf }}</div>
+      <div style="color:var(--jp-muted);font-weight:700;text-align:left">tan</div><div>{{ refT30 }}</div><div>1</div><div>{{ refT60 }}</div>
+    </div>
+  </sc-if>
+
+  <div style="flex:1 1 auto;display:flex;flex-direction:{{ figDir }};align-items:center;justify-content:safe center;text-align:center;gap:28px;padding:12px 0;min-height:0;overflow:auto">
+    <sc-if value="{{ hasFig }}" hint-placeholder-val="{{ false }}">
+      <div style="width:min(52vh,420px);flex:0 0 auto;order:{{ figOrder }};display:flex;flex-direction:column;align-items:center;gap:8px">
+        {{ cur.fig }}
+        <sc-if value="{{ showParentBtn }}" hint-placeholder-val="{{ false }}">
+          <button onClick="{{ toggleParent }}" style="background:transparent;color:var(--jp-text);border:2px solid var(--jp-border);border-radius:6px;padding:6px 12px;font-size:calc(14px * var(--jp-scale));font-weight:700;cursor:pointer" style-hover="border-color:var(--jp-accent)">{{ parentBtnLabel }}</button>
+        </sc-if>
+      </div>
+    </sc-if>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:20px;flex:0 1 auto;min-width:0;max-width:1100px">
+      <div style="font-size:calc(clamp(24px,3vw,44px) * var(--jp-scale));font-weight:700;line-height:1.4;max-width:1100px;text-wrap:pretty;white-space:pre-line">{{ cur.qEl }}</div>
+      <sc-if value="{{ showAnswer }}" hint-placeholder-val="{{ false }}">
+        <div style="font-family:var(--jp-head);font-weight:700;font-size:calc(clamp(28px,4.2vw,60px) * var(--jp-scale));color:var(--jp-accent);text-shadow:3px 3px 0 var(--jp-ink);line-height:1.25;max-width:1100px;white-space:pre-line;animation:popIn .25s ease-out">{{ cur.aEl }}</div>
+      </sc-if>
+      <sc-if value="{{ showSteps }}" hint-placeholder-val="{{ false }}">
+        <div style="background:var(--jp-bg);border:2px solid var(--jp-border);border-radius:10px;padding:18px 26px;max-width:900px;width:100%;text-align:left;animation:popIn .25s ease-out">
+          <sc-for list="{{ cur.stepEls }}" as="s" hint-placeholder-count="2">
+            <div style="font-size:calc(clamp(17px,2vw,26px) * var(--jp-scale));line-height:1.5;padding:9px 0;white-space:pre-line;border-bottom:1px solid var(--jp-panel)">{{ s.el }}</div>
+          </sc-for>
+          <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--jp-border);font-size:calc(clamp(15px,1.7vw,21px) * var(--jp-scale));color:var(--jp-accent);line-height:1.4"><span style="font-weight:700;text-transform:uppercase;letter-spacing:.06em;font-size:.85em">Strategy: </span>{{ cur.strategyEl }}</div>
+        </div>
+      </sc-if>
+    </div>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:12px;align-items:center">
+    <sc-if value="{{ showRevealBtn }}" hint-placeholder-val="{{ true }}">
+      <button onClick="{{ reveal }}" title="Space" style="background:var(--jp-accent);color:var(--jp-bg);border:none;border-radius:8px;padding:12px 32px;font-family:var(--jp-head);font-weight:700;font-size:calc(22px * var(--jp-scale));letter-spacing:.04em;text-transform:uppercase;cursor:pointer;box-shadow:3px 3px 0 var(--jp-ink)" style-hover="background:var(--jp-accent-hover)">{{ revealLabel }}</button>
+    </sc-if>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;align-items:center">
+      <button onClick="{{ correct }}" title="C" style="background:var(--jp-bg);color:var(--jp-accent);border:2px solid var(--jp-accent);border-radius:8px;padding:10px 20px;font-size:calc(17px * var(--jp-scale));font-weight:700;cursor:pointer" style-hover="background:var(--jp-accent);color:var(--jp-bg)">{{ correctLabel }}</button>
+      <button onClick="{{ wrong }}" title="X" style="background:var(--jp-bg);color:#f87171;border:2px solid #f87171;border-radius:8px;padding:10px 20px;font-size:calc(17px * var(--jp-scale));font-weight:700;cursor:pointer" style-hover="background:#f87171;color:var(--jp-bg)">{{ wrongLabel }}</button>
+      <sc-if value="{{ isSteal }}" hint-placeholder-val="{{ false }}">
+        <button onClick="{{ decline }}" style="background:transparent;color:var(--jp-text);border:2px solid var(--jp-border);border-radius:8px;padding:10px 20px;font-size:calc(17px * var(--jp-scale));font-weight:700;cursor:pointer" style-hover="border-color:var(--jp-text)">Decline steal</button>
+      </sc-if>
+      <button onClick="{{ pass }}" style="background:transparent;color:var(--jp-muted);border:2px solid var(--jp-border);border-radius:8px;padding:10px 18px;font-size:calc(17px * var(--jp-scale));font-weight:700;cursor:pointer;margin-left:8px" style-hover="color:var(--jp-text);border-color:var(--jp-text)">No points / Close</button>
+    </div>
+    <div style="font-size:calc(12px * var(--jp-scale));color:var(--jp-muted);letter-spacing:.06em">Space reveal · C correct · X wrong · R +45s · Esc back</div>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ showWinner }}" hint-placeholder-val="{{ false }}">
+<div style="position:fixed;inset:0;background:var(--jp-bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;z-index:60;padding:32px;text-align:center">
+  {{ confetti }}
+  <div style="font-family:var(--jp-head);font-weight:500;font-size:calc(24px * var(--jp-scale));letter-spacing:.12em;text-transform:uppercase;color:var(--jp-muted);position:relative">Final Scores</div>
+  <div style="font-family:var(--jp-head);font-weight:700;font-size:calc(clamp(40px,7vw,96px) * var(--jp-scale));color:var(--jp-accent);text-shadow:4px 4px 0 var(--jp-ink);line-height:1.05;position:relative;text-wrap:balance">{{ winnerText }}</div>
+  <div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center;position:relative">
+    <sc-for list="{{ standings }}" as="st" hint-placeholder-count="2">
+      <div style="background:var(--jp-panel);border:3px solid var(--jp-ink);box-shadow:inset 0 0 0 2px var(--jp-border);padding:16px 28px;min-width:200px">
+        <div style="font-family:var(--jp-head);font-size:calc(20px * var(--jp-scale));text-transform:uppercase;letter-spacing:.04em">{{ st.name }}</div>
+        <div style="font-family:var(--jp-head);font-weight:700;font-size:calc(48px * var(--jp-scale));color:var(--jp-accent);text-shadow:2px 2px 0 var(--jp-ink)">{{ st.scoreText }}</div>
+      </div>
+    </sc-for>
+  </div>
+  <div style="display:flex;gap:12px;position:relative">
+    <button onClick="{{ closeWinner }}" style="background:transparent;color:var(--jp-text);border:2px solid var(--jp-text);border-radius:8px;padding:12px 24px;font-size:calc(17px * var(--jp-scale));font-weight:700;cursor:pointer" style-hover="background:var(--jp-text);color:var(--jp-bg)">Back to board</button>
+    <button onClick="{{ resetGame }}" style="background:var(--jp-accent);color:var(--jp-bg);border:none;border-radius:8px;padding:12px 24px;font-size:calc(17px * var(--jp-scale));font-weight:700;cursor:pointer" style-hover="background:var(--jp-accent-hover)">Play again</button>
+  </div>
+</div>
+</sc-if>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;pointStep&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:100,&quot;tsType&quot;:&quot;number&quot;,&quot;options&quot;:[50,100,200],&quot;section&quot;:&quot;Game&quot;}}">
+const GREEK = ['Gamma', 'Lambda', 'Omega', 'Delta', 'Sigma', 'Theta'];
+const MAX_TEAMS = 6, DEDUCT = 100, M = '\u2212';
+const fmt = n => n < 0 ? M + Math.abs(n) : String(n);
+const seedsFrom = (base, n) => Array.from({ length: n }, (_, i) => (base * 31 + i * 7919) >>> 0);
+const plainName = s => String(s || '').replace(/\\\([^)]*\\\)\s*/g, '').trim();
+const texOf = (bank, str) => bank.tex ? bank.tex(str) : String(str);
+const pickGame = s => ({ teams: s.teams, used: s.used, seeds: s.seeds, turn: s.turn, dd: s.dd, mode: s.mode });
+
+function validateBank(b) {
+  const errs = [];
+  if (!b || typeof b !== 'object') return ['The bank file did not return a game object.'];
+  ['id', 'title', 'storageKey'].forEach(k => { if (typeof b[k] !== 'string' || !b[k]) errs.push(`Missing text field "${k}".`); });
+  if (!Array.isArray(b.values) || b.values.length !== 5) errs.push('"values" must be a list of 5 point values.');
+  if (typeof b.seedCount !== 'number') errs.push('"seedCount" must be a number.');
+  if (typeof b.build !== 'function') { errs.push('"build" must be a function that returns the categories.'); return errs; }
+  let cats;
+  try { cats = b.build(seedsFrom(8042, b.seedCount || 25), b.modes ? b.modes.initial : undefined); } catch (e) { return errs.concat(['"build" threw an error: ' + (e && e.message)]); }
+  if (!Array.isArray(cats) || cats.length < 5 || cats.length > 6) errs.push('"build" must return 5 or 6 categories.');
+  else cats.forEach((c, ci) => {
+    if (!c || typeof c.name !== 'string') errs.push(`Category ${ci + 1} has no name.`);
+    if (!c || !Array.isArray(c.items) || c.items.length !== 5) { errs.push(`Category "${c && c.name}" needs exactly 5 questions.`); return; }
+    c.items.forEach((it, ri) => {
+      if (!it || typeof it.q !== 'string') errs.push(`${c.name} $${(b.values || [])[ri]}: missing question text "q".`);
+      if (!it || typeof it.a !== 'string') errs.push(`${c.name} $${(b.values || [])[ri]}: missing answer "a".`);
+      if (!it || !Array.isArray(it.steps)) errs.push(`${c.name} $${(b.values || [])[ri]}: "steps" must be a list.`);
+      if (!it || typeof it.strategy !== 'string') errs.push(`${c.name} $${(b.values || [])[ri]}: missing "strategy".`);
+    });
+  });
+  return errs;
+}
+
+class Component extends DCLogic {
+  state = { bank: null, error: null, seeds: null, teams: null, used: [], muted: false, view: 'board', cur: null, stage: 0, timeLeft: 90, running: false, winnerOpen: false, winnerDismissed: false, confetti: null, turn: 0, dd: [], past: [], future: [], editing: -1, flash: null, refOpen: false, showParent: false, wager: 200, mode: null };
+  audio = null; timer = null; katexPoll = null;
+
+  bankId() { try { return new URLSearchParams(window.location.search).get('bank') || window.JPBankId || ''; } catch (e) { return ''; } }
+  N() { return this.cats().length * 5; }
+  cats() { const b = this.state.bank; if (!b) return []; if (!this._cache || this._cache.seeds !== this.state.seeds || this._cache.mode !== this.state.mode) this._cache = { seeds: this.state.seeds, mode: this.state.mode, cats: b.build(this.state.seeds, this.state.mode) }; return this._cache.cats; }
+  timerSecs() { const th = window.JPTheme ? JPTheme.timerSecs() : null; return th === null ? (this.props.timerSeconds ?? (this.state.bank && this.state.bank.defaultTimer) ?? 90) : th; }
+  step() { return this.props.pointStep ?? 100; }
+  ddCount() { return window.JPTheme ? JPTheme.ddCount() : 2; }
+  defaultTeams() { return GREEK.slice(0, 2).map(name => ({ name, score: 0 })); }
+  randDD(used, n) { const free = Array.from({ length: this.N() }, (_, i) => i).filter(i => !used.includes(i)); const out = []; while (out.length < n && free.length) out.push(free.splice(Math.floor(Math.random() * free.length), 1)[0]); return out; }
+  activeDD() { return this.state.dd.slice(0, this.ddCount()); }
+
+  componentDidMount() {
+    this._jpT = () => this.forceUpdate(); window.addEventListener('jp-theme-change', this._jpT);
+    this._lock = () => { if (!this.unlocked() && this.state.running) this.stopTimer(); this.forceUpdate(); }; window.addEventListener('jp-lock-change', this._lock);
+    this._key = e => this.onKey(e); window.addEventListener('keydown', this._key);
+    this.onResize = () => this.forceUpdate(); window.addEventListener('resize', this.onResize);
+    const check = () => { if (window.katex) { this.forceUpdate(); clearInterval(this.katexPoll); this.katexPoll = null; } };
+    if (!window.katex) this.katexPoll = setInterval(check, 150);
+    const q = this.bankId();
+    if (q) { this.loadBank(q); return; }
+    // No ?bank= given: a per-game page is loading its bank from <helmet>. Wait briefly for it.
+    let tries = 0;
+    this._poll = setInterval(() => {
+      const keys = Object.keys(window.JPBanks || {});
+      if (keys.length === 1) { clearInterval(this._poll); this._poll = null; this.loadBank(keys[0]); return; }
+      if (++tries > 30) { clearInterval(this._poll); this._poll = null; this.setState({ error: 'No game was named. Open this page from the dashboard, or add ?bank=<id> to the address.' }); }
+    }, 100);
+  }
+  loadBank(id) {
+    if (!/^[\w-]+$/.test(id)) { this.setState({ error: `"${id}" is not a valid game id.` }); return; }
+    const ready = () => this.initBank(id);
+    if (window.JPBanks && window.JPBanks[id]) { ready(); return; }
+    const sc = document.createElement('script'); sc.src = 'banks/' + id + '.js';
+    sc.onload = ready; sc.onerror = () => this.setState({ error: `Could not find games/banks/${id}.js. Check the "live" path in games.json and the file name.` });
+    document.head.appendChild(sc);
+  }
+  initBank(id) {
+    const f = window.JPBanks && window.JPBanks[id];
+    if (typeof f !== 'function') { this.setState({ error: `games/banks/${id}.js loaded but did not define window.JPBanks['${id}'].` }); return; }
+    let bank; try { bank = f(React); } catch (e) { this.setState({ error: 'The bank file crashed while loading: ' + (e && e.message) }); return; }
+    const errs = validateBank(bank);
+    if (errs.length) { this.setState({ error: 'Problems in games/banks/' + id + '.js:\n' + errs.slice(0, 8).join('\n') + (errs.length > 8 ? `\n…and ${errs.length - 8} more` : '') }); return; }
+    let sv = null; try { sv = JSON.parse(localStorage.getItem(bank.storageKey) || 'null'); } catch (e) {}
+    const used = (sv && Array.isArray(sv.used)) ? sv.used : [];
+    const mode = bank.modes ? (sv && bank.modes.list.includes(sv.mode) ? sv.mode : bank.modes.initial) : null;
+    const seeds = (sv && Array.isArray(sv.seeds) && sv.seeds.length === bank.seedCount) ? sv.seeds : seedsFrom(8042, bank.seedCount);
+    let teams = (sv && Array.isArray(sv.teams) && sv.teams.length) ? sv.teams.slice(0, MAX_TEAMS).map((t, i) => ({ name: plainName(t.name) || GREEK[i], score: t.score | 0 })) : this.defaultTeams();
+    this.setState({ bank, seeds, mode, teams, used, muted: !!(sv && sv.muted) || !!(window.JPTheme && JPTheme.get().mute), turn: (sv && sv.turn) | 0, past: (sv && sv.past) || [], future: (sv && sv.future) || [], timeLeft: bank.defaultTimer || 90 }, () => {
+      let dd = sv && sv.dd; dd = Array.isArray(dd) ? dd : typeof dd === 'number' && dd >= 0 ? [dd] : [];
+      dd = dd.filter(i => i >= 0 && i < this.N() && !used.includes(i));
+      if (dd.length < 2) dd = dd.concat(this.randDD(used.concat(dd), 2 - dd.length));
+      this.setState({ dd });
+    });
+  }
+  componentDidUpdate(_, prev) {
+    const s = this.state; if (!s.bank) return;
+    if (s.teams && (s.teams !== prev.teams || s.used !== prev.used || s.muted !== prev.muted || s.seeds !== prev.seeds || s.turn !== prev.turn || s.dd !== prev.dd || s.past !== prev.past || s.future !== prev.future || s.mode !== prev.mode)) {
+      try { localStorage.setItem(s.bank.storageKey, JSON.stringify({ teams: s.teams, used: s.used, muted: s.muted, seeds: s.seeds, turn: s.turn, dd: s.dd, past: s.past, future: s.future, mode: s.mode })); } catch (e) {}
+    }
+    if (s.used.length >= this.N() && !s.cur && !s.winnerOpen && !s.winnerDismissed) this.setState({ winnerOpen: true, confetti: this.makeConfetti() });
+  }
+  unlocked() { return !!(window.JPLock && JPLock.isUnlocked()); }
+  componentWillUnmount() { if (this._poll) clearInterval(this._poll); window.removeEventListener('jp-lock-change', this._lock); window.removeEventListener('jp-theme-change', this._jpT); window.removeEventListener('keydown', this._key); window.removeEventListener('resize', this.onResize); this.stopTimer(); if (this.katexPoll) clearInterval(this.katexPoll); }
+
+  onKey(e) {
+    const s = this.state; if (!s.bank || s.view !== 'board' || !this.unlocked()) return;
+    if (e.target && /INPUT|TEXTAREA/.test(e.target.tagName)) return;
+    const js = document.querySelector('jp-settings'); if (js && js.open) return;
+    const c = s.cur;
+    if (c && c.pendingWager) { if (e.key === 'Escape') this.back(); return; }
+    if (!c) return;
+    const k = e.key.toLowerCase();
+    if (e.key === ' ') { e.preventDefault(); this.reveal(); }
+    else if (k === 'c') this.correct();
+    else if (k === 'x') this.wrong();
+    else if (k === 'r') this.addTime();
+    else if (e.key === 'Escape') this.back();
+  }
+
+  mutate(fn) { this.setState(s => { const patch = fn(s); if (!patch) return null; return { ...patch, past: [...s.past, pickGame(s)].slice(-10), future: [] }; }); }
+  undo() { this.setState(s => { if (!s.past.length) return null; const prev = s.past[s.past.length - 1]; return { ...prev, past: s.past.slice(0, -1), future: [pickGame(s), ...s.future].slice(0, 10), winnerOpen: false, winnerDismissed: false }; }); }
+  redo() { this.setState(s => { if (!s.future.length) return null; const next = s.future[0]; return { ...next, future: s.future.slice(1), past: [...s.past, pickGame(s)].slice(-10) }; }); }
+
+  beep(freq, dur, type = 'sine', gain = 0.15, when = 0) {
+    if (this.state.muted) return;
+    try {
+      if (!this.audio) this.audio = new (window.AudioContext || window.webkitAudioContext)();
+      const ctx = this.audio, o = ctx.createOscillator(), g = ctx.createGain();
+      o.type = type; o.frequency.value = freq; g.gain.value = gain; o.connect(g); g.connect(ctx.destination);
+      const t = ctx.currentTime + when; o.start(t); g.gain.setValueAtTime(gain, t); g.gain.exponentialRampToValueAtTime(0.001, t + dur); o.stop(t + dur);
+    } catch (e) {}
+  }
+  sfxSelect() { this.beep(660, 0.12, 'triangle'); this.beep(880, 0.15, 'triangle', 0.15, 0.1); }
+  sfxReveal() { this.beep(523, 0.2); this.beep(659, 0.2, 'sine', 0.15, 0.12); this.beep(784, 0.35, 'sine', 0.15, 0.24); }
+  sfxAward() { [523, 659, 784, 1047].forEach((f, i) => this.beep(f, 0.18, 'square', 0.08, i * 0.09)); }
+  sfxTick() { this.beep(1200, 0.05, 'square', 0.06); }
+  sfxBuzz() { this.beep(110, 0.9, 'sawtooth', 0.2); }
+
+  startTimer() {
+    this.stopTimer(); if (this.timerSecs() === 0) return; this.setState({ running: true });
+    this.timer = setInterval(() => {
+      
+      const t = this.state.timeLeft - 1;
+      if (t <= 10 && t > 0) this.sfxTick();
+      if (t <= 0) { this.sfxBuzz(); this.stopTimer(); this.setState({ timeLeft: 0 }); return; }
+      this.setState({ timeLeft: t });
+    }, 1000);
+  }
+  stopTimer() { if (this.timer) clearInterval(this.timer); this.timer = null; this.setState({ running: false }); }
+  fullTime(c) { const b = this.state.bank, base = this.timerSecs(); if (base === 0) return 0; return base + (b.extraTime && c ? (b.extraTime(c.ci, c.ri) | 0) : 0); }
+  flashTeam(i, text) { const id = Date.now(); this.setState({ flash: { i, text, id } }); setTimeout(() => this.setState(s => s.flash && s.flash.id === id ? { flash: null } : null), 2500); }
+
+  open(ci, ri) {
+    if (!this.unlocked()) return;
+    const s = this.state, idx = ci * 5 + ri, team = s.turn % s.teams.length; this.sfxSelect();
+    const cur = { ci, ri, team, tried: [team], isSteal: false, pendingWager: false, wager: null };
+    if (this.activeDD().includes(idx)) { this.setState({ cur: { ...cur, pendingWager: true }, wager: Math.max(200, Math.min(1000, s.teams[team].score)) }); return; }
+    this.setState({ cur, stage: 0, timeLeft: this.fullTime(cur), refOpen: false, showParent: false }); this.startTimer();
+  }
+  wagerMax() { const s = this.state; return Math.max(1000, s.teams[s.cur.team].score); }
+  confirmWager() { const s = this.state; const w = Math.max(200, Math.min(this.wagerMax(), Math.round((+s.wager || 200) / 100) * 100)); const cur = { ...s.cur, pendingWager: false, wager: w }; this.setState({ cur, stage: 0, timeLeft: this.fullTime(cur), refOpen: false, showParent: false }); this.startTimer(); }
+  nextStealer(c) { const n = this.state.teams.length; for (let k = 1; k < n; k++) { const i = (c.team + k) % n; if (!c.tried.includes(i)) return i; } return -1; }
+  closePatch(st, c) { return { used: st.used.includes(c.ci * 5 + c.ri) ? st.used : [...st.used, c.ci * 5 + c.ri], turn: (st.turn + 1) % st.teams.length }; }
+  toSteal(c, next) { const cur = { ...c, team: next, tried: [...c.tried, next], isSteal: true }; this.setState({ cur, timeLeft: Math.ceil(this.fullTime(cur) / 2) }); this.startTimer(); }
+  pointsFor(c) { const val = this.state.bank.values[c.ri]; return c.wager != null ? c.wager : (c.isSteal ? val / 2 : val); }
+  correct() {
+    const c = this.state.cur; if (!c || c.pendingWager) return; const pts = this.pointsFor(c);
+    this.sfxAward(); this.stopTimer();
+    this.mutate(st => ({ teams: st.teams.map((t, i) => i === c.team ? { ...t, score: t.score + pts } : t), ...this.closePatch(st, c) }));
+    this.setState({ cur: null, stage: 0 });
+  }
+  wrong() {
+    const c = this.state.cur; if (!c || c.pendingWager) return; this.sfxBuzz(); this.stopTimer();
+    const next = this.nextStealer(c), closing = c.wager != null || next < 0, loss = c.wager != null ? c.wager : DEDUCT;
+    this.mutate(st => ({ teams: st.teams.map((t, i) => i === c.team ? { ...t, score: Math.max(0, t.score - loss) } : t), ...(closing ? this.closePatch(st, c) : {}) }));
+    this.flashTeam(c.team, M + '$' + loss);
+    if (closing) this.setState({ cur: null, stage: 0 }); else this.toSteal(c, next);
+  }
+  decline() { const c = this.state.cur; if (!c) return; this.stopTimer(); const next = this.nextStealer(c); if (next < 0) { this.mutate(st => this.closePatch(st, c)); this.setState({ cur: null, stage: 0 }); } else this.toSteal(c, next); }
+  pass() { const c = this.state.cur; if (!c) return; this.stopTimer(); this.mutate(st => this.closePatch(st, c)); this.setState({ cur: null, stage: 0 }); }
+  back() { this.stopTimer(); this.setState({ cur: null, stage: 0 }); }
+  reveal() { const s = this.state; if (!s.cur || s.cur.pendingWager || s.stage >= 2) return; if (s.stage === 0) this.sfxReveal(); this.setState(st => ({ stage: Math.min(2, st.stage + 1) })); }
+  addTime() { const s = this.state; if (!s.cur || s.cur.pendingWager) return; const wasOut = s.timeLeft === 0; this.setState(st => ({ timeLeft: st.timeLeft + 45 })); if (wasOut || !s.running) this.startTimer(); }
+
+  makeConfetti() {
+    const colors = ['var(--jp-accent)', '#ffffff', 'var(--jp-accent2)', '#f87171', '#60a5fa'];
+    const pieces = Array.from({ length: 110 }, (_, i) => React.createElement('div', { key: i, style: { position: 'absolute', left: Math.random() * 100 + '%', top: '-24px', width: 8 + Math.random() * 8, height: 12 + Math.random() * 10, background: colors[i % colors.length], borderRadius: Math.random() < 0.3 ? '50%' : 2, animation: `confettiFall ${3 + Math.random() * 3}s linear ${Math.random() * 4}s infinite`, transform: `rotate(${Math.random() * 360}deg)` } }));
+    return React.createElement('div', { style: { position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none' } }, pieces);
+  }
+
+  renderVals() {
+    const s = this.state, b = s.bank;
+    const locked = !this.unlocked();
+    if (s.error) return { hasError: true, errorText: s.error, isLoading: false, isBoard: false, isKey: false, showQuestion: false, showWager: false, showWinner: false, locked: false };
+    if (!b || !s.seeds || !s.teams) return { hasError: false, isLoading: true, isBoard: false, isKey: false, showQuestion: false, showWager: false, showWinner: false, locked: false };
+    const step = this.step(), VALUES = b.values, cats = this.cats(), tex = str => texOf(b, str), ansEl = str => (b.answerEl || b.tex || String)(str);
+    const tlist = s.teams, active = s.turn % tlist.length;
+    const teams = tlist.map((t, i) => ({
+      name: t.name, scoreText: fmt(t.score), ring: i === active ? 'var(--jp-accent)' : 'var(--jp-border)', turnLabel: i === active ? 'Your turn' : '',
+      editing: s.editing === i, notEditing: s.editing !== i, flash: !!(s.flash && s.flash.i === i), flashText: s.flash ? s.flash.text : '',
+      select: () => this.setState({ turn: i }),
+      add: e => { e.stopPropagation(); this.mutate(st => ({ teams: st.teams.map((x, j) => j === i ? { ...x, score: x.score + step } : x) })); },
+      sub: e => { e.stopPropagation(); this.mutate(st => ({ teams: st.teams.map((x, j) => j === i ? { ...x, score: Math.max(0, x.score - step) } : x) })); },
+      edit: e => { e.stopPropagation(); const v = window.prompt(`Set score for ${t.name}:`, String(t.score)); if (v !== null && v.trim() !== '' && !isNaN(+v)) this.mutate(st => ({ teams: st.teams.map((x, j) => j === i ? { ...x, score: Math.max(0, Math.round(+v)) } : x) })); },
+      rename: e => { e.stopPropagation(); this.setState({ editing: i }); },
+      commit: e => { const v = e.target.value.trim(); this.setState({ editing: -1 }); if (v && v !== t.name) this.mutate(st => ({ teams: st.teams.map((x, j) => j === i ? { ...x, name: v } : x) })); },
+      keydown: e => { if (e.key === 'Enter') e.target.blur(); if (e.key === 'Escape') { e.target.value = t.name; e.target.blur(); } },
+    }));
+    const tiles = [];
+    VALUES.forEach((val, ri) => cats.forEach((c, ci) => { const used = s.used.includes(ci * 5 + ri); tiles.push({ label: used ? '' : '$' + val, opacity: used ? 0.3 : 1, pointer: used ? 'none' : 'auto', open: () => this.open(ci, ri) }); }));
+    const c = s.cur; let cur = null;
+    if (c) { const it = cats[c.ci].items[c.ri]; cur = { category: cats[c.ci].name, valueText: c.wager != null ? `Wager $${c.wager}` : '$' + VALUES[c.ri], qEl: tex(it.q), aEl: ansEl(it.a), stepEls: it.steps.map(x => ({ el: tex(x) })), strategyEl: tex(it.strategy), fig: b.fig ? b.fig(it, { showParent: s.showParent }) : null, hasParent: !!it.parent }; }
+    const pts = c ? this.pointsFor(c) : 0;
+    const sorted = tlist.slice().sort((a, z) => z.score - a.score);
+    const top = sorted[0] ? sorted[0].score : 0, winners = sorted.filter(t => t.score === top);
+    const winnerText = winners.length > 1 ? `It's a tie: ${winners.map(w => w.name).join(' & ')}!` : winners[0] ? `${winners[0].name} wins!` : '';
+    const mm = Math.floor(s.timeLeft / 60), ss = s.timeLeft % 60;
+    const dd = this.activeDD(), T = str => '\\(' + str + '\\)';
+    return {
+      hasError: false, isLoading: false, title: b.title, cols: cats.length,
+      headRow: cats.length >= 6 ? '1.15fr' : '.8fr',
+      headFont: cats.length >= 6 ? 'clamp(11px,min(1.3vw,2.5vh),20px)' : 'clamp(14px,min(1.9vw,3.2vh),26px)',
+      locked, boardFilter: locked ? 'blur(10px)' : 'none', boardPointer: locked ? 'none' : 'auto', lockNow: () => JPLock.lock(),
+      isBoard: s.view === 'board' || locked, isKey: s.view === 'key' && !locked,
+      categories: cats.map(x => ({ name: x.name })), tiles, teams,
+      stepMinus: M + step, stepPlus: '+' + step, stop: e => e.stopPropagation(),
+      muteLabel: s.muted ? 'Sound: Off' : 'Sound: On', toggleMute: () => this.setState(st => ({ muted: !st.muted })),
+      noUndo: s.past.length === 0, noRedo: s.future.length === 0, undoOpacity: s.past.length ? 1 : 0.4, redoOpacity: s.future.length ? 1 : 0.4,
+      undo: () => this.undo(), redo: () => this.redo(),
+      nextTurn: () => this.setState(st => ({ turn: (st.turn + 1) % st.teams.length })),
+      canAddTeam: tlist.length < MAX_TEAMS, canRemoveTeam: tlist.length > 2,
+      addTeam: () => this.mutate(st => st.teams.length >= MAX_TEAMS ? null : { teams: [...st.teams, { name: GREEK[st.teams.length] || 'Team ' + (st.teams.length + 1), score: 0 }] }),
+      removeTeam: () => { if (tlist.length > 2 && window.confirm(`Remove ${tlist[tlist.length - 1].name}?`)) this.mutate(st => ({ teams: st.teams.slice(0, -1), turn: st.turn % (st.teams.length - 1) })); },
+      hasModes: !!b.modes, modeLabel: b.modes ? 'Answers: ' + (b.modes.labels[s.mode] || s.mode) : '', modeName: b.modes ? 'Answer types: ' + (b.modes.names[s.mode] || s.mode) : '',
+      cycleMode: () => { if (!b.modes) return; const L = b.modes.list; this.mutate(st => ({ mode: L[(L.indexOf(st.mode) + 1) % L.length] })); },
+      shuffle: () => { if (window.confirm('Give the unselected tiles new problems? Used tiles and scores stay as they are.')) this.mutate(st => ({ seeds: st.seeds.map((sd, i) => st.used.includes(i) ? sd : Math.floor(Math.random() * 1e9)), dd: this.randDD(st.used, 2) })); },
+      resetGame: () => { if (window.confirm('Clear the board and all scores?')) { this.mutate(st => ({ used: [], teams: st.teams.map(t => ({ ...t, score: 0 })), turn: 0, dd: this.randDD([], 2) })); this.setState({ winnerOpen: false, winnerDismissed: false, cur: null }); } },
+      showKey: () => this.setState({ view: 'key' }), showBoard: () => this.setState({ view: 'board' }), printKey: () => window.print(),
+      seedLabel: '#' + (s.seeds.reduce((a, z) => (a + z) % 1e6, 0)),
+      ddLabel: dd.length ? dd.map(i => `${cats[Math.floor(i / 5)].name} $${VALUES[i % 5]}`).join('; ') : 'off',
+      keyCats: cats.map(x => ({ name: x.name, items: x.items.map((it, i) => ({ value: '$' + VALUES[i], qEl: tex(it.q), aEl: tex(it.a), hasFig: !!(b.fig && it.fig), fig: b.fig && it.fig ? b.fig(it, {}) : null })) })),
+      showWager: !!(c && c.pendingWager && !locked), wagerTeamName: c ? tlist[c.team].name : '', wagerMax: c ? this.wagerMax() : 1000, wagerMaxText: c ? '$' + this.wagerMax() : '', wagerDefault: s.wager,
+      setWager: e => this.setState({ wager: +e.target.value }), confirmWager: () => this.confirmWager(),
+      showQuestion: !!(c && !c.pendingWager && !locked), cur, hasFig: !!(cur && cur.fig),
+      figDir: cur && cur.fig && window.innerWidth > 900 ? 'row' : 'column', figOrder: window.innerWidth > 900 ? 1 : -1,
+      showParentBtn: !!(b.parentToggle && cur && cur.hasParent && s.stage >= 1), parentBtnLabel: s.showParent ? 'Hide parent' : 'Show parent', toggleParent: () => this.setState(st => ({ showParent: !st.showParent })),
+      answeringLabel: c ? (c.isSteal ? `Steal: ${tlist[c.team].name}` : `Answering: ${tlist[c.team].name}`) : '', answeringColor: c && c.isSteal ? 'var(--jp-accent2)' : 'var(--jp-muted)',
+      calcAllowed: !!(c && b.calcCats && b.calcCats.includes(c.ci)), isDD: !!(c && c.wager != null), isSteal: !!(c && c.isSteal),
+      hasRef: !!(c && typeof b.refCard === 'number' && c.ci === b.refCard), refOpen: s.refOpen, refLabel: s.refOpen ? 'Hide exact values' : 'Exact values', toggleRef: () => this.setState(st => ({ refOpen: !st.refOpen })),
+      refD30: tex(T('30^\\circ')), refD45: tex(T('45^\\circ')), refD60: tex(T('60^\\circ')), refHalf: tex(T('\\tfrac{1}{2}')), refR2: tex(T('\\tfrac{\\sqrt{2}}{2}')), refR3: tex(T('\\tfrac{\\sqrt{3}}{2}')), refT30: tex(T('\\tfrac{\\sqrt{3}}{3}')), refT60: tex(T('\\sqrt{3}')),
+      showAnswer: s.stage >= 1, showSteps: s.stage >= 2, showRevealBtn: s.stage < 2,
+      revealLabel: s.stage === 0 ? 'Reveal Answer' : 'Show Steps', reveal: () => this.reveal(),
+      correctLabel: `Correct (+$${pts})`, wrongLabel: `Wrong (${M}$${c && c.wager != null ? c.wager : DEDUCT})`,
+      correct: () => this.correct(), wrong: () => this.wrong(), decline: () => this.decline(), pass: () => this.pass(), back: () => this.back(),
+      timeText: this.timerSecs() === 0 ? '' : `${mm}:${ss < 10 ? '0' : ''}${ss}`, timerColor: s.timeLeft <= 10 ? '#f87171' : 'var(--jp-text)',
+      timerBtnLabel: this.timerSecs() === 0 ? 'No timer' : s.timeLeft === 0 ? 'Restart' : s.running ? 'Pause' : 'Resume',
+      addTime: () => this.addTime(),
+      toggleTimer: () => { if (this.timerSecs() === 0) return; if (s.timeLeft === 0) { this.setState({ timeLeft: c && c.isSteal ? Math.ceil(this.fullTime(c) / 2) : this.fullTime(c) }); this.startTimer(); } else if (s.running) this.stopTimer(); else this.startTimer(); },
+      showWinner: s.winnerOpen && !locked, winnerText, confetti: s.confetti,
+      standings: sorted.map(t => ({ name: t.name, scoreText: fmt(t.score) })),
+      closeWinner: () => this.setState({ winnerOpen: false, winnerDismissed: true }),
+    };
+  }
+}
+</script>
+</body>
+</html>

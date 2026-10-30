@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<base href="/">
+<script>window.HUB_LAUNCH=true;</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>@view-transition{navigation:auto;}</style>
+<script src="hub-state.js"></script>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<title>Substitute | Dr. DeMars | Math Hub</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,500,1,0">
+<link rel="stylesheet" href="https://fonts.cdnfonts.com/css/opendyslexic">
+<script src="hub-state.js"></script>
+<script src="calendar-data.js"></script>
+<script src="bell-schedule.js"></script>
+<style>
+:root{--bg:#131317;--surface:#1c1c22;--surface2:#27272f;--line:#33333c;--ink:#f3f2ee;--muted:#b6b5bf;--font:"Helvetica Neue",Helvetica,Arial,sans-serif;--lh:1.5;--ls:0;--lift:-3px;--dur:160ms;--tileborder:0px solid transparent;--grow:1.02;--fade:300ms;--shape-hover:0.34;--glow:0 0 0 1px rgba(255,255,255,0.12),0 0 20px rgba(255,255,255,0.12);--cg-geo:var(--glow);--cg-alg1:var(--glow);--cg-alg2:var(--glow);--cg-alg3:var(--glow);--cg-g7:var(--glow);--cg-g8:var(--glow);--t-g7:oklch(0.86 0.12 150);--t-g8:oklch(0.84 0.09 250);--t-alg1:oklch(0.86 0.11 60);--t-geo:oklch(0.83 0.1 300);--t-alg2:oklch(0.83 0.1 25);--t-alg3:oklch(0.92 0.12 95);color-scheme:dark;}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);line-height:var(--lh);letter-spacing:var(--ls);}
+a{color:var(--ink);}
+a:hover{color:var(--ink);}
+:focus-visible{outline:3px solid var(--ink);outline-offset:3px;}
+a:focus-visible,button:focus-visible{box-shadow:var(--glow);}
+@keyframes hubfade{from{opacity:0}to{opacity:1}}
+::view-transition-old(root),::view-transition-new(root){animation-duration:var(--vt,280ms);animation-timing-function:cubic-bezier(0.45,0,0.55,1);}
+::view-transition-group(site-header){animation-duration:0s;}
+button,textarea,input{font:inherit;letter-spacing:inherit;}
+@media print{
+@page{size:letter;margin:0;}
+html,body{background:#fff !important;color:#000 !important;zoom:1 !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;font-family:"Helvetica Neue",Helvetica,Arial,sans-serif !important;}
+[data-sub-root]{min-height:0 !important;background:#fff !important;}
+[data-sub-root] > :not(main){display:none !important;}
+[data-sub-root] main{padding:0 !important;max-width:none !important;animation:none !important;gap:0 !important;}
+[data-sub-root] main *{color:#000 !important;box-shadow:none !important;letter-spacing:0 !important;}
+[data-locked="true"]{display:none !important;}
+[data-print-body]{filter:none !important;gap:12pt !important;padding:0.7in !important;box-sizing:border-box !important;}
+[data-print-page2]{padding-top:0.7in !important;}
+[data-print="hide"],.material-symbols-rounded{display:none !important;}
+[data-print="only"]{display:block !important;}
+[data-print-pair]{display:grid !important;grid-template-columns:1fr 1fr;gap:10pt !important;align-items:start;}
+[data-print-card]{background:#fff !important;border:0.75pt solid #b5b5b5 !important;border-radius:8pt !important;padding:9pt 11pt !important;max-width:none !important;gap:5pt !important;break-inside:avoid;}
+[data-print-card] h2{font-size:12pt !important;line-height:1.25 !important;}
+[data-print-card] p{font-size:9.5pt !important;line-height:1.4 !important;}
+}
+</style>
+</helmet>
+<div data-sub-root="" style="min-height:100vh;display:flex;flex-direction:column;background:var(--bg);color:var(--ink);font-family:var(--font);">
+  <a href="subs/#main" style="position:absolute;left:16px;top:-120px;z-index:200;padding:14px 20px;border-radius:12px;background:var(--ink);color:var(--bg);font-size:17px;font-weight:700;text-decoration:none;" style-focus="top:16px;">Skip to main content</a>
+  <dc-import name="Site Header" active="subs" hint-size="100%,76px" style="position:sticky;top:0;z-index:50;display:block;"></dc-import>
+  <main id="main" tabindex="-1" style="animation:hubfade var(--fade) ease both;flex:1;width:100%;max-width:1000px;margin:0 auto;box-sizing:border-box;padding:36px clamp(16px,4vw,48px) 72px;display:flex;flex-direction:column;gap:24px;outline:none;">
+
+
+    <div data-print-body="" data-locked="{{ lockedFlag }}" aria-hidden="{{ lockedAria }}" inert="{{ lockedInert }}" style="display:flex;flex-direction:column;gap:24px;filter:{{ blur }};pointer-events:{{ pe }};user-select:{{ pe }};transition:filter calc(var(--dur) * 2) ease;">
+      <div data-print="only" style="display:none;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:16pt;background:#ececec;border-radius:8pt;padding:11pt 14pt;">
+          <div>
+            <div style="font-size:17pt;font-weight:800;line-height:1.15;">Dr. DeMars — Substitute Plans</div>
+            <div style="font-size:10pt;margin-top:2pt;">Innova Preparatory School</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:7pt;font-size:10pt;white-space:nowrap;">
+            <span>Date: ____________________</span>
+            <span>Printed by: _______________</span>
+          </div>
+        </div>
+      </div>
+      <div data-print="hide" style="display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:12px 24px;">
+        <div style="display:flex;flex-direction:column;gap:8px;flex:1 1 420px;min-width:0;">
+          <h1 style="margin:0;font-size:clamp(34px,5vw,46px);line-height:1.1;">Substitute</h1>
+          <p style="margin:0;font-size:19px;color:var(--muted);text-wrap:pretty;">Bell schedule and Dr. DeMars's class for each period. The schedule is the same every day.</p>
+        </div>
+        <sc-if value="{{ canPrint }}" hint-placeholder-val="{{ false }}"><button onClick="{{ printPage }}" style="display:flex;align-items:center;gap:8px;min-height:48px;padding:0 18px;border-radius:14px;border:2px solid var(--line);background:transparent;color:var(--ink);font-size:17px;font-weight:700;cursor:pointer;transition:transform var(--dur) ease,box-shadow var(--dur) ease;" style-hover="transform:translateY(var(--lift)) scale(var(--grow));box-shadow:var(--glow);"><span class="material-symbols-rounded" aria-hidden="true">print</span>Print</button></sc-if>
+      </div>
+
+      <div data-print="only" style="display:none;">
+        <div style="font-size:12pt;font-weight:800;margin:0 0 5pt 2pt;">Bell Schedule</div>
+        <table style="width:100%;border-collapse:collapse;font-size:9.5pt;line-height:1.25;">
+          <thead><tr><th style="text-align:left;padding:4pt 8pt;border-bottom:1pt solid #000;font-size:8.5pt;text-transform:uppercase;letter-spacing:0.04em;">Period</th><th style="text-align:left;padding:4pt 8pt;border-bottom:1pt solid #000;font-size:8.5pt;text-transform:uppercase;">Time</th><th style="text-align:left;padding:4pt 8pt;border-bottom:1pt solid #000;font-size:8.5pt;text-transform:uppercase;">Class</th></tr></thead>
+          <tbody>
+            <sc-for list="{{ printRows }}" as="r" hint-placeholder-count="0">
+              <tr style="background:{{ r.stripe }};"><td style="padding:3.5pt 8pt;width:22%;">{{ r.label }}</td><td style="padding:3.5pt 8pt;width:26%;white-space:nowrap;font-variant-numeric:tabular-nums;">{{ r.time }}</td><td style="padding:3.5pt 8pt;"><span style="font-weight:700;">{{ r.className }}</span><sc-if value="{{ r.hasNote }}"><span style="color:#555;font-size:8.5pt;"> · {{ r.note }}</span></sc-if></td></tr>
+            </sc-for>
+          </tbody>
+        </table>
+      </div>
+
+      <sc-if value="{{ asTable }}" hint-placeholder-val="{{ true }}">
+        <div data-print="hide" role="table" aria-label="Bell schedule" style="display:grid;grid-template-columns:minmax(140px,190px) minmax(210px,250px) minmax(0,1fr);background:var(--surface);border:1px solid var(--line);border-radius:24px;overflow:hidden;">
+          <div role="row" style="display:contents;">
+            <div role="columnheader" style="padding:14px 20px;font-size:15px;font-weight:700;color:var(--muted);border-bottom:1px solid var(--line);">Period</div>
+            <div role="columnheader" style="padding:14px 20px;font-size:15px;font-weight:700;color:var(--muted);border-bottom:1px solid var(--line);">Time</div>
+            <div role="columnheader" style="padding:14px 20px;font-size:15px;font-weight:700;color:var(--muted);border-bottom:1px solid var(--line);">Class</div>
+          </div>
+          <sc-for list="{{ rows }}" as="r" hint-placeholder-count="12">
+            <div role="row" style="display:contents;">
+              <div role="cell" style="padding:14px 20px;background:{{ r.bg }};border-top:{{ r.bt }};display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:18px;font-weight:{{ r.weight }};color:{{ r.color }};">{{ r.label }}<sc-if value="{{ r.isNow }}"><span style="display:flex;align-items:center;gap:4px;padding:3px 10px;border-radius:999px;background:var(--ink);color:var(--bg);font-size:13px;font-weight:700;"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:15px;">radio_button_checked</span>Now</span></sc-if></div>
+              <div role="cell" style="padding:14px 20px;background:{{ r.bg }};border-top:{{ r.bt }};display:flex;align-items:center;font-size:18px;font-weight:{{ r.weight }};color:{{ r.color }};font-variant-numeric:tabular-nums;">{{ r.time }}</div>
+              <div role="cell" style="padding:12px 20px;background:{{ r.bg }};border-top:{{ r.bt }};display:flex;align-items:center;gap:12px;font-size:18px;font-weight:700;color:{{ r.color }};">
+                <sc-if value="{{ r.hasCourse }}"><span class="material-symbols-rounded" aria-hidden="true" style="flex:none;width:34px;height:34px;border-radius:{{ r.radius }};background:{{ r.fill }};color:#15151a;display:grid;place-items:center;font-size:20px;">{{ r.icon }}</span></sc-if>
+                <span>{{ r.className }}<sc-if value="{{ r.hasNote }}"><span style="display:block;font-size:15px;font-weight:400;color:var(--muted);">{{ r.note }}</span></sc-if></span>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ asCards }}">
+        <div data-print="hide" style="display:flex;flex-direction:column;gap:10px;">
+          <sc-for list="{{ rows }}" as="r">
+            <div style="background:{{ r.cardBg }};border:{{ r.cardBorder }};border-radius:20px;padding:14px 16px;display:flex;align-items:center;gap:14px;">
+              <sc-if value="{{ r.hasCourse }}"><span class="material-symbols-rounded" aria-hidden="true" style="flex:none;width:44px;height:44px;border-radius:{{ r.radius }};background:{{ r.fill }};color:#15151a;display:grid;place-items:center;font-size:26px;">{{ r.icon }}</span></sc-if>
+              <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;">
+                <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:15px;font-weight:700;color:var(--muted);">{{ r.label }} · {{ r.time }}<sc-if value="{{ r.isNow }}"><span style="padding:2px 10px;border-radius:999px;background:var(--ink);color:var(--bg);font-size:13px;">Now</span></sc-if></div>
+                <div style="font-size:19px;font-weight:700;color:{{ r.color }};">{{ r.className }}</div>
+                <sc-if value="{{ r.hasNote }}"><div style="font-size:15px;color:var(--muted);">{{ r.note }}</div></sc-if>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <div data-print-pair="" style="display:flex;flex-direction:column;gap:24px;">
+      <section data-print-card="" aria-labelledby="ixl-title" style="background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:clamp(20px,3vw,32px);display:flex;flex-direction:column;gap:14px;max-width:760px;">
+        <div style="display:flex;align-items:center;gap:12px;"><span class="material-symbols-rounded" aria-hidden="true" style="width:44px;height:44px;border-radius:14px;background:var(--surface2);display:grid;place-items:center;font-size:26px;">checklist</span><h2 id="ixl-title" style="margin:0;font-size:26px;line-height:1.2;">How IXL Works in My Classes</h2></div>
+        <p style="margin:0;font-size:18px;text-wrap:pretty;">These guidelines apply to every class with IXL assignments. I want students to get the most productive practice they can.</p>
+        <p style="margin:0;font-size:18px;text-wrap:pretty;">If a student gets badly stuck on one skill, they should move on to another one and come back later. When a student feels stuck, make sure they're using their binder. It should be open to the worksheet that mirrors the IXL problems they're working on, so please encourage them to use it.</p>
+        <p style="margin:0;font-size:18px;text-wrap:pretty;">If they're in groups, encourage them to ask each other for help. They can also watch the IXL instructional videos if they get stuck. Headphones are in the back of the room if they don't have their own. Students who finish their assignments early should stay in their group and help their peers.</p>
+      </section>
+
+      <section data-print-card="" aria-labelledby="eod-title" style="background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:clamp(20px,3vw,32px);display:flex;flex-direction:column;gap:14px;max-width:760px;">
+        <div style="display:flex;align-items:center;gap:12px;"><span class="material-symbols-rounded" aria-hidden="true" style="width:44px;height:44px;border-radius:14px;background:var(--surface2);display:grid;place-items:center;font-size:26px;">wb_twilight</span><h2 id="eod-title" style="margin:0;font-size:26px;line-height:1.2;">End of Day: Homeroom</h2></div>
+        <p style="margin:0;font-size:18px;text-wrap:pretty;">At the end of the day, homeroom (the Geometry class) comes back to the room and tidies up a bit. They put up their chromebook and get the classroom ready for the next day. They know what to do. If it's the end of the week, they'll also update the weekly calendar.</p>
+      </section>
+      </div>
+      <sc-if value="{{ showServer }}" hint-placeholder-val="{{ false }}">
+        <section data-print-card="" aria-labelledby="sub-notes" style="background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:20px;display:flex;flex-direction:column;gap:12px;">
+          <h2 id="sub-notes" style="margin:0;font-size:22px;">Notes from Dr. DeMars</h2>
+          <p style="margin:0;font-size:17px;white-space:pre-wrap;text-wrap:pretty;">{{ subNotes }}</p>
+          <sc-if value="{{ hasSubFiles }}" hint-placeholder-val="{{ false }}">
+            <div data-print="hide" style="display:flex;flex-wrap:wrap;gap:10px;">
+              <sc-for list="{{ subFiles }}" as="f" hint-placeholder-count="2">
+                <a href="{{ f.url }}" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;border-radius:12px;border:2px solid var(--line);color:var(--ink);text-decoration:none;font-size:16px;font-weight:700;transition:transform var(--dur) ease,box-shadow var(--dur) ease;" style-hover="transform:translateY(var(--lift)) scale(var(--grow));box-shadow:var(--glow);"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:20px;">description</span>{{ f.title }}</a>
+              </sc-for>
+            </div>
+          </sc-if>
+        </section>
+      </sc-if>
+      <div data-print="only" data-print-page2="" style="display:none;break-before:page;">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12pt;background:#ececec;border-radius:8pt;padding:9pt 14pt;">
+          <span style="font-size:14pt;font-weight:800;">Notes for Dr. DeMars</span>
+          <span style="font-size:9.5pt;">How the day went, absences, issues</span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10pt;margin-top:12pt;">
+          <sc-for list="{{ printPeriods }}" as="p" hint-placeholder-count="0">
+            <div style="border:0.75pt solid #b5b5b5;border-radius:8pt;padding:8pt 11pt 6pt;break-inside:avoid;">
+              <div style="font-size:10.5pt;font-weight:800;">{{ p.label }} <span style="font-weight:400;color:#555;">· {{ p.className }}</span></div>
+              <sc-for list="{{ p.lines }}" as="ln"><div style="height:0.31in;border-bottom:0.6pt solid #9a9a9a;"></div></sc-for>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      <sc-if value="{{ canPrint }}" hint-placeholder-val="{{ false }}"><div data-print="hide" style="display:flex;"><button onClick="{{ printPage }}" style="display:flex;align-items:center;gap:8px;min-height:48px;padding:0 18px;border-radius:14px;border:2px solid var(--line);background:transparent;color:var(--ink);font-size:17px;font-weight:700;cursor:pointer;transition:transform var(--dur) ease,box-shadow var(--dur) ease;" style-hover="transform:translateY(var(--lift)) scale(var(--grow));box-shadow:var(--glow);"><span class="material-symbols-rounded" aria-hidden="true">print</span>Print</button></div></sc-if>
+    </div>
+  </main>
+  <dc-import name="Site Footer" hint-size="100%,110px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const COURSES = {
+  geo:{name:'Geometry', icon:'architecture', fill:'oklch(0.67 0.19 300)', radius:'50%'},
+  alg1:{name:'Algebra I', icon:'calculate', fill:'oklch(0.76 0.16 55)', radius:'24px'},
+  alg3:{name:'Algebra III', icon:'ssid_chart', fill:'oklch(0.88 0.16 95)', radius:'50%'},
+  g7:{name:'7th Grade Math', icon:'square_foot', fill:'oklch(0.74 0.17 150)', radius:'24px'},
+  g8:{name:'8th Grade Math', icon:'straighten', fill:'oklch(0.69 0.15 250)', radius:'50%'},
+  alg2:{name:'Algebra II', icon:'show_chart', fill:'oklch(0.67 0.2 25)', radius:'24px'}
+};
+class Component extends DCLogic {
+  state = { teacher: !!(window.HubState && window.HubState.get().teacher), w: window.innerWidth || 1280 };
+  componentDidMount(){
+    this.onHub = () => { if (window.HubState) { const v = window.HubState.get(); const was = this.state.signedIn; this.setState({teacher: !!v.teacher, signedIn: !!v.signedIn, role: v.role}); if (v.signedIn && !was) this.loadServer(); } };
+    this.onTick = () => this.forceUpdate();
+    this.onResize = () => this.setState({w: window.innerWidth});
+    window.addEventListener('hubchange', this.onHub);
+    window.addEventListener('hubstate-ready', this.onHub);
+    window.addEventListener('hubbell-ready', this.onTick);
+    window.addEventListener('resize', this.onResize);
+    this.tick = setInterval(this.onTick, 30000);
+    this.onHub();
+    this.askT = setTimeout(() => { const v = window.HubState && window.HubState.get(); if (window.HubState && !v.signedIn) window.HubState.openSignin({cancelTo: './'}); }, 400);
+  }
+  componentWillUnmount(){
+    window.removeEventListener('hubchange', this.onHub);
+    window.removeEventListener('hubstate-ready', this.onHub);
+    window.removeEventListener('hubbell-ready', this.onTick);
+    window.removeEventListener('resize', this.onResize);
+    clearInterval(this.tick); clearTimeout(this.askT);
+  }
+  loadServer(){
+    const H = window.HubState; if (!H || !H.get().serverMode) return;
+    H.api('/api/content/sub-page').then(d => this.setState({subNotes: (d && d.content && d.content.notes) || ''})).catch(() => {});
+    H.api('/api/files').then(d => this.setState({subFiles: ((d && d.files) || []).filter(f => (f.roles || []).includes('sub'))})).catch(() => {});
+  }
+  renderVals(){
+    const t = !!this.state.signedIn, list = window.HubBell ? window.HubBell.list() : [];
+    const rows = list.map((p, i) => {
+      const c = p.c ? COURSES[p.c] : p.supervise ? COURSES[p.supervise] : null;
+      const name = p.duty ? p.duty : p.planning ? 'Planning (no students)' : p.homeroom ? 'Homeroom' : c ? c.name : '';
+      const note = p.homeroom ? p.note : '';
+      return {...p, hasCourse: !!c && !p.planning, icon: c ? c.icon : '', fill: c ? c.fill : '', radius: c ? c.radius : '50%',
+        className: name, note, hasNote: !!note,
+        bg: p.isNow ? 'var(--surface2)' : 'transparent', bt: i === 0 ? '0' : '1px solid var(--line)',
+        weight: p.quiet ? '400' : '700', color: p.quiet ? 'var(--muted)' : 'var(--ink)',
+        cardBg: p.isNow ? 'var(--surface2)' : p.quiet ? 'transparent' : 'var(--surface)',
+        cardBorder: p.isNow ? '2px solid var(--ink)' : '1px solid var(--line)'};
+    });
+    return {
+      showServer: t && !!(window.HubState && window.HubState.get().serverMode) && !!(this.state.subNotes || (this.state.subFiles || []).length),
+      subNotes: this.state.subNotes || '',
+      hasSubFiles: !!(this.state.subFiles || []).length,
+      subFiles: (this.state.subFiles || []).map(f => ({ title: f.title || f.name, url: window.HubState ? window.HubState.fileUrl(f.name) : '#' })),
+      printRows: rows.map((r, i) => ({ label: r.label, time: r.time, className: r.className, note: r.note, hasNote: r.hasNote, stripe: i % 2 ? '#f2f2f2' : '#fff' })),
+      printPeriods: rows.filter(r => /^Period [1-6]$/.test(r.label)).map(r => ({ label: r.label, className: r.className, lines: [0,1,2,3,4,5,6] })),
+      canPrint: t, printPage: () => window.print(), lockedFlag: t ? 'false' : 'true',
+      blur: t ? 'none' : 'blur(14px)', pe: t ? 'auto' : 'none', lockedAria: t ? undefined : 'true', lockedInert: t ? undefined : '',
+      signIn: () => window.HubState && window.HubState.openSignin(),
+      asTable: this.state.w >= 700, asCards: this.state.w < 700,
+      rows
+    };
+  }
+}
+</script>
+</body>
+</html>

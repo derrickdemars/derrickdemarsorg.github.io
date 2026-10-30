@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<footer style="border-top:1px solid var(--line);background:var(--surface);color:var(--ink);font-family:var(--font);line-height:1.4;">
+  <div style="max-width:1280px;margin:0 auto;box-sizing:border-box;padding:28px clamp(16px,4vw,48px);display:flex;flex-wrap:wrap;gap:20px 40px;align-items:center;justify-content:space-between;">
+    <div style="display:flex;align-items:center;gap:14px;">
+      <span class="material-symbols-rounded" aria-hidden="true" style="width:42px;height:42px;border-radius:12px;background:var(--ink);color:var(--bg);display:grid;place-items:center;font-size:28px;">functions</span>
+      <div>
+        <div style="font-size:17px;font-weight:700;">Innova Preparatory School</div>
+        <div style="font-size:16px;color:var(--muted);">Hattiesburg, MS</div>
+      </div>
+    </div>
+    <button onClick="{{ toTop }}" style="display:flex;align-items:center;gap:6px;min-height:48px;padding:0 18px;border-radius:999px;border:2px solid var(--ink);background:var(--ink);color:var(--bg);font-size:16px;font-weight:700;cursor:pointer;transition:transform var(--dur) ease,box-shadow var(--dur) ease;" style-hover="transform:translateY(var(--lift)) scale(var(--grow));box-shadow:var(--glow);" style-active="box-shadow:var(--glow);"><span class="material-symbols-rounded" aria-hidden="true">arrow_upward</span>Back to top</button>
+    <div style="display:flex;flex-wrap:wrap;gap:12px 24px;align-items:center;font-size:16px;">
+      <sc-if value="{{ signedOut }}" hint-placeholder-val="{{ true }}">
+        <button onClick="{{ openSignin }}" style="display:flex;align-items:center;gap:6px;min-height:44px;padding:0 10px;background:none;border:0;color:var(--ink);font-size:16px;font-weight:700;text-decoration:underline;text-underline-offset:4px;cursor:pointer;border-radius:10px;transition:transform var(--dur) ease,box-shadow var(--dur) ease;" style-hover="transform:translateY(var(--lift)) scale(var(--grow));box-shadow:var(--glow);" style-active="box-shadow:var(--glow);"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:20px;">lock</span>Teacher sign-in</button>
+      </sc-if>
+      <sc-if value="{{ teacher }}">
+        <span style="display:flex;align-items:center;gap:6px;font-weight:700;"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:20px;">lock_open</span>{{ roleLabel }}</span>
+        <button onClick="{{ signOut }}" style="min-height:44px;padding:0 10px;background:none;border:0;color:var(--ink);font-size:16px;font-weight:700;text-decoration:underline;text-underline-offset:4px;cursor:pointer;border-radius:10px;transition:transform var(--dur) ease,box-shadow var(--dur) ease;" style-hover="transform:translateY(var(--lift)) scale(var(--grow));box-shadow:var(--glow);" style-active="box-shadow:var(--glow);">Sign out</button>
+      </sc-if>
+      <span style="color:var(--muted);">Last updated {{ updated }}</span>
+    </div>
+  </div>
+</footer>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:140}}">
+class Component extends DCLogic {
+  state = { teacher: !!(window.HubState && window.HubState.get().teacher) };
+  componentDidMount(){
+    this.onHub = () => { if (window.HubState) { const v = window.HubState.get(); this.setState({teacher: !!v.teacher, signedIn: !!v.signedIn, role: v.role}); } };
+    window.addEventListener('hubchange', this.onHub);
+    window.addEventListener('hubstate-ready', this.onHub);
+    this.onHub();
+  }
+  componentWillUnmount(){
+    window.removeEventListener('hubchange', this.onHub);
+    window.removeEventListener('hubstate-ready', this.onHub);
+  }
+  renderVals(){
+    return {
+      teacher: !!this.state.signedIn,
+      signedOut: !this.state.signedIn,
+      roleLabel: this.state.role === 'sub' ? 'Signed in as Substitute' : 'Signed in as Teacher',
+      toTop: () => { const m = window.HubState ? window.HubState.get().motion : true; window.scrollTo({top:0, behavior: m ? 'smooth' : 'auto'}); },
+      openSignin: () => window.dispatchEvent(new Event('hub-signin')),
+      signOut: () => window.HubState && window.HubState.signOut(),
+      updated: new Date().toLocaleDateString('en-US', {month:'long', day:'numeric', year:'numeric'})
+    };
+  }
+}
+</script>
+</body>
+</html>

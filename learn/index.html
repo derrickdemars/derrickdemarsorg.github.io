@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<base href="/">
+<script>window.HUB_LAUNCH=true;</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>@view-transition{navigation:auto;}</style>
+<script src="hub-state.js"></script>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<title>How We Learn | Dr. DeMars | Math Hub</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,500,1,0">
+<link rel="stylesheet" href="https://fonts.cdnfonts.com/css/opendyslexic">
+<script src="hub-state.js"></script>
+<style>
+:root{--bg:#131317;--surface:#1c1c22;--surface2:#27272f;--line:#33333c;--ink:#f3f2ee;--muted:#b6b5bf;--font:"Helvetica Neue",Helvetica,Arial,sans-serif;--lh:1.5;--ls:0;--lift:-3px;--dur:160ms;--tileborder:0px solid transparent;--grow:1.02;--fade:300ms;--shape-hover:0.34;--glow:0 0 0 1px rgba(255,255,255,0.12),0 0 20px rgba(255,255,255,0.12);--cg-geo:var(--glow);--cg-alg1:var(--glow);--cg-alg2:var(--glow);--cg-alg3:var(--glow);--cg-g7:var(--glow);--cg-g8:var(--glow);--t-g7:oklch(0.86 0.12 150);--t-g8:oklch(0.84 0.09 250);--t-alg1:oklch(0.86 0.11 60);--t-geo:oklch(0.83 0.1 300);--t-alg2:oklch(0.83 0.1 25);--t-alg3:oklch(0.92 0.12 95);color-scheme:dark;}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);line-height:var(--lh);letter-spacing:var(--ls);}
+a{color:var(--ink);}
+a:hover{color:var(--ink);}
+:focus-visible{outline:3px solid var(--ink);outline-offset:3px;}
+a:focus-visible,button:focus-visible{box-shadow:var(--glow);}
+@keyframes hubfade{from{opacity:0}to{opacity:1}}
+::view-transition-old(root),::view-transition-new(root){animation-duration:var(--vt,280ms);animation-timing-function:cubic-bezier(0.45,0,0.55,1);}
+::view-transition-group(site-header){animation-duration:0s;}
+@keyframes hubfadeB{from{opacity:0.35}to{opacity:1}}
+@keyframes hubfadeC{from{opacity:0.35}to{opacity:1}}
+button,textarea,input{font:inherit;letter-spacing:inherit;}
+</style>
+</helmet>
+<div style="min-height:100vh;display:flex;flex-direction:column;background:var(--bg);color:var(--ink);font-family:var(--font);padding-bottom:{{ padBottom }};box-sizing:border-box;">
+  <a href="learn/#main" style="position:absolute;left:16px;top:-120px;z-index:200;padding:14px 20px;border-radius:12px;background:var(--ink);color:var(--bg);font-size:17px;font-weight:700;text-decoration:none;" style-focus="top:16px;">Skip to main content</a>
+  <dc-import name="Site Header" active="learn" hint-size="100%,76px" style="position:sticky;top:0;z-index:50;display:block;"></dc-import>
+  <main ref="{{ mainRef }}" id="main" tabindex="-1" style="animation:hubfade var(--fade) ease both;flex:1;width:100%;max-width:{{ mainMax }};margin:0 auto;box-sizing:border-box;padding:{{ mainPad }};display:flex;flex-direction:column;gap:20px;outline:none;">
+    <div style="display:flex;flex-direction:{{ lay.dir }};gap:{{ lay.gap }};align-items:{{ lay.align }};">
+      <div style="width:{{ lay.asideW }};flex:none;display:flex;flex-direction:{{ lay.asideDir }};justify-content:space-between;align-items:{{ lay.asideAlign }};gap:16px;flex-wrap:wrap;">
+        <div style="display:flex;flex-direction:column;gap:8px;max-width:760px;">
+          <h1 style="margin:0;font-size:{{ lay.h1 }};line-height:1.1;">How We Learn</h1>
+          <sc-if value="{{ lay.intro }}" hint-placeholder-val="{{ true }}"><p style="margin:0;font-size:19px;color:var(--muted);text-wrap:pretty;">Autism, dyslexia, and ADHD are learning differences. They share many traits, and each one comes with strengths.</p></sc-if>
+        </div>
+        <div role="group" aria-label="View" style="display:flex;gap:8px;">
+        <sc-for list="{{ views }}" as="v" hint-placeholder-count="2">
+          <button onClick="{{ v.pick }}" aria-pressed="{{ v.on }}" style="display:flex;align-items:center;gap:6px;min-height:48px;padding:0 18px;border-radius:12px;border:2px solid {{ v.border }};background:{{ v.bg }};color:{{ v.color }};font-size:16px;font-weight:700;cursor:pointer;transition:transform var(--dur) ease,box-shadow var(--dur) ease;" style-hover="transform:translateY(var(--lift)) scale(var(--grow));box-shadow:var(--glow);" style-active="box-shadow:var(--glow);"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:20px;">{{ v.icon }}</span>{{ v.label }}</button>
+        </sc-for>
+        </div>
+      </div>
+      <sc-if value="{{ isDiagram }}" hint-placeholder-val="{{ true }}">
+        <div ref="{{ areaRef }}" style="flex:1;min-width:0;display:flex;justify-content:center;">
+          <div ref="{{ wrapRef }}" style="width:{{ vennW }};max-width:100%;container-type:inline-size;">
+          <div ref="{{ vennRef }}" onMouseMove="{{ onMove }}" onMouseLeave="{{ onLeave }}" onClick="{{ onAreaClick }}" style="position:relative;width:100%;aspect-ratio:600/530;cursor:pointer;user-select:none;">
+            <svg viewBox="0 0 600 530" aria-hidden="true" style="position:absolute;inset:0;width:100%;height:100%;overflow:visible;">
+              <circle cx="300" cy="180" r="170" style="fill:oklch(0.66 0.2 25 / 0.5);opacity:{{ dim.A }};transition:opacity calc(var(--dur) * 2) cubic-bezier(0.45,0,0.55,1);"></circle>
+              <circle cx="205" cy="345" r="170" style="fill:oklch(0.86 0.15 95 / 0.42);opacity:{{ dim.D }};transition:opacity calc(var(--dur) * 2) cubic-bezier(0.45,0,0.55,1);"></circle>
+              <circle cx="395" cy="345" r="170" style="fill:oklch(0.74 0.17 145 / 0.45);opacity:{{ dim.H }};transition:opacity calc(var(--dur) * 2) cubic-bezier(0.45,0,0.55,1);"></circle>
+            </svg>
+            <sc-for list="{{ labels }}" as="l" hint-placeholder-count="7">
+              <span aria-hidden="true" style="position:absolute;left:{{ l.left }};top:{{ l.top }};transform:translate(-50%,-50%);pointer-events:none;text-align:center;white-space:{{ l.ws }};max-width:{{ l.mw }};font-weight:700;font-size:{{ l.fs }};line-height:1.15;color:var(--ink);opacity:{{ l.op }};transition:opacity calc(var(--dur) * 2) cubic-bezier(0.45,0,0.55,1);">{{ l.text }}</span>
+            </sc-for>
+            <sc-for list="{{ clusters }}" as="cl" hint-placeholder-count="0">
+              <div style="position:absolute;left:{{ cl.left }};top:{{ cl.top }};width:{{ cl.w }};height:{{ cl.h }};display:flex;flex-wrap:wrap;align-content:{{ cl.align }};justify-content:center;gap:4px;pointer-events:{{ cl.pe }};z-index:{{ cl.z }};">
+                <sc-for list="{{ cl.traits }}" as="t">
+                  <button onMouseEnter="{{ t.enter }}" onMouseLeave="{{ t.leave }}" onClick="{{ t.click }}" aria-pressed="{{ t.on }}" tabindex="{{ t.tab }}" aria-hidden="{{ t.hidden }}" style="position:relative;z-index:{{ t.z }};max-width:100%;padding:3px 8px;border-radius:10px;border:1.5px solid {{ t.border }};background:{{ t.bg }};color:{{ t.color }};font-size:{{ pillFs }};font-weight:700;line-height:1.2;text-align:center;cursor:pointer;will-change:opacity,transform;backface-visibility:hidden;opacity:{{ t.op }};transform:{{ t.transform }};box-shadow:{{ t.shadow }};transition-property:opacity,transform,box-shadow,background-color,color;transition-duration:calc(var(--dur) * 2);transition-timing-function:cubic-bezier(0.45,0,0.55,1);transition-delay:{{ t.delay }},0ms,0ms,0ms,0ms;">{{ t.n }}</button>
+                </sc-for>
+              </div>
+            </sc-for>
+          </div>
+          </div>
+        </div>
+      </sc-if>
+    </div>
+
+    <sc-if value="{{ isList }}">
+      <div style="display:flex;flex-direction:column;gap:32px;">
+        <sc-for list="{{ regionList }}" as="rg">
+          <section style="display:flex;flex-direction:column;gap:12px;">
+            <h2 style="margin:0;font-size:26px;display:flex;align-items:center;gap:12px;"><span aria-hidden="true" style="display:flex;gap:3px;"><sc-for list="{{ rg.dots }}" as="d"><span style="width:18px;height:18px;border-radius:50%;background:{{ d }};"></span></sc-for></span>{{ rg.title }}</h2>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(300px,100%),1fr));gap:12px;">
+              <sc-for list="{{ rg.traits }}" as="t">
+                <div style="background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:8px;">
+                  <div style="display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700;color:var(--muted);"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:18px;">{{ t.icon }}</span>{{ t.kind }}</div>
+                  <div style="font-size:19px;font-weight:700;line-height:1.25;">{{ t.n }}</div>
+                  <p style="margin:0;font-size:17px;">{{ t.m }}</p>
+                  <p style="margin:0;font-size:17px;color:var(--muted);">In class: {{ t.c }}</p>
+                </div>
+              </sc-for>
+            </div>
+          </section>
+        </sc-for>
+      </div>
+    </sc-if>
+  </main>
+  <dc-import name="Site Footer" hint-size="100%,110px"></dc-import>
+
+  <sc-if value="{{ isDiagram }}" hint-placeholder-val="{{ true }}">
+    <div ref="{{ stripRef }}" aria-live="polite" style="min-height:{{ stripPx }};box-sizing:border-box;position:fixed;left:0;right:0;bottom:0;z-index:40;background:var(--surface);border-top:2px solid var(--line);box-shadow:0 -10px 30px rgba(0,0,0,0.25);">
+      <div style="max-width:1280px;margin:0 auto;box-sizing:border-box;padding:16px clamp(16px,4vw,48px);min-height:96px;display:flex;align-items:center;animation:{{ stripAnim }} calc(var(--dur) * 2) cubic-bezier(0.45,0,0.55,1) both;">
+        <sc-if value="{{ stripIdle }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex;align-items:center;gap:10px;font-size:18px;color:var(--muted);"><span class="material-symbols-rounded" aria-hidden="true">touch_app</span>{{ hint }}</div>
+        </sc-if>
+        <sc-if value="{{ stripDetail }}">
+          <div style="display:flex;flex-wrap:wrap;gap:10px 32px;align-items:flex-start;width:100%;">
+            <div style="flex:1 1 240px;display:flex;flex-direction:column;gap:4px;">
+              <div style="display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700;color:var(--muted);"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:18px;">{{ detail.icon }}</span>{{ detail.kind }} · {{ detail.region }}</div>
+              <div style="font-size:22px;font-weight:700;line-height:1.25;">{{ detail.n }}</div>
+            </div>
+            <div style="flex:2 1 260px;"><div style="font-size:14px;font-weight:700;color:var(--muted);">What it means</div><p style="margin:2px 0 0;font-size:17px;text-wrap:pretty;">{{ detail.m }}</p></div>
+            <div style="flex:2 1 260px;"><div style="font-size:14px;font-weight:700;color:var(--muted);">In class, it can look like</div><p style="margin:2px 0 0;font-size:17px;text-wrap:pretty;">{{ detail.c }}</p></div>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const COLORS = {A:'oklch(0.66 0.2 25)', D:'oklch(0.86 0.15 95)', H:'oklch(0.74 0.17 145)'};
+const CIRCLES = {A:[300,180], D:[205,345], H:[395,345]};
+const R = 170;
+const REGIONS = {
+  A:{title:'Autism',label:'Autism',x:300,y:95,box:[120,30,360,150],traits:[
+    {n:'Rigid Thinking Patterns',s:false,m:'Preferring one way of doing or thinking about something, and finding it hard to switch.',c:'Wanting to solve a problem the same way every time, even after a new method is taught.'},
+    {n:'Challenges with Social Cues and Communication',s:false,m:'Finding it hard to read tone, facial expressions, or unspoken rules in conversation.',c:'Not knowing when to join in during group work, or missing that a partner is done talking.'},
+    {n:'Difficulty with Unexpected Changes',s:false,m:'Feeling stress when plans change without warning.',c:'Getting upset when a quiz moves to a different day or there is a substitute.'},
+    {n:'Sensory Sensitivities',s:false,m:'Sounds, lights, textures, or smells can feel much stronger than they do for others.',c:'Covering ears during loud group work or asking for a quieter seat.'},
+    {n:'Attention to Detail',s:true,m:'Noticing small things that others miss.',c:'Catching a sign error or a mislabeled axis on a graph.'},
+    {n:'Deep Knowledge of Interests',s:true,m:'Learning a favorite topic in great depth.',c:'Connecting a math idea to a topic they know everything about.'},
+    {n:'Honest and Direct',s:true,m:'Saying clearly what they mean.',c:'Telling you exactly which step did not make sense.'}]},
+  D:{title:'Dyslexia',label:'Dyslexia',x:120,y:415,box:[25,280,205,205],traits:[
+    {n:'Difficulty Reading',s:false,m:'Reading takes more effort, so it can be slower or less accurate.',c:'Understanding the math but getting stuck on a long word problem.'},
+    {n:'Struggles with Phonological Processing',s:false,m:'Trouble hearing and working with the sounds inside words.',c:'Mixing up terms that sound alike, like "perimeter" and "parameter."'},
+    {n:'Issues with Verbal Processing Speed',s:false,m:'Needing more time to take in and respond to spoken language.',c:'Needing directions repeated or written on the board.'},
+    {n:'Difficulty Spelling',s:false,m:'Spelling words correctly takes extra effort.',c:'Spelling a vocabulary word differently each time it is written.'},
+    {n:'Big-Picture Thinking',s:true,m:'Seeing how ideas connect as a whole.',c:'Understanding why a method works before memorizing the steps.'},
+    {n:'Strong Verbal Reasoning',s:true,m:'Explaining ideas well out loud.',c:'Talking through a solution clearly, even when writing it down is hard.'}]},
+  H:{title:'ADHD',label:'ADHD',x:480,y:415,box:[370,280,205,205],traits:[
+    {n:'Quick Thinking',s:true,m:'Coming up with ideas and answers fast.',c:'Spotting a shortcut before the example is finished.'},
+    {n:'Difficulty Sustaining Attention, Impulsivity',s:false,m:'Focus can drift, and it can be hard to pause before acting.',c:'Starting before the directions are finished, or calling out answers.'},
+    {n:'Poor Time Management',s:false,m:'It is hard to estimate how long things take or to plan ahead.',c:'Running out of time on a test or forgetting a due date.'},
+    {n:'Easily Distracted',s:false,m:'Noises, movement, or thoughts can pull attention away.',c:'Looking up at every sound in the hallway.'},
+    {n:'Difficulty Sitting Still',s:false,m:'The body needs to move to stay alert.',c:'Tapping, standing, or shifting during long work time.'},
+    {n:'High Energy',s:true,m:'Bringing energy and enthusiasm to a task.',c:'Being the first to volunteer for a problem at the board.'},
+    {n:'Curious and Spontaneous',s:true,m:'Ready to try new ideas right away.',c:'Asking "what if" questions that lead somewhere new.'}]},
+  AD:{title:'Shared by Autism and Dyslexia',label:'Autism + Dyslexia',x:200,y:224,box:[155,190,110,95],traits:[
+    {n:'Processing Delays',s:false,m:'Needing extra time to take in information and respond.',c:'Answering well with wait time, but not when rushed.'},
+    {n:'Strong pattern recognition and problem-solving skills',s:true,m:'Noticing patterns and rules quickly.',c:'Finding the rule in a table or sequence before anyone else.'},
+    {n:'Literal Thinking',s:false,m:'Understanding words by their exact meaning.',c:'Being confused by phrases like "plug it in" or "the answer jumps out."'}]},
+  AH:{title:'Shared by Autism and ADHD',label:'Autism + ADHD',x:400,y:224,box:[335,190,110,95],traits:[
+    {n:'Repetitive Behaviors or Stimming',s:false,m:'Repeated movements or sounds that help with focus or calm.',c:'Rocking, fidgeting, or humming while working.'},
+    {n:'Hyperfocus',s:true,m:'Intense focus on one task, sometimes losing track of time.',c:'Working on one puzzle all period and not hearing the bell.'}]},
+  DH:{title:'Shared by Dyslexia and ADHD',label:'Dyslexia + ADHD',x:300,y:394,box:[240,385,120,80],traits:[
+    {n:'Messy Handwriting and Disorganized Thoughts',s:false,m:'Writing and organizing ideas on paper can be hard.',c:'Work that is correct but hard to follow, or steps written out of order.'},
+    {n:'Working Memory Challenges',s:false,m:'Holding information in mind while using it is hard.',c:'Forgetting the second step of a direction or losing a number mid-problem.'}]},
+  ADH:{title:'Shared by all three',label:'All three',x:300,y:300,box:[245,240,110,110],traits:[
+    {n:'Executive Dysfunction',s:false,m:'Trouble planning, starting, organizing, and finishing tasks.',c:'Knowing how to do the work but not knowing where to start.'},
+    {n:'Highly Creative',s:true,m:'Thinking in original and unexpected ways.',c:'Solving a problem with a method no one else tried.'},
+    {n:'Strong Visual-Spatial Intelligence',s:true,m:'Thinking in pictures, shapes, and space.',c:'Understanding an idea faster from a graph or model than from words.'}]}
+};
+const ORDER = ['A','D','H','AD','AH','DH','ADH'];
+const kindOf = t => t.s ? {kind:'Strength', icon:'star'} : {kind:'Can be hard', icon:'help'};
+const pct = (v, total) => (v / total * 100) + '%';
+
+class Component extends DCLogic {
+  vennRef = React.createRef();
+  wrapRef = React.createRef();
+  mainRef = React.createRef();
+  areaRef = React.createRef();
+  stripRef = React.createRef();
+  state = {
+    view: (window.innerWidth || 1280) < 640 ? 'list' : 'diagram',
+    hoverRegion:'', pinRegion:'', hoverTrait:-1, pinTrait:-1, overTrait:false, stripH:130, vennW:0, side:true
+  };
+  syncZoom(){ if (window.HubState && window.HubState.setNoZoom) window.HubState.setNoZoom(this.state.view === 'diagram'); }
+  componentDidMount(){ this.syncZoom(); this.observeStrip(); this.syncFab(); this.onResize = () => this.measure(); window.addEventListener('resize', this.onResize); this.measure(); }
+  componentDidUpdate(){ this.syncZoom(); this.observeStrip(); this.syncFab(); this.measure(); }
+  measure(){
+    if (this.state.view !== 'diagram') return;
+    const m = this.mainRef.current; if (!m) return;
+    const cs = getComputedStyle(m);
+    const innerW = m.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+    const top = m.getBoundingClientRect().top + window.scrollY;
+    const H = window.innerHeight - this.state.stripH - top - 16;
+    const ratio = 600 / 530;
+    const sideW = Math.min(innerW - 280 - 24, H * ratio);
+    const stackW = Math.min(innerW, (H - 72) * ratio);
+    const side = sideW >= stackW;
+    const vw = Math.round(Math.max(300, side ? sideW : stackW));
+    if (Math.abs(vw - this.state.vennW) > 1 || side !== this.state.side) this.setState({vennW: vw, side});
+  }
+
+  componentWillUnmount(){ if (window.HubState && window.HubState.setNoZoom) window.HubState.setNoZoom(false); clearTimeout(this.switchT); window.removeEventListener('resize', this.onResize); if (this.ro) this.ro.disconnect(); document.documentElement.style.removeProperty('--fab-bottom'); }
+  observeStrip(){
+    const el = this.stripRef.current;
+    if (el === this.stripEl) return;
+    if (this.ro) this.ro.disconnect();
+    this.stripEl = el;
+    if (el && window.ResizeObserver){
+      this.ro = new ResizeObserver(() => { const h = Math.round(el.getBoundingClientRect().height); if (h && h > this.state.stripH) this.setState({stripH:h}); });
+      this.ro.observe(el);
+    }
+  }
+  syncFab(){
+    const r = document.documentElement.style;
+    if (this.state.view === 'diagram') r.setProperty('--fab-bottom', (this.state.stripH + 16) + 'px');
+    else r.removeProperty('--fab-bottom');
+  }
+  queueRegion(r){
+    if (r === this.state.hoverRegion){ clearTimeout(this.switchT); this.pending = null; return; }
+    if (r === this.pending) return;
+    clearTimeout(this.switchT);
+    this.pending = r;
+    this.switchT = setTimeout(() => { this.pending = null; this.setState({hoverRegion:r, hoverTrait:-1}); }, 200);
+  }
+  regionAt(e){
+    const el = this.vennRef.current; if (!el) return '';
+    const b = el.getBoundingClientRect();
+    const x = (e.clientX - b.left) / b.width * 600, y = (e.clientY - b.top) / b.height * 530;
+    return ['A','D','H'].filter(k => Math.hypot(x - CIRCLES[k][0], y - CIRCLES[k][1]) <= R).join('');
+  }
+  stripAnimName(key){
+    if (key !== this.lastStripKey){ this.lastStripKey = key; this.stripFlip = !this.stripFlip; }
+    return this.stripFlip ? 'hubfadeB' : 'hubfadeC';
+  }
+  renderVals(){
+    const s = this.state;
+    const active = s.pinRegion || s.hoverRegion;
+    const reg = active ? REGIONS[active] : null;
+    const ti = s.hoverTrait >= 0 ? s.hoverTrait : s.pinTrait;
+    const tr = reg && ti >= 0 ? reg.traits[ti] : null;
+    const chip = on => on ? {bg:'var(--ink)',color:'var(--bg)',border:'var(--ink)'} : {bg:'transparent',color:'var(--ink)',border:'var(--line)'};
+    const b = reg ? reg.box : [0,0,0,0];
+    return {
+      views: [{id:'diagram',label:'Diagram',icon:'join'},{id:'list',label:'List',icon:'list'}].map(v => ({...v, ...chip(s.view === v.id), on: s.view === v.id, pick: () => this.setState({view:v.id})})),
+      isDiagram: s.view === 'diagram', isList: s.view === 'list',
+      padBottom: s.view === 'diagram' ? s.stripH + 'px' : '0px',
+      stripPx: s.stripH + 'px',
+      vennRef: this.vennRef, stripRef: this.stripRef, wrapRef: this.wrapRef, mainRef: this.mainRef, areaRef: this.areaRef,
+      pillFs: 'clamp(13px,1.75cqw,17px)',
+      mainMax: s.view === 'diagram' ? 'none' : '1280px',
+      mainPad: s.view === 'diagram' ? '8px clamp(16px,3vw,32px) 8px' : '32px clamp(16px,4vw,48px) 48px',
+      lay: s.view === 'diagram' && s.side
+        ? {dir:'row', gap:'24px', align:'flex-start', asideW:'280px', asideDir:'column', asideAlign:'flex-start', h1:'38px', intro:true}
+        : s.view === 'diagram'
+          ? {dir:'column', gap:'8px', align:'stretch', asideW:'auto', asideDir:'row', asideAlign:'center', h1:'30px', intro:false}
+          : {dir:'column', gap:'24px', align:'stretch', asideW:'auto', asideDir:'row', asideAlign:'flex-end', h1:'clamp(34px,5vw,46px)', intro:true},
+      vennW: s.vennW ? s.vennW + 'px' : 'min(100%, 600px)',
+      onMove: e => {
+        if (this.state.overTrait || this.state.pinRegion) return;
+        this.queueRegion(this.regionAt(e));
+      },
+      onLeave: () => { this.setState({overTrait:false}); this.queueRegion(''); },
+      onAreaClick: e => {
+        clearTimeout(this.switchT); this.pending = null;
+        const r = this.regionAt(e);
+        if (!r || r === s.pinRegion) this.setState({pinRegion:'', pinTrait:-1, hoverRegion:r});
+        else this.setState({pinRegion:r, pinTrait:-1, hoverRegion:r});
+      },
+      dim: {A: active && !active.includes('A') ? '0.35' : '1', D: active && !active.includes('D') ? '0.35' : '1', H: active && !active.includes('H') ? '0.35' : '1'},
+      labels: ORDER.map(k => {
+        const r = REGIONS[k], single = k.length === 1;
+        return {text: single ? r.label : r.label.replace(' + ', ' +\n'), left:pct(r.x,600), top:pct(r.y,530),
+          fs: single ? 'clamp(21px,3.75cqw,35px)' : 'clamp(13px,1.5cqw,16px)',
+          ws: single ? 'nowrap' : 'pre', mw: 'none',
+          op: active === k ? '0' : (active ? '0.4' : '1')};
+      }),
+      clusters: ORDER.map(k => {
+        const r = REGIONS[k], isOn = active === k, bx = r.box;
+        return {align: k === 'A' ? 'flex-start' : (k === 'D' || k === 'H') ? 'flex-end' : 'center', left:pct(bx[0],600), top:pct(bx[1],530), w:pct(bx[2],600), h:pct(bx[3],530), pe: isOn ? 'auto' : 'none', z: isOn ? '2' : '1',
+          traits: r.traits.map((t, i) => {
+            const on = isOn && i === ti;
+            return {...t, ...chip(on), on, z: on ? '3' : '1', op: isOn ? '1' : '0',
+              delay: isOn ? `calc(var(--dur) * 0.2 * ${i})` : '0ms',
+              tab: isOn ? '0' : '-1', hidden: isOn ? undefined : 'true',
+              bg: on ? 'var(--ink)' : 'var(--surface)',
+              transform: on ? 'scale(calc(1 + (var(--grow) - 1) * 7))' : 'none',
+              shadow: on ? 'var(--glow)' : 'none',
+              enter: () => { clearTimeout(this.switchT); this.pending = null; this.setState({overTrait:true, hoverTrait:i}); },
+              leave: () => this.setState({overTrait:false}),
+              click: e => { e.stopPropagation(); this.setState(st => ({pinRegion: k, pinTrait: st.pinTrait === i ? -1 : i})); }};
+          })};
+      }),
+      stripAnim: this.stripAnimName(tr ? active + ':' + ti : 'idle:' + active),
+      stripIdle: !tr, stripDetail: !!tr,
+      hint: reg ? `${reg.title}: hover or tap a trait to learn more.` : 'Hover or tap a trait to learn more.',
+      detail: tr ? {...tr, ...kindOf(tr), region: reg.title} : {},
+      regionList: ORDER.map(k => ({title: REGIONS[k].title, dots: k.split('').map(l => COLORS[l]), traits: REGIONS[k].traits.map(t => ({...t, ...kindOf(t)}))}))
+    };
+  }
+}
+</script>
+</body>
+</html>
