@@ -29,7 +29,7 @@
   var ROLES = { teacher: { idle: 30 * 60 * 1000, cutoffs: [{ h: 15, m: 5 }] }, sub: { idle: 30 * 60 * 1000, cutoffs: [{ h: 14, m: 15 }, { h: 15, m: 30 }], lastSignIn: { h: 15, m: 30 } } };
   var WARN_MS = 5 * 60 * 1000;
   // Server mode: paste your Worker address here (see SECURITY-SETUP.md). Blank = preview mode (PINs checked in the browser).
-  var API_BASE = '';
+  var API_BASE = 'demars-hub.derrickdemars.workers.dev';
   var SERVER = !!API_BASE;
   var SESSION_KEY = 'demars-hub-session-v1';
   var STD = '"Helvetica Neue", Helvetica, Arial, sans-serif';
