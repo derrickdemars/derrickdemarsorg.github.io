@@ -1,17 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Lesson Planner | Dr. DeMars | Math Hub</title>
-<link rel="icon" type="image/svg+xml" href="/favicon.svg">
-<!-- Placeholder. Replace this folder's contents with your planner's dist/ build (see PLANNER-SETUP.md). -->
-</head>
-<body style="margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#131317;color:#f3f2ee;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
-<main style="max-width:560px;padding:32px 24px;display:flex;flex-direction:column;gap:16px;">
-<h1 style="margin:0;font-size:36px;line-height:1.15;">Lesson Planner</h1>
-<p style="margin:0;font-size:19px;color:#b6b5bf;">The Lesson Planner isn't published yet.</p>
-<a href="/" style="align-self:flex-start;display:flex;align-items:center;min-height:52px;padding:0 22px;border-radius:14px;background:#f3f2ee;color:#131317;font-size:18px;font-weight:700;text-decoration:none;">Go to the Math Hub</a>
-</main>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Innova Lesson Planner</title>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font-family: Tahoma, sans-serif; }
+    </style>
+    <!-- Math Hub sign-in (only exists online; at home this 404s harmlessly) -->
+    <script src="/hub-state.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
 </html>
