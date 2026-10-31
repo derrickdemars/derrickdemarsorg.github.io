@@ -25,7 +25,8 @@
   var FOLD_BREAKS = 3;        // ...or text with more line breaks than this
   var DEMO = false;           // true shows sample posts so you can preview the layout
   var DUE_ON_CALENDAR = true; // false keeps Classroom due dates off the calendar
-
+  var NO_DUE_WORD = ['quiz feedback']; // titles with these words show as a plain due date, with no "Due" on the card
+  
   var COURSES = {
     geo: { name: 'Geometry', fill: 'oklch(0.67 0.19 300)', text: 'var(--t-geo)' },
     alg1: { name: 'Algebra I', fill: 'oklch(0.76 0.16 55)', text: 'var(--t-alg1)' },
@@ -89,6 +90,8 @@
     return out;
   }
 
+    function plain(title) { var t = String(title || '').toLowerCase(); return NO_DUE_WORD.some(function (w) { return w && t.indexOf(String(w).toLowerCase()) >= 0; }); }
+  
   // ---------- dates ----------
   function toDate(v) { if (!v) return null; var d = new Date(v); return isNaN(d) ? null : d; }
   function fmtDay(d, long) {
@@ -182,6 +185,7 @@
 
       function card(p) {
         var k = KINDS[p.kind] || KINDS.announcement, due = dueLabel(p.due);
+        if (due && plain(p.title)) due.text = due.text.replace(/^Due /, '');
         var meta = [k.label];
         if (p.topic) meta.push(p.topic);
         return h('li', { key: p.id, className: 'hgc-card', style: { background: 'var(--surface)', border: '1px solid var(--line)', borderLeft: '6px solid ' + c.fill, borderRadius: '20px', padding: '16px 18px', display: 'flex', flexDirection: 'column', gap: '10px', boxSizing: 'border-box', minWidth: 0 } },
@@ -236,8 +240,9 @@
     for (var i = ev.length - 1; i >= 0; i--) if (ev[i].gc) ev.splice(i, 1);
     var added = DUE_ON_CALENDAR && DUE.length ? HC._test.fromGoogle(DUE) : [];
     var norm = function (t) { return String(t || '').toLowerCase().replace(/\s+/g, ' ').trim(); };
+        ev.forEach(function (o) { if (plain(o.title)) o.quiz = false; });
     added.forEach(function (e, i) {
-      e.gc = true; e.id = 'gc' + i;
+      e.gc = true; e.id = 'gc' + i; if (plain(e.title)) e.quiz = false;
       var dup = ev.some(function (o) { return !o.gc && o.w === e.w && o.d === e.d && norm(o.title) === norm(e.title) && e.cs.some(function (c) { return o.cs.indexOf(c) >= 0; }); });
       if (!dup) ev.push(e);
     });
