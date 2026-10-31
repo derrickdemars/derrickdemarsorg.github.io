@@ -17,8 +17,7 @@
   if (window.HubClassroom) return;
 
   // ---------- settings ----------
-  var FEED_URL = 'https://script.google.com/macros/s/AKfycbxvifbW9xpwVqsykNnry1WknDgv7_riJLg8VGrV-DCjoUxzrZiRY16xFCyEYaQFaosW/exec
-';          // your Apps Script web app address (ends in /exec)
+  var FEED_URL = 'https://script.google.com/macros/s/AKfycbxvifbW9xpwVqsykNnry1WknDgv7_riJLg8VGrV-DCjoUxzrZiRY16xFCyEYaQFaosW/exec';          // your Apps Script web app address (ends in /exec)
   var USE_WORKER = false;     // true if your Worker serves /api/classroom (see worker-classroom.js)
   var SHOW_AT_FIRST = 4;      // posts shown before "Show more"
   var TEACHER_ONLY = false;   // true hides the feed from everyone who isn't signed in as teacher
