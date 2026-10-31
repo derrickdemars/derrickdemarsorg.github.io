@@ -184,7 +184,6 @@
         var k = KINDS[p.kind] || KINDS.announcement, due = dueLabel(p.due);
         var meta = [k.label];
         if (p.topic) meta.push(p.topic);
-        var when = postedLabel(p); if (when) meta.push(when);
         return h('li', { key: p.id, className: 'hgc-card', style: { background: 'var(--surface)', border: '1px solid var(--line)', borderLeft: '6px solid ' + c.fill, borderRadius: '20px', padding: '16px 18px', display: 'flex', flexDirection: 'column', gap: '10px', boxSizing: 'border-box', minWidth: 0 } },
           h('div', { style: { display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', fontSize: '15px', fontWeight: 700, color: 'var(--muted)' } },
             icon(k.icon, 20, { color: c.text }),
