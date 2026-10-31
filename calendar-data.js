@@ -7,22 +7,23 @@
 //   "GEO NS Class Party", "GEO ALG1 Test Unit 3". These words are removed from everything shown.
 //
 //   No course tag (school-wide), all-day:
-//     NS          -> whole day striped; dark header badge (party popper if HL too, otherwise calendar-X)
-//     HL          -> dark header badge with a party popper
-//     anything else -> dark header badge with a calendar icon
-//     The description of an all-day school-wide event shows only in its popup.
+//     NS          -> whole day striped; outlined header badge (party popper if HL too, otherwise calendar-X)
+//     HL          -> outlined header badge with a party popper
+//     anything else -> outlined header badge with a calendar icon
 //   No course tag, timed:
 //     Shown as plain text (title, time range, description) in each course cell whose class time
-//     overlaps it (bell-schedule.js; Geometry includes both homerooms). HL adds a party popper.
-//     If it overlaps no class, it becomes a dark header badge with the time range and description.
-//     NS does nothing on a timed event.
+//     overlaps it (bell-schedule.js; Geometry includes both homerooms). HL adds a party popper;
+//     NS stripes those cells. If it overlaps no class, it becomes a header badge with its time range.
+//     Header badges never show descriptions; those appear only in the popup.
 //   With course tag(s) (applies to every tagged course):
-//     NS (all-day) or HL (all-day or timed) -> that course's cell striped; title as plain text
-//     otherwise -> chip: filled for quiz/test/exam, outlined for anything else
-//     The description shows in the course cell, below everything else.
+//     NS or HL (all-day or timed) -> that course's cell striped; title (and time) as plain text
+//     otherwise -> chip: filled for quiz/test/exam, outlined for anything else; time and
+//                  description go inside the chip
+//   In a cell, each event's title, time and description stay together. Order: chips, NS/HL text,
+//   timed school-wide events. A description already shown in that cell isn't repeated.
 //
-//   Text longer than about 55 characters or with more than two line breaks folds to 3 lines (More/Less).
-//   Hover (mouse) or tap (touch) any calendar item for its details. Phones show one day at a time.
+//   Text over 33 characters or with more than two line breaks is cut with "…" and a More link.
+//   Hover (mouse, about 0.3 s) or tap (touch) any calendar item for its details. Phones show one day at a time.
 (function () {
   if (window.HubCalendar) return;
 
@@ -36,7 +37,7 @@
   ];
   var BY_ID = {};
   COURSES.forEach(function (c) { BY_ID[c.id] = c; });
-  var FOLD_CHARS = 55, FOLD_BREAKS = 2, CLOSE_MS = 500;
+  var FOLD_CHARS = 33, FOLD_BREAKS = 2, OPEN_MS = 300, CLOSE_MS = 500;
   var STRIPES = 'repeating-linear-gradient(45deg,var(--surface2) 0 8px,transparent 8px 16px)';
   var EVENTS = []; // filled from Google Calendar
 
@@ -56,9 +57,9 @@
   function timeRange(s, e) {
     if (!s) return '';
     var a = clock(s);
-    if (!e || e <= s) return a.text + ' ' + a.ampm;
+    if (!e || e <= s) return a.text + a.ampm;
     var b = clock(e);
-    return a.ampm === b.ampm ? a.text + ' – ' + b.text + ' ' + b.ampm : a.text + ' ' + a.ampm + ' – ' + b.text + ' ' + b.ampm;
+    return a.ampm === b.ampm ? a.text + '–' + b.text + b.ampm : a.text + a.ampm + '–' + b.text + b.ampm;
   }
   function toDate(v) { if (!v) return null; var d = new Date(v); return isNaN(d) ? null : d; }
 
@@ -137,7 +138,27 @@
     var plain = segs.map(function (g) { return g.text; }).join('');
     return { segs: segs, text: plain, key: plain.toLowerCase().replace(/\s+/g, ' ').trim() };
   }
-  function needsFold(text) { return text.length > FOLD_CHARS || (text.match(/\n/g) || []).length > FOLD_BREAKS; }
+  // Where folded text is cut: after 33 characters or at the third line break, whichever comes first.
+  function cutAt(text) {
+    var c = Math.min(text.length, FOLD_CHARS), n = 0;
+    for (var i = 0; i < c; i++) if (text[i] === '\n' && ++n > FOLD_BREAKS) return i;
+    return c;
+  }
+  function needsFold(text) { return cutAt(text) < text.length; }
+  function cutSegs(segs, c) {
+    var out = [], used = 0;
+    for (var i = 0; i < segs.length && used < c; i++) {
+      var g = segs[i], t = g.text.slice(0, c - used);
+      used += t.length; out.push(g.href ? { text: t, href: g.href } : { text: t });
+    }
+    var last = out[out.length - 1];
+    if (last && !last.href) last.text = last.text.replace(/\s+$/, '');
+    out.push({ text: '…' });
+    return out;
+  }
+  // Street addresses link to Google Maps; "Gym" or "Room 12" stay plain text.
+  var STREET_RE = /\b\d{1,6}\s+(?:[A-Za-z0-9.'-]+\s+){0,4}(?:St|Street|Ave|Avenue|Rd|Road|Dr|Drive|Blvd|Boulevard|Hwy|Highway|Ln|Lane|Pkwy|Parkway|Way|Ct|Court|Cir|Circle|Pl|Place)\b/i;
+  function mapHref(loc) { return loc && (STREET_RE.test(loc) || /\b\d{5}(?:-\d{4})?\b/.test(loc)) ? 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(loc) : ''; }
 
   // ---------- events from the Worker ----------
   var QUIZ_RE = /\b(quiz|test|exam)\b/i;
@@ -187,24 +208,22 @@
         isToday: dt.getTime() === t.getTime(), off: false, offLabel: '', badges: [], cells: {},
         events: [], items: [] // events/items: older fields some pages still read
       };
-      COURSES.forEach(function (c) { day.cells[c.id] = { off: false, chips: [], plain: [], timed: [], descs: [] }; });
+      COURSES.forEach(function (c) { day.cells[c.id] = { off: false, chips: [], plain: [], timed: [] }; });
       var evs = EVENTS.filter(function (e) { return e.w === offset && e.d === d; });
-      var courseEvs = [];
       evs.forEach(function (ev) {
         if (ev.cs.length) {
-          var striped = (ev.ns && ev.allDay) || ev.hl;
+          var striped = ev.ns || ev.hl;
           ev.cs.forEach(function (c) {
             var cell = day.cells[c];
-            if (striped) { cell.off = true; cell.plain.push(ev); }
-            else { cell.chips.push(ev); day.items.push({ c: c, t: ev.quiz ? 'test' : 'due', title: ev.title }); }
-            courseEvs.push({ c: c, ev: ev });
+            if (striped) { cell.off = true; cell.plain.push({ ev: ev }); }
+            else { cell.chips.push({ ev: ev }); day.items.push({ c: c, t: ev.quiz ? 'test' : 'due', title: ev.title }); }
           });
         } else if (ev.allDay) {
           if (ev.ns) { day.off = true; if (!day.offLabel) day.offLabel = ev.title; } else day.events.push(ev.title);
           day.badges.push({ ev: ev, icon: ev.hl ? 'celebration' : ev.ns ? 'event_busy' : 'event', rank: ev.ns ? 0 : ev.hl ? 1 : 2 });
         } else {
           var hit = overlapCourses(ev);
-          if (hit.length) hit.forEach(function (c) { day.cells[c].timed.push({ ev: ev }); });
+          if (hit.length) hit.forEach(function (c) { day.cells[c].timed.push({ ev: ev }); if (ev.ns) day.cells[c].off = true; });
           else day.badges.push({ ev: ev, icon: ev.hl ? 'celebration' : 'event', rank: 3, timed: true });
         }
       });
@@ -212,10 +231,9 @@
       COURSES.forEach(function (c) {
         var cell = day.cells[c.id], seen = {};
         cell.timed.sort(function (a, b) { return byStart(a.ev, b.ev); });
-        cell.timed.forEach(function (x) { x.showDesc = !!(x.ev.desc && !seen[x.ev.desc.key]); if (x.ev.desc) seen[x.ev.desc.key] = 1; });
-        courseEvs.forEach(function (x) {
-          if (x.c !== c.id || !x.ev.desc || seen[x.ev.desc.key]) return;
-          seen[x.ev.desc.key] = 1; cell.descs.push(x.ev);
+        cell.chips.concat(cell.plain, cell.timed).forEach(function (x) {
+          x.showDesc = !!(x.ev.desc && !seen[x.ev.desc.key]);
+          if (x.ev.desc) seen[x.ev.desc.key] = 1;
         });
       });
       days.push(day);
@@ -237,11 +255,18 @@
     '.hcal-row:hover{--row-t:translateY(var(--lift)) scale(calc(1 + (var(--grow) - 1) * 2.5));box-shadow:var(--row-glow);}',
     '.hcal-row:active{box-shadow:var(--row-glow);}',
     '.hcal-link{color:inherit;text-decoration:underline;text-underline-offset:2px;}',
-    '.hcal-more{background:none;border:0;padding:2px 0;margin:0;min-height:24px;color:inherit;font:inherit;font-size:13px;font-weight:700;text-decoration:underline;text-underline-offset:2px;cursor:pointer;align-self:flex-start;}'
+    '.hcal-cut{display:inline-block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;vertical-align:bottom;}',
+    '.hcal-more{display:inline;background:none;border:0;padding:0 0 0 4px;margin:0;color:inherit;font:inherit;font-size:13px;font-weight:700;text-decoration:underline;text-underline-offset:2px;cursor:pointer;white-space:nowrap;}'
   ].join('');
   function addCss() {
     if (document.getElementById('hcal-css')) return;
     var s = document.createElement('style'); s.id = 'hcal-css'; s.textContent = CSS; document.head.appendChild(s);
+  }
+  // The site's animation speed (--dur): about 150 ms, or 0 when "Reduce motion" is on.
+  function fadeMs() {
+    var v = (getComputedStyle(document.documentElement).getPropertyValue('--dur') || '').trim();
+    var n = parseFloat(v); if (isNaN(n)) return 150;
+    return /ms$/.test(v) ? n : n * 1000;
   }
   var NARROW = '(max-width: 699px)';
   var View = null;
@@ -249,11 +274,11 @@
     var R = window.React, RD = window.ReactDOM, h = R.createElement;
     var useState = R.useState, useEffect = R.useEffect, useRef = R.useRef;
     var WRAP = { overflowWrap: 'anywhere', minWidth: 0 };
-    var CLAMP = { display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' };
     function icon(name, size, extra) { return h('span', { className: 'material-symbols-rounded', 'aria-hidden': 'true', style: Object.assign({ fontSize: size + 'px', flex: 'none' }, extra || {}) }, name); }
-    function segNodes(segs) {
+    // inCell: links stay on one line and end in "…" at the cell's edge
+    function segNodes(segs, inCell) {
       return segs.map(function (g, i) {
-        return g.href ? h('a', { key: i, href: g.href, target: '_blank', rel: 'noopener noreferrer', className: 'hcal-link', 'data-hcal-nopop': '1' }, g.text) : g.text;
+        return g.href ? h('a', { key: i, href: g.href, target: '_blank', rel: 'noopener noreferrer', className: inCell ? 'hcal-link hcal-cut' : 'hcal-link', 'data-hcal-nopop': '1' }, g.text) : g.text;
       });
     }
 
@@ -267,33 +292,55 @@
       var dy = useState(null), dayPick = dy[0], setDay = dy[1];
       var pp = useState(null), pop = pp[0], setPop = pp[1];
       var fo = useState({}), open = fo[0], setOpen = fo[1];
-      var timer = useRef(null), ptr = useRef('mouse');
+      var T = useRef({ open: null, close: null, fade: null }), ptr = useRef('mouse'), hover = useRef(null), popRef = useRef(null);
+      popRef.current = pop;
+
+      function clearT(k) { clearTimeout(T.current[k]); T.current[k] = null; }
+      function show(ev, day, key, node) {
+        clearT('open'); clearT('close'); clearT('fade');
+        var r = node.getBoundingClientRect(), rect = { top: r.top, bottom: r.bottom, left: r.left };
+        var wasShown = popRef.current && popRef.current.vis;
+        setPop({ key: key, ev: ev, day: day, rect: rect, vis: !!wasShown });
+        if (!wasShown) requestAnimationFrame(function () { requestAnimationFrame(function () {
+          setPop(function (p) { return p && p.key === key ? Object.assign({}, p, { vis: true }) : p; });
+        }); });
+      }
+      function hide() {
+        clearT('open'); clearT('close');
+        if (!popRef.current) return;
+        var ms = fadeMs();
+        if (!ms) { setPop(null); return; }
+        setPop(function (p) { return p ? Object.assign({}, p, { vis: false }) : p; });
+        clearT('fade');
+        T.current.fade = setTimeout(function () { setPop(function (p) { return p && !p.vis ? null : p; }); }, ms + 30);
+      }
+      function later() { clearT('close'); T.current.close = setTimeout(hide, CLOSE_MS); }
+      function drop() { clearT('open'); clearT('close'); clearT('fade'); hover.current = null; setPop(null); }
 
       useEffect(function () {
         addCss();
         var bump = function () { setTick(function (x) { return x + 1; }); };
-        var onMq = function () { setNarrow(!!mq.matches); setPop(null); };
-        var close = function () { setPop(null); };
+        var onMq = function () { setNarrow(!!mq.matches); drop(); };
         var down = function (e) {
           ptr.current = e.pointerType || 'mouse';
           var t = e.target;
-          if (!(t && t.closest && t.closest('[data-hcal-pop],[data-hcal-trig]'))) setPop(null);
+          if (!(t && t.closest && t.closest('[data-hcal-pop],[data-hcal-trig]'))) hide();
         };
         window.addEventListener('hubcal-ready', bump);
         window.addEventListener('hubbell-ready', bump);
-        window.addEventListener('scroll', close);
-        window.addEventListener('resize', close);
+        window.addEventListener('scroll', hide);
+        window.addEventListener('resize', hide);
         document.addEventListener('pointerdown', down, true);
         if (mq) { if (mq.addEventListener) mq.addEventListener('change', onMq); else mq.addListener(onMq); }
         var daily = setInterval(bump, 60000);
         return function () {
           window.removeEventListener('hubcal-ready', bump);
           window.removeEventListener('hubbell-ready', bump);
-          window.removeEventListener('scroll', close);
-          window.removeEventListener('resize', close);
+          window.removeEventListener('scroll', hide);
+          window.removeEventListener('resize', hide);
           document.removeEventListener('pointerdown', down, true);
           if (mq) { if (mq.removeEventListener) mq.removeEventListener('change', onMq); else mq.removeListener(onMq); }
-          clearInterval(daily); clearTimeout(timer.current);
+          clearInterval(daily); clearT('open'); clearT('close'); clearT('fade');
         };
       }, []);
 
@@ -301,47 +348,55 @@
       var todayIdx = weeks[0].days.findIndex(function (d) { return d.isToday; });
       var dayIdx = dayPick == null ? Math.max(0, todayIdx) : dayPick;
 
-      // ----- popup triggers -----
-      function show(ev, day, key, node) {
-        clearTimeout(timer.current);
-        var r = node.getBoundingClientRect();
-        setPop({ key: key, ev: ev, day: day, rect: { top: r.top, bottom: r.bottom, left: r.left } });
-      }
-      function later() { clearTimeout(timer.current); timer.current = setTimeout(function () { setPop(null); }, CLOSE_MS); }
+      // ----- popup triggers: mouse waits ~0.3 s; touch opens on tap. More/Less never opens one.
+      function onMore(t) { return !!(t && t.closest && t.closest('[data-hcal-more]')); }
       function trig(ev, day, key, style) {
+        var enter = function (node) {
+          if (hover.current === key) return;
+          hover.current = key;
+          if (popRef.current && popRef.current.key === key) { clearT('close'); return; }
+          clearT('open');
+          T.current.open = setTimeout(function () { if (hover.current === key) show(ev, day, key, node); }, OPEN_MS);
+        };
+        var leave = function () {
+          if (hover.current === key) hover.current = null;
+          clearT('open');
+          if (popRef.current) later();
+        };
         return {
           key: key, 'data-hcal-trig': '1', style: style,
-          onPointerEnter: function (e) { if (e.pointerType === 'mouse') show(ev, day, key, e.currentTarget); },
-          onPointerLeave: function (e) { if (e.pointerType === 'mouse') later(); },
+          onPointerMove: function (e) { if (e.pointerType !== 'mouse') return; if (onMore(e.target)) leave(); else enter(e.currentTarget); },
+          onPointerLeave: function (e) { if (e.pointerType === 'mouse') leave(); },
           onClick: function (e) {
             if (ptr.current === 'mouse') return;
-            if (e.target.closest && e.target.closest('[data-hcal-nopop]')) return;
-            if (pop && pop.key === key) setPop(null); else show(ev, day, key, e.currentTarget);
+            if (e.target.closest && e.target.closest('[data-hcal-nopop],[data-hcal-more]')) return;
+            if (pop && pop.key === key && pop.vis) hide(); else show(ev, day, key, e.currentTarget);
           }
         };
       }
-      // ----- folded text -----
-      function folded(segs, text, key, style) {
-        var long = needsFold(text), isOpen = !!open[key];
-        var body = h('span', { style: Object.assign({ display: 'block', whiteSpace: 'pre-line' }, WRAP, style || {}, long && !isOpen ? CLAMP : {}) }, segNodes(segs));
-        if (!long) return body;
-        return h(R.Fragment, null, body, h('button', {
-          type: 'button', className: 'hcal-more', 'data-hcal-nopop': '1', 'aria-expanded': isOpen ? 'true' : 'false',
-          onClick: function (e) { e.stopPropagation(); setOpen(function (o) { var n = Object.assign({}, o); n[key] = !o[key]; return n; }); }
-        }, isOpen ? 'Less' : 'More'));
+      // ----- folded text: first 33 characters (or 3 lines), then "…" and More
+      function folded(segs, text, key, style, inCell) {
+        var cut = cutAt(text), long = cut < text.length, isOpen = !!open[key];
+        var shown = long && !isOpen ? cutSegs(segs, cut) : segs;
+        return h('span', { style: Object.assign({ display: 'block', whiteSpace: 'pre-line' }, WRAP, style || {}) },
+          segNodes(shown, inCell),
+          long ? h('button', {
+            type: 'button', className: 'hcal-more', 'data-hcal-more': '1', 'aria-expanded': isOpen ? 'true' : 'false',
+            onClick: function (e) { e.stopPropagation(); setOpen(function (o) { var n = Object.assign({}, o); n[key] = !o[key]; return n; }); }
+          }, isOpen ? 'Less' : 'More') : null);
       }
-      function title(ev, key, style) { return folded([{ text: ev.title }], ev.title, key + ':t', style); }
-      function desc(ev, key, style) { return ev.desc ? folded(ev.desc.segs, ev.desc.text, key + ':d', style) : null; }
+      function title(ev, key, style) { return folded([{ text: ev.title }], ev.title, key + ':t', style, true); }
+      function desc(ev, key, style) { return ev.desc ? folded(ev.desc.segs, ev.desc.text, key + ':d', style, true) : null; }
+      function time(ev, style) { return ev.allDay ? null : h('span', { style: Object.assign({ fontSize: '13px', fontWeight: 600 }, style || {}) }, timeRange(ev.start, ev.end)); }
 
-      // ----- pieces -----
+      // ----- pieces
       function badge(b, day) {
         var ev = b.ev, key = day.key + ':b:' + ev.id;
-        return h('div', trig(ev, day, key, Object.assign({ alignSelf: 'flex-start', maxWidth: '100%', boxSizing: 'border-box', display: 'flex', alignItems: 'flex-start', gap: '4px', fontSize: '14px', fontWeight: 700, lineHeight: 1.35, padding: '3px 10px', borderRadius: '8px', background: 'var(--ink)', color: 'var(--bg)' }, WRAP)),
+        return h('div', trig(ev, day, key, Object.assign({ alignSelf: 'flex-start', maxWidth: '100%', boxSizing: 'border-box', display: 'flex', alignItems: 'flex-start', gap: '4px', fontSize: '14px', fontWeight: 700, lineHeight: 1.35, padding: '3px 10px', borderRadius: '8px', background: 'transparent', border: '1.5px solid var(--ink)', color: 'var(--ink)' }, WRAP)),
           icon(b.icon, 16, { marginTop: '1px' }),
           h('div', { style: Object.assign({ display: 'flex', flexDirection: 'column', gap: '2px', flex: 1 }, WRAP) },
             title(ev, key),
-            b.timed ? h('span', { style: { fontSize: '13px', fontWeight: 600 } }, timeRange(ev.start, ev.end)) : null,
-            b.timed ? desc(ev, key, { fontSize: '13px', fontWeight: 400 }) : null));
+            b.timed ? time(ev) : null));
       }
       function dayHead(day, i, wide) {
         return h('div', { key: day.key, role: wide ? 'columnheader' : undefined, style: { padding: '12px 14px', borderBottom: '1px solid var(--line)', borderLeft: wide && (home || i > 0) ? '1px solid var(--line)' : '0', background: day.off ? STRIPES : day.isToday ? 'var(--surface2)' : 'transparent', display: 'flex', flexDirection: 'column', gap: '6px', minWidth: 0 } },
@@ -351,15 +406,21 @@
           h('span', { style: { fontSize: '15px', color: 'var(--muted)' } }, day.date),
           day.badges.map(function (b) { return badge(b, day); }));
       }
+      // Each event's title, time and description stay together.
       function cellBody(day, c) {
         var cell = day.cells[c.id], k = day.key + ':' + c.id + ':', out = [];
-        cell.chips.forEach(function (ev) {
-          var key = k + 'c:' + ev.id, test = ev.quiz, round = needsFold(ev.title) || ev.title.length > 22;
-          out.push(h('div', trig(ev, day, key, Object.assign({ alignSelf: 'flex-start', maxWidth: '100%', boxSizing: 'border-box', display: 'flex', flexDirection: 'column', padding: '4px 10px', borderRadius: round ? '14px' : '999px', border: '2px solid ' + c.fill, background: test ? c.fill : 'transparent', color: test ? '#15151a' : 'var(--ink)', fontSize: '14px', fontWeight: 700, lineHeight: 1.3 }, WRAP)), title(ev, key)));
+        cell.chips.forEach(function (x) {
+          var ev = x.ev, key = k + 'c:' + ev.id, test = ev.quiz;
+          var multi = !ev.allDay || x.showDesc || needsFold(ev.title) || ev.title.length > 22;
+          out.push(h('div', trig(ev, day, key, Object.assign({ alignSelf: multi ? 'stretch' : 'flex-start', maxWidth: '100%', boxSizing: 'border-box', display: 'flex', flexDirection: 'column', gap: '2px', padding: '4px 10px', borderRadius: multi ? '14px' : '999px', border: '2px solid ' + c.fill, background: test ? c.fill : 'transparent', color: test ? '#15151a' : 'var(--ink)', fontSize: '14px', fontWeight: 700, lineHeight: 1.3 }, WRAP)),
+            title(ev, key), time(ev), x.showDesc ? desc(ev, key, { fontSize: '13px', fontWeight: 400 }) : null));
         });
-        cell.plain.forEach(function (ev) {
-          var key = k + 'p:' + ev.id;
-          out.push(h('div', trig(ev, day, key, Object.assign({ display: 'flex', flexDirection: 'column', fontSize: '14px', fontWeight: 700, lineHeight: 1.35 }, WRAP)), title(ev, key)));
+        cell.plain.forEach(function (x) {
+          var ev = x.ev, key = k + 'p:' + ev.id;
+          out.push(h('div', trig(ev, day, key, Object.assign({ display: 'flex', flexDirection: 'column', gap: '2px', lineHeight: 1.35 }, WRAP)),
+            title(ev, key, { fontSize: '14px', fontWeight: 700 }),
+            time(ev, { color: 'var(--muted)' }),
+            x.showDesc ? desc(ev, key, { fontSize: '14px', color: 'var(--muted)' }) : null));
         });
         cell.timed.forEach(function (x) {
           var ev = x.ev, key = k + 's:' + ev.id;
@@ -367,12 +428,8 @@
             h('div', { style: Object.assign({ display: 'flex', alignItems: 'flex-start', gap: '4px', fontSize: '14px', fontWeight: 700 }, WRAP) },
               ev.hl ? icon('celebration', 16, { marginTop: '1px' }) : null,
               h('div', { style: Object.assign({ display: 'flex', flexDirection: 'column', flex: 1 }, WRAP) }, title(ev, key))),
-            h('span', { style: { fontSize: '13px', fontWeight: 600, color: 'var(--muted)' } }, timeRange(ev.start, ev.end)),
+            time(ev, { color: 'var(--muted)' }),
             x.showDesc ? desc(ev, key, { fontSize: '14px', color: 'var(--muted)' }) : null));
-        });
-        cell.descs.forEach(function (ev) {
-          var key = k + 'd:' + ev.id;
-          out.push(h('div', trig(ev, day, key, Object.assign({ display: 'flex', flexDirection: 'column', fontSize: '14px', lineHeight: 1.35, color: 'var(--muted)' }, WRAP)), desc(ev, key)));
         });
         return out;
       }
@@ -384,11 +441,11 @@
             h('span', { style: WRAP }, c.name)));
       }
       function cell(day, c, i, wide, top) {
-        return h('div', { key: day.key + c.id, role: wide ? 'cell' : undefined, style: { padding: '10px', borderTop: top ? '1px solid var(--line)' : '0', borderLeft: wide ? (home || i > 0 ? '1px solid var(--line)' : '0') : (home ? '1px solid var(--line)' : '0'), background: cellBg(day, c), display: 'flex', flexDirection: 'column', gap: '6px', minHeight: '56px', minWidth: 0, boxSizing: 'border-box' } }, cellBody(day, c));
+        return h('div', { key: day.key + c.id, role: wide ? 'cell' : undefined, style: { padding: '10px', borderTop: top ? '1px solid var(--line)' : '0', borderLeft: wide ? (home || i > 0 ? '1px solid var(--line)' : '0') : (home ? '1px solid var(--line)' : '0'), background: cellBg(day, c), display: 'flex', flexDirection: 'column', gap: '8px', minHeight: '56px', minWidth: 0, boxSizing: 'border-box' } }, cellBody(day, c));
       }
       function emptyWeek(wkObj) {
         return wkObj.days.every(function (d) {
-          return !d.off && !d.badges.length && rows.every(function (c) { var x = d.cells[c.id]; return !x.off && !x.chips.length && !x.plain.length && !x.timed.length && !x.descs.length; });
+          return !d.off && !d.badges.length && rows.every(function (c) { var x = d.cells[c.id]; return !x.off && !x.chips.length && !x.plain.length && !x.timed.length; });
         });
       }
       var legend = h('div', { style: { flex: 1, display: 'flex', gap: '8px 22px', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center', fontSize: '15px', color: 'var(--muted)' } },
@@ -404,7 +461,7 @@
           h('div', { key: 'top', style: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap' } },
             h('h2', { id: 'cal-title', style: { margin: 0, fontSize: '28px' } }, wkObj.label),
             legend,
-            h('button', { type: 'button', className: 'hcal-btn', style: BTN, onClick: function () { setPop(null); setWeek(weekNo ? 0 : 1); } }, weekNo === 0 ? 'Next week →' : '← This week')),
+            h('button', { type: 'button', className: 'hcal-btn', style: BTN, onClick: function () { drop(); setWeek(weekNo ? 0 : 1); } }, weekNo === 0 ? 'Next week →' : '← This week')),
           h('div', { key: 'grid', style: box },
             h('div', { role: 'table', 'aria-label': wkObj.label, style: { display: 'grid', gridTemplateColumns: home ? 'minmax(0,0.9fr) repeat(5,minmax(0,1fr))' : 'repeat(5,minmax(0,1fr))' } },
               h('div', { role: 'row', style: { display: 'contents' } },
@@ -420,7 +477,7 @@
       } else {
         var wn = dayIdx >= 5 ? 1 : 0, day = weeks[wn].days[dayIdx % 5];
         var NAV = Object.assign({}, BTN, { flex: '1 1 0', minWidth: 0, padding: '0 8px', fontSize: 'clamp(12px, 4vw, 16px)', whiteSpace: 'nowrap' });
-        var go = function (n) { setPop(null); setDay(Math.max(0, Math.min(9, dayIdx + n))); };
+        var go = function (n) { drop(); setDay(Math.max(0, Math.min(9, dayIdx + n))); };
         body = [
           h('div', { key: 'top', style: { display: 'flex', flexDirection: 'column', gap: '10px' } },
             h('h2', { id: 'cal-title', style: { margin: 0, fontSize: '26px' } }, weeks[wn].label),
@@ -438,7 +495,7 @@
         ];
       }
 
-      // ----- popup -----
+      // ----- popup (fades in and out with the site's animation speed)
       var popEl = null;
       if (pop) {
         var ev = pop.ev, vw = window.innerWidth, vh = window.innerHeight;
@@ -447,21 +504,22 @@
         var place = below >= 220 || below >= above
           ? { top: pop.rect.bottom + 8 + 'px', maxHeight: Math.max(120, below) + 'px' }
           : { bottom: vh - pop.rect.top + 8 + 'px', maxHeight: Math.max(120, above) + 'px' };
-        var line = function (ic, text) { return h('div', { style: { display: 'flex', alignItems: 'flex-start', gap: '6px', fontSize: '14px', color: 'var(--muted)' } }, icon(ic, 18), h('span', { style: WRAP }, text)); };
+        var line = function (ic, content) { return h('div', { style: { display: 'flex', alignItems: 'flex-start', gap: '6px', fontSize: '14px', color: 'var(--muted)' } }, icon(ic, 18), h('span', { style: WRAP }, content)); };
+        var map = mapHref(ev.loc);
         popEl = h('div', {
           'data-hcal-pop': '1', role: 'dialog', 'aria-label': ev.title,
-          onPointerEnter: function (e) { if (e.pointerType === 'mouse') clearTimeout(timer.current); },
+          onPointerEnter: function (e) { if (e.pointerType === 'mouse') clearT('close'); },
           onPointerLeave: function (e) { if (e.pointerType === 'mouse') later(); },
-          style: Object.assign({ position: 'fixed', left: left + 'px', width: w + 'px', boxSizing: 'border-box', zIndex: 300, overflowY: 'auto', background: 'var(--surface)', color: 'var(--ink)', border: '1px solid var(--line)', borderRadius: '16px', padding: '14px 16px', boxShadow: '0 12px 32px rgba(0,0,0,0.35)', display: 'flex', flexDirection: 'column', gap: '8px', fontFamily: 'var(--font)', lineHeight: 1.4, textAlign: 'left' }, place)
+          style: Object.assign({ position: 'fixed', left: left + 'px', width: w + 'px', boxSizing: 'border-box', zIndex: 300, overflowY: 'auto', background: 'var(--surface)', color: 'var(--ink)', border: '1px solid var(--line)', borderRadius: '16px', padding: '14px 16px', boxShadow: '0 12px 32px rgba(0,0,0,0.35)', display: 'flex', flexDirection: 'column', gap: '8px', fontFamily: 'var(--font)', lineHeight: 1.4, textAlign: 'left', opacity: pop.vis ? 1 : 0, transition: 'opacity var(--dur) ease', pointerEvents: pop.vis ? 'auto' : 'none' }, place)
         },
           ev.cs.length ? h('div', { style: { display: 'flex', flexWrap: 'wrap', gap: '4px 12px' } }, ev.cs.map(function (id) {
             var c = BY_ID[id];
             return h('span', { key: id, style: { display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', fontWeight: 700 } }, h('span', { 'aria-hidden': 'true', style: { width: '10px', height: '10px', borderRadius: '50%', background: c.fill, flex: 'none' } }), c.name);
           })) : null,
           h('div', { style: Object.assign({ fontSize: '17px', fontWeight: 700, lineHeight: 1.3 }, WRAP) }, ev.title),
-          ev.cs.length ? null : line('schedule', pop.day.long + ' · ' + (ev.allDay ? 'All day' : timeRange(ev.start, ev.end))),
-          ev.loc ? line('location_on', ev.loc) : null,
-          ev.desc ? h('div', { style: Object.assign({ fontSize: '14px', whiteSpace: 'pre-line' }, WRAP) }, segNodes(ev.desc.segs)) : null);
+          ev.allDay ? null : line('schedule', timeRange(ev.start, ev.end)),
+          ev.loc ? line('location_on', map ? h('a', { href: map, target: '_blank', rel: 'noopener noreferrer', className: 'hcal-link' }, ev.loc) : ev.loc) : null,
+          ev.desc ? h('div', { style: Object.assign({ fontSize: '14px', whiteSpace: 'pre-line' }, WRAP) }, segNodes(ev.desc.segs, false)) : null);
         popEl = RD && RD.createPortal ? RD.createPortal(popEl, document.body) : popEl;
       }
       return h(R.Fragment, null, body, popEl);
@@ -486,7 +544,7 @@
   }
   var api = window.HubCalendar = {
     events: EVENTS, week: week, element: element, courses: COURSES, live: false,
-    _test: { parseTitle: parseTitle, descOf: descOf, needsFold: needsFold, fromGoogle: fromGoogle, timeRange: timeRange }
+    _test: { parseTitle: parseTitle, descOf: descOf, needsFold: needsFold, cutAt: cutAt, cutSegs: cutSegs, mapHref: mapHref, fromGoogle: fromGoogle, timeRange: timeRange }
   };
   window.dispatchEvent(new Event('hubcal-ready'));
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', loadLive); else setTimeout(loadLive, 0);
