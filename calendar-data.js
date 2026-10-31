@@ -51,7 +51,7 @@
       var title = String(e.title || '').trim(), m = title.match(/^(g7|g8|alg1|geo|alg2|alg3)\b[\s:\u2013\u2014-]*/i);
       var course = m ? TAGS[m[1].toLowerCase()] : null;
       if (m) title = title.slice(m[0].length).trim();
-      var t = course ? (/\b(quiz|test)\b/i.test(title) ? 'test' : 'due') : (/no school/i.test(title) ? 'off' : 'event');
+      var t = course ? (/\b(quiz|test|exam)\b/i.test(title) ? 'test' : 'due') : (/no school/i.test(title) ? 'off' : 'event');
       out.push({ w: w, d: d, c: course, t: t, title: title });
     });
     return out;
