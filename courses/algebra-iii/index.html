@@ -22,6 +22,7 @@
 <script src="bell-schedule.js"></script>
 <script src="memory-aids.js"></script>
 <script src="quick-links.js"></script>
+<script src="classroom-feed.js"></script>
 <style>
 :root{--bg:#131317;--surface:#1c1c22;--surface2:#27272f;--line:#33333c;--ink:#f3f2ee;--muted:#b6b5bf;--font:"Helvetica Neue",Helvetica,Arial,sans-serif;--lh:1.5;--ls:0;--lift:-3px;--dur:160ms;--tileborder:0px solid transparent;--grow:1.02;--fade:300ms;--shape-hover:0.34;--glow:0 0 0 1px rgba(255,255,255,0.12),0 0 20px rgba(255,255,255,0.12);--cg-geo:var(--glow);--cg-alg1:var(--glow);--cg-alg2:var(--glow);--cg-alg3:var(--glow);--cg-g7:var(--glow);--cg-g8:var(--glow);--t-g7:oklch(0.86 0.12 150);--t-g8:oklch(0.84 0.09 250);--t-alg1:oklch(0.86 0.11 60);--t-geo:oklch(0.83 0.1 300);--t-alg2:oklch(0.83 0.1 25);--t-alg3:oklch(0.92 0.12 95);color-scheme:dark;}
 html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);line-height:var(--lh);letter-spacing:var(--ls);}
@@ -64,6 +65,11 @@ button,textarea,input{font:inherit;letter-spacing:inherit;}
         <section aria-labelledby="cal-title" style="display:flex;flex-direction:column;gap:14px;">
         {{ calView }}
       </section>
+        <sc-if value="{{ hasClass }}">
+        <section aria-labelledby="gc-title" style="display:flex;flex-direction:column;gap:14px;">
+          {{ classView }}
+        </section>
+        </sc-if>
         <section aria-labelledby="aids-title" style="display:flex;flex-direction:column;gap:12px;">
           <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
             <h2 id="aids-title" style="margin:0;font-size:28px;">Memory aids</h2>
@@ -157,6 +163,7 @@ class Component extends DCLogic {
     window.addEventListener('hubchange', this.onHub);
     window.addEventListener('hubstate-ready', this.onHub);
     this.onCal = () => this.forceUpdate(); window.addEventListener('hubcal-ready', this.onCal);
+    this.onClass = () => this.forceUpdate(); window.addEventListener('hubclassroom-ready', this.onClass);
     this.onLinks = () => this.forceUpdate(); window.addEventListener('hublinks-ready', this.onLinks);
     this.onAids = () => this.loadThumbs(); window.addEventListener('hubaids-ready', this.onAids); this.loadThumbs();
     this.onHub();
@@ -166,6 +173,7 @@ class Component extends DCLogic {
     window.removeEventListener('hubchange', this.onHub);
     window.removeEventListener('hubstate-ready', this.onHub);
     window.removeEventListener('hubcal-ready', this.onCal);
+    window.removeEventListener('hubclassroom-ready', this.onClass);
     window.removeEventListener('hubaids-ready', this.onAids);
     window.removeEventListener('hublinks-ready', this.onLinks);
   }
@@ -184,6 +192,8 @@ class Component extends DCLogic {
       aidRows: p.course && window.HubAids ? window.HubAids.forCourse(k).map(a => ({...a, dl: a.file.split('/').pop(), thumbBg: this.state.thumbs[a.file] ? `#fff url(${this.state.thumbs[a.file]}) top / cover no-repeat` : '#fff', hasThumb: !!this.state.thumbs[a.file], noThumb: !this.state.thumbs[a.file]})) : [],
       noAids: !!p.course && !!window.HubAids && !window.HubAids.forCourse(k).length,
       calView: p.course && window.HubCalendar && window.HubCalendar.element ? window.HubCalendar.element({mode: 'course', course: k}) : null,
+      classView: p.course && window.HubClassroom ? window.HubClassroom.element({course: k}) : null,
+      hasClass: !!(p.course && window.HubClassroom && window.HubClassroom.visible() && ['ready','loading','error'].indexOf(window.HubClassroom.status()) >= 0),
       page: {...p, desc: p.course ? `The ${p.title} page is being built.` : p.desc, bullets: p.course ? COURSE_PLAN : p.bullets, topics: p.topics || [], textVar: p.course ? `var(--t-${k})` : 'var(--ink)', level: p.level || '', radius: p.radius || '24px', fill: p.fill || ''},
       isCourse: !!p.course,
       showSoon: !(p.course && window.HUB_LAUNCH), notCourse: !p.course,
