@@ -22,9 +22,9 @@
   var USE_WORKER = false;     // true if your Worker serves /api/classroom (see worker-classroom.js)
   var SHOW_AT_FIRST = 4;      // posts shown before "Show more"
   var TEACHER_ONLY = false;   // true hides the feed from everyone who isn't signed in as teacher
-  var FOLD_CHARS = 222;       // longer text folds with a More button
+  var FOLD_CHARS = 240;       // longer text folds with a More button
   var FOLD_BREAKS = 3;        // ...or text with more line breaks than this
-  var DEMO = true;           // true shows sample posts so you can preview the layout
+  var DEMO = false;           // true shows sample posts so you can preview the layout
   var DUE_ON_CALENDAR = true; // false keeps Classroom due dates off the calendar
 
   var COURSES = {
