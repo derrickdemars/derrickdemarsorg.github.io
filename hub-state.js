@@ -24,9 +24,10 @@
   };
   // Sign-in rules: 30 min with no activity, 3:05 PM on school days (if signed in before then),
   // and closing the tab/browser (the session lives in sessionStorage).
-  // Teacher: 30 min idle, 3:05 PM weekdays. Substitute: 15 min idle, 2:15 PM weekdays, weekdays only.
+  // Roles: teacher = Dr. DeMars (master), staff = the Staff login (substitute access), sub = Substitute.
+  // Dr. DeMars and Staff: 30 min idle, 3:05 PM weekdays. Substitute: 2:15 / 3:30 PM, weekdays only.
   // cutoffs: sign-out times; a session ends at the first one after it started. lastSignIn: no sign-in after this.
-  var ROLES = { teacher: { idle: 30 * 60 * 1000, cutoffs: [{ h: 15, m: 5 }] }, sub: { idle: 30 * 60 * 1000, cutoffs: [{ h: 14, m: 15 }, { h: 15, m: 30 }], lastSignIn: { h: 15, m: 30 } } };
+  var ROLES = { teacher: { idle: 30 * 60 * 1000, cutoffs: [{ h: 15, m: 5 }] }, staff: { idle: 30 * 60 * 1000, cutoffs: [{ h: 15, m: 5 }] }, sub: { idle: 30 * 60 * 1000, cutoffs: [{ h: 14, m: 15 }, { h: 15, m: 30 }], lastSignIn: { h: 15, m: 30 } } };
   var WARN_MS = 5 * 60 * 1000;
   // Server mode: paste your Worker address here (see SECURITY-SETUP.md). Blank = preview mode (PINs checked in the browser).
   var API_BASE = 'https://demars-hub.derrickdemars.workers.dev';
@@ -73,7 +74,7 @@
     var d = new Date(now), wd = d.getDay();
     if (wd === 0 || wd === 6) return Infinity;
     if (s.skipCutoffDay === dayKey(d)) return Infinity;
-    var list = ROLES[s.role || 'teacher'].cutoffs;
+    var list = (ROLES[s.role] || ROLES.teacher).cutoffs;
     for (var i = 0; i < list.length; i++) {
       var c = new Date(d); c.setHours(list[i].h, list[i].m, 0, 0);
       if (c.getTime() > s.signedInAt) return c.getTime();
@@ -83,7 +84,7 @@
   function timing(now) {
     if (!session) return { left: 0, reason: '' };
     if (hold) return { left: Infinity, reason: '' };
-    var idleAt = session.lastActive + ROLES[session.role || 'teacher'].idle, cutAt = cutoffFor(session, now);
+    var idleAt = session.lastActive + (ROLES[session.role] || ROLES.teacher).idle, cutAt = cutoffFor(session, now);
     var t = cutAt < idleAt ? { left: cutAt - now, reason: 'cutoff' } : { left: idleAt - now, reason: 'idle' };
     if (SERVER && session.exp && session.exp - now < t.left) t.left = session.exp - now; // the server's word is final
     return t;
@@ -96,6 +97,8 @@
     o.signedIn = on;
     o.teacher = on && o.role === 'teacher';
     o.sub = on && o.role === 'sub';
+    o.staff = on && o.role === 'staff';
+    o.roleName = { teacher: 'Dr. DeMars', staff: 'Staff', sub: 'Substitute' }[o.role] || '';
     o.serverMode = SERVER;
     o.teacherLeft = t.left === Infinity ? 0 : Math.max(0, t.left);
     o.signOutReason = t.reason;

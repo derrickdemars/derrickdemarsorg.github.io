@@ -30,9 +30,9 @@
     g8: [L('classroom', '8th Grade Math class'), L('desmos', 'Linear or nonlinear?'), L('geogebra', 'Transformations explorer'), L('ixl', '8th grade skill plan'), L('wayground', 'Pythagorean theorem quiz')],
     alg2: [L('classroom', 'Algebra II class'), L('desmos', 'Parent functions'), L('geogebra', 'Unit circle explorer'), L('ixl', 'Algebra II skill plan'), L('wayground', 'Quadratics quiz')]
   };
-  // Group links by tool. who: 'teacher' sees everything; 'sub' also sees answer keys; anyone else sees public links.
+  // Group links by tool. who: 'teacher' (Dr. DeMars) sees everything; 'sub' and 'staff' (Staff login) also see answer keys; anyone else sees public links.
   function group(list, who) {
-    var teacher = who === true || who === 'teacher', sub = who === 'sub';
+    var teacher = who === true || who === 'teacher', sub = who === 'sub' || who === 'staff';
     var out = [];
     TOOL_ORDER.forEach(function (t) {
       var items = list.filter(function (l) { return l.tool === t && (teacher || !l.teacherOnly || (sub && l.answerKey)); })

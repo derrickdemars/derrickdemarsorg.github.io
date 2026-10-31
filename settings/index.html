@@ -41,7 +41,7 @@ button,textarea,input{font:inherit;letter-spacing:inherit;}
 
     <sc-if value="{{ locked }}" hint-placeholder-val="{{ false }}">
       <section style="background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:24px;display:flex;flex-direction:column;gap:14px;align-items:flex-start;">
-        <p style="margin:0;font-size:18px;">Sign in with the teacher PIN to change settings.</p>
+        <p style="margin:0;font-size:18px;">Sign in as Dr. DeMars to change settings.</p>
         <button onClick="{{ signIn }}" style="display:flex;align-items:center;gap:8px;min-height:48px;padding:0 18px;border-radius:14px;border:2px solid var(--ink);background:var(--ink);color:var(--bg);font-size:17px;font-weight:700;cursor:pointer;"><span class="material-symbols-rounded" aria-hidden="true">lock</span>Sign in</button>
       </section>
     </sc-if>
@@ -57,7 +57,7 @@ button,textarea,input{font:inherit;letter-spacing:inherit;}
 
       <section aria-labelledby="st-pins" style="background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:20px;display:flex;flex-direction:column;gap:14px;">
         <h2 id="st-pins" style="margin:0;font-size:21px;">PINs</h2>
-        <sc-for list="{{ pinRows }}" as="r" hint-placeholder-count="2">
+        <sc-for list="{{ pinRows }}" as="r" hint-placeholder-count="3">
           <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;">
             <label for="{{ r.id }}" style="flex:0 0 150px;font-size:17px;font-weight:700;">{{ r.label }}</label>
             <input id="{{ r.id }}" type="password" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="4 digits" value="{{ r.value }}" onChange="{{ r.onChange }}" disabled="{{ offline }}" style="width:180px;min-height:48px;box-sizing:border-box;padding:0 14px;border-radius:12px;border:2px solid var(--line);background:var(--surface2);color:var(--ink);font-size:18px;letter-spacing:0.3em;">
@@ -65,7 +65,7 @@ button,textarea,input{font:inherit;letter-spacing:inherit;}
             <span role="status" style="font-size:15px;color:var(--muted);">{{ r.msg }}</span>
           </div>
         </sc-for>
-        <p style="margin:0;font-size:15px;color:var(--muted);">PINs are exactly 4 digits, and the two must be different. Changes take effect at the next sign-in.</p>
+        <p style="margin:0;font-size:15px;color:var(--muted);">PINs are exactly 4 digits, and all three must be different. The Staff login sees what substitutes see. Changes take effect at the next sign-in.</p>
       </section>
 
       <section aria-labelledby="st-files" style="background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:20px;display:flex;flex-direction:column;gap:14px;">
@@ -74,7 +74,7 @@ button,textarea,input{font:inherit;letter-spacing:inherit;}
         <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;">
           <input type="file" ref="{{ fileRef }}" disabled="{{ offline }}" aria-label="Choose a file" style="font-size:16px;max-width:100%;">
           <input type="text" placeholder="Title (e.g. Geometry Unit 3 key)" value="{{ title }}" onChange="{{ setTitle }}" disabled="{{ offline }}" aria-label="File title" style="flex:1 1 220px;min-height:48px;box-sizing:border-box;padding:0 14px;border-radius:12px;border:2px solid var(--line);background:var(--surface2);color:var(--ink);font-size:16px;">
-          <label style="display:flex;align-items:center;gap:8px;min-height:48px;font-size:16px;cursor:pointer;"><input type="checkbox" checked="{{ forSubs }}" onChange="{{ toggleSubs }}" disabled="{{ offline }}" style="width:22px;height:22px;">Substitutes can open</label>
+          <label style="display:flex;align-items:center;gap:8px;min-height:48px;font-size:16px;cursor:pointer;"><input type="checkbox" checked="{{ forSubs }}" onChange="{{ toggleSubs }}" disabled="{{ offline }}" style="width:22px;height:22px;">Staff and substitutes can open</label>
           <button onClick="{{ upload }}" disabled="{{ offline }}" style="display:flex;align-items:center;gap:6px;min-height:48px;padding:0 18px;border-radius:12px;border:2px solid var(--ink);background:var(--ink);color:var(--bg);font-size:16px;font-weight:700;cursor:pointer;opacity:{{ dimOffline }};"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:20px;">upload</span>{{ uploadText }}</button>
         </div>
         <span role="status" style="font-size:15px;color:var(--muted);">{{ fileMsg }}</span>
@@ -118,7 +118,7 @@ button,textarea,input{font:inherit;letter-spacing:inherit;}
 </x-dc>
 <script type="text/x-dc" data-dc-script>
 class Component extends DCLogic {
-  state = { teacher: false, server: false, pin: { teacher: '', sub: '' }, pinMsg: { teacher: '', sub: '' }, files: [], title: '', forSubs: false, fileMsg: '', notes: '', notesMsg: '', uploading: false };
+  state = { teacher: false, server: false, pin: { teacher: '', staff: '', sub: '' }, pinMsg: { teacher: '', staff: '', sub: '' }, files: [], title: '', forSubs: false, fileMsg: '', notes: '', notesMsg: '', uploading: false };
   fileRef = React.createRef();
   bridgeRef = React.createRef();
   uploadBridge(){
@@ -183,8 +183,8 @@ class Component extends DCLogic {
       connIcon: off ? 'cloud_off' : 'cloud_done',
       connTitle: off ? 'Preview mode' : 'Connected to the sign-in server',
       connText: off ? 'PINs are checked in the browser, so these tools are turned off. Follow SECURITY-SETUP.md to connect the Cloudflare Worker.' : 'PINs, protected files and sub notes are checked and stored on the server.',
-      pinRows: ['teacher', 'sub'].map(role => ({
-        id: 'pin-' + role, label: role === 'teacher' ? 'Teacher PIN' : 'Substitute PIN',
+      pinRows: ['teacher', 'staff', 'sub'].map(role => ({
+        id: 'pin-' + role, label: { teacher: 'Dr. DeMars PIN', staff: 'Staff PIN', sub: 'Substitute PIN' }[role],
         value: s.pin[role], msg: s.pinMsg[role],
         onChange: e => { const v = e.target.value.replace(/\D/g, '').slice(0, 4); this.setState(st => ({ pin: { ...st.pin, [role]: v }, pinMsg: { ...st.pinMsg, [role]: '' } })); },
         save: () => this.savePin(role)
@@ -199,7 +199,7 @@ class Component extends DCLogic {
       hasFiles: s.files.length > 0,
       files: s.files.map(f => ({
         title: f.title || f.name,
-        who: (f.roles || []).includes('sub') ? 'Teacher + substitutes' : 'Teacher only',
+        who: (f.roles || []).includes('sub') ? 'Dr. DeMars, staff + substitutes' : 'Dr. DeMars only',
         url: H ? H.fileUrl(f.name) : '#',
         remove: () => this.remove(f.name),
         removeLabel: 'Delete ' + (f.title || f.name)

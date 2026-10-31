@@ -47,7 +47,7 @@ class Component extends DCLogic {
     return {
       teacher: !!this.state.signedIn,
       signedOut: !this.state.signedIn,
-      roleLabel: this.state.role === 'sub' ? 'Signed in as Substitute' : 'Signed in as Teacher',
+      roleLabel: 'Signed in as ' + ({ teacher: 'Dr. DeMars', staff: 'Staff', sub: 'Substitute' }[this.state.role] || 'Dr. DeMars'),
       toTop: () => { const m = window.HubState ? window.HubState.get().motion : true; window.scrollTo({top:0, behavior: m ? 'smooth' : 'auto'}); },
       openSignin: () => window.dispatchEvent(new Event('hub-signin')),
       signOut: () => window.HubState && window.HubState.signOut(),
