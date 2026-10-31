@@ -1,6 +1,13 @@
-// Google Classroom feed: shows each course's newest Classroom posts on its course page.
+// Google Classroom feed: shows each course's newest Classroom posts on its course page, and
+// puts Classroom due dates on the site's calendar (Home and course pages).
 // Posts come from the Apps Script in CLASSROOM-SETUP.md. Until FEED_URL is filled in
-// (or the Worker serves /api/classroom), the section stays hidden.
+// (or the Worker serves /api/classroom), the section stays hidden and the calendar is unchanged.
+//
+// Due dates on the calendar: each assignment or question with a due date becomes a chip in its
+// course's row, outlined for a due date or filled when the title has quiz/test/exam, like a
+// Google Calendar event titled "GEO Practice set 4.2". A due time other than 11:59 PM shows on the
+// chip. A Classroom due date is skipped if the Math Hub calendar already has that course and title
+// on that day, so nothing shows twice.
 //
 // What a student sees for each post: the kind (Announcement, Assignment, Question, Material),
 // the topic, the posted date, the title, the text (folded with More/Less), the due date and
@@ -10,13 +17,15 @@
   if (window.HubClassroom) return;
 
   // ---------- settings ----------
-  var FEED_URL = 'https://script.google.com/macros/s/AKfycbxvifbW9xpwVqsykNnry1WknDgv7_riJLg8VGrV-DCjoUxzrZiRY16xFCyEYaQFaosW/exec';          // your Apps Script web app address (ends in /exec)
+  var FEED_URL = 'https://script.google.com/macros/s/AKfycbxvifbW9xpwVqsykNnry1WknDgv7_riJLg8VGrV-DCjoUxzrZiRY16xFCyEYaQFaosW/exec
+';          // your Apps Script web app address (ends in /exec)
   var USE_WORKER = false;     // true if your Worker serves /api/classroom (see worker-classroom.js)
   var SHOW_AT_FIRST = 4;      // posts shown before "Show more"
   var TEACHER_ONLY = false;   // true hides the feed from everyone who isn't signed in as teacher
-  var FOLD_CHARS = 240;       // longer text folds with a More button
+  var FOLD_CHARS = 222;       // longer text folds with a More button
   var FOLD_BREAKS = 3;        // ...or text with more line breaks than this
-  var DEMO = false;           // true shows sample posts so you can preview the layout
+  var DEMO = true;           // true shows sample posts so you can preview the layout
+  var DUE_ON_CALENDAR = true; // false keeps Classroom due dates off the calendar
 
   var COURSES = {
     geo: { name: 'Geometry', fill: 'oklch(0.67 0.19 300)', text: 'var(--t-geo)' },
@@ -35,6 +44,8 @@
   var FILE_ICON = { drive: 'description', youtube: 'smart_display', link: 'link', form: 'ballot' };
 
   var DATA = null;       // the feed, keyed by course id
+  var DUE = [];          // due dates for the calendar, in the Worker's event shape
+  var TAG = { geo: 'GEO', alg1: 'ALG1', alg2: 'ALG2', alg3: 'ALG3', g7: 'G7', g8: 'G8' };
   var STATUS = 'idle';   // idle | loading | ready | error | off
 
   // ---------- text: plain text with clickable links, folded ----------
@@ -203,6 +214,40 @@
   }
   function visible() { return !TEACHER_ONLY || !!(window.HubState && window.HubState.get && window.HubState.get().teacher); }
 
+  // ---------- due dates on the calendar ----------
+  function centralDay(iso) { try { return new Date(iso).toLocaleDateString('en-CA', { timeZone: 'America/Chicago' }); } catch (e) { return ''; } }
+  function centralClock(iso) { try { return new Date(iso).toLocaleTimeString('en-GB', { timeZone: 'America/Chicago', hour: '2-digit', minute: '2-digit' }); } catch (e) { return ''; } }
+  function dueEvents(courses) {
+    var out = [];
+    for (var k in courses) {
+      var c = courses[k]; if (!c || !Array.isArray(c.due) || !TAG[k]) continue;
+      c.due.forEach(function (p) {
+        if (!p.due) return;
+        var day = p.due.day || (p.due.time ? centralDay(p.due.time) : p.due.date); if (!day) return;
+        var timed = !!p.due.time && centralClock(p.due.time) !== '23:59';
+        out.push({ date: day, title: TAG[k] + ' ' + (p.title || 'Assignment'), allDay: !timed, start: timed ? p.due.time : null, end: timed ? p.due.time : null, location: '', description: p.text || '', gc: true });
+      });
+    }
+    return out;
+  }
+  var merging = false;
+  function mergeCalendar() {
+    var HC = window.HubCalendar;
+    if (!HC || !HC.events || !HC._test || !HC._test.fromGoogle) return;
+    var ev = HC.events, before = ev.length;
+    for (var i = ev.length - 1; i >= 0; i--) if (ev[i].gc) ev.splice(i, 1);
+    var added = DUE_ON_CALENDAR && DUE.length ? HC._test.fromGoogle(DUE) : [];
+    var norm = function (t) { return String(t || '').toLowerCase().replace(/\s+/g, ' ').trim(); };
+    added.forEach(function (e, i) {
+      e.gc = true; e.id = 'gc' + i;
+      var dup = ev.some(function (o) { return !o.gc && o.w === e.w && o.d === e.d && norm(o.title) === norm(e.title) && e.cs.some(function (c) { return o.cs.indexOf(c) >= 0; }); });
+      if (!dup) ev.push(e);
+    });
+    if ((before !== ev.length || added.length) && !merging) { merging = true; try { window.dispatchEvent(new Event('hubcal-ready')); } finally { merging = false; } }
+  }
+  // The calendar replaces its list when Google Calendar loads; put the due dates back after that.
+  window.addEventListener('hubcal-ready', function () { if (!merging && DUE.length) mergeCalendar(); });
+
   // ---------- loading ----------
   function feedUrl() {
     if (FEED_URL) return FEED_URL;
@@ -212,15 +257,16 @@
   }
   function announce() { window.dispatchEvent(new Event('hubclassroom-ready')); }
   function load() {
-    if (DEMO) { DATA = demo(); STATUS = 'ready'; announce(); return; }
+    if (DEMO) { DATA = demo(); DUE = dueEvents(DATA); STATUS = 'ready'; announce(); mergeCalendar(); return; }
     var url = feedUrl();
     if (!url || !window.fetch) { STATUS = 'off'; announce(); return; }
     STATUS = 'loading'; announce();
     fetch(url, { cache: 'no-store', redirect: 'follow' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
       if (!d || !d.ok || !d.courses) throw new Error('bad feed');
       DATA = {};
-      for (var k in d.courses) { var c = d.courses[k]; DATA[k] = c.error ? { error: c.error } : { name: c.name || '', link: c.link || '', posts: Array.isArray(c.posts) ? c.posts : [] }; }
-      api.live = true; STATUS = 'ready'; announce();
+      for (var k in d.courses) { var c = d.courses[k]; DATA[k] = c.error ? { error: c.error } : { name: c.name || '', link: c.link || '', posts: Array.isArray(c.posts) ? c.posts : [], due: Array.isArray(c.due) ? c.due : [] }; }
+      DUE = dueEvents(DATA);
+      api.live = true; STATUS = 'ready'; announce(); mergeCalendar();
     }).catch(function () { STATUS = 'error'; announce(); });
   }
 
@@ -235,6 +281,7 @@
       { id: k + '4', kind: 'question', title: 'Exit ticket: which method did you use?', text: 'Answer in one or two sentences.', topic: 'Unit 4', posted: iso(5), link: 'https://classroom.google.com', due: null, points: 5, files: [] },
       { id: k + '5', kind: 'announcement', title: '', text: 'Welcome back! This week’s plan is on the calendar above.', topic: '', posted: iso(9), link: 'https://classroom.google.com', due: null, points: null, files: [] }
     ] };
+    for (var j in out) out[j].due = out[j].posts.filter(function (p) { return p.due; });
     return out;
   }
 
@@ -244,7 +291,7 @@
     visible: visible,
     reload: load,
     live: false,
-    _test: { segsOf: segsOf, cutAt: cutAt, cutSegs: cutSegs, dueLabel: dueLabel, postedLabel: postedLabel }
+    _test: { segsOf: segsOf, cutAt: cutAt, cutSegs: cutSegs, dueLabel: dueLabel, postedLabel: postedLabel, dueEvents: dueEvents, mergeCalendar: mergeCalendar }
   };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', load); else setTimeout(load, 0);
 })();
