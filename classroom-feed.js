@@ -7,7 +7,8 @@
 // course's row, outlined for a due date or filled when the title has quiz/test/exam, like a
 // Google Calendar event titled "GEO Practice set 4.2". A due time other than 11:59 PM shows on the
 // chip, except for quiz/test/exam titles and NO_DUE_WORD titles, which show the date only. A Classroom due date is skipped if the Math Hub calendar already has that course and title
-// on that day, so nothing shows twice.
+// on that day, so nothing shows twice; that event's popup shows the post's instructions and attachments instead.
+// Each due date carries its attachments to the calendar, where the popup shows them as buttons.
 //
 // What a student sees for each post: the kind (Announcement, Assignment, Question, Material),
 // the topic, the title, the text (folded with More/Less), the due date for assignments (no time
@@ -243,7 +244,7 @@
         var day = p.due.day || (p.due.time ? centralDay(p.due.time) : p.due.date); if (!day) return;
         var noTime = /\b(quiz|test|exam)\b/i.test(p.title || '') || plain(p.title);
         var timed = !!p.due.time && centralClock(p.due.time) !== '23:59' && !noTime;
-        out.push({ date: day, title: TAG[k] + ' ' + (p.title || 'Assignment'), allDay: !timed, start: timed ? p.due.time : null, end: timed ? p.due.time : null, location: '', description: p.text || '', link: p.link || '', gc: true });
+        out.push({ date: day, title: TAG[k] + ' ' + (p.title || 'Assignment'), allDay: !timed, start: timed ? p.due.time : null, end: timed ? p.due.time : null, location: '', description: p.text || '', link: p.link || '', files: Array.isArray(p.files) ? p.files : [], gc: true });
       });
     }
     return out;
@@ -257,14 +258,19 @@
     var added = DUE_ON_CALENDAR && DUE.length ? HC._test.fromGoogle(DUE) : [];
     var norm = function (t) { return String(t || '').toLowerCase().replace(/\s+/g, ' ').trim(); };
         ev.forEach(function (o) { if (plain(o.title)) o.quiz = false; });
-    // Links copied onto matching Google Calendar events are rebuilt each time, so none go stale.
-    ev.forEach(function (o) { if (o.gcLink) { o.link = ''; o.gcLink = false; } });
+    // Links, instructions and attachments copied onto matching Google Calendar events are rebuilt each time,
+    // so none go stale.
+    ev.forEach(function (o) { if (o.gcLink) { o.link = ''; o.gcLink = false; } o.gcDesc = null; o.gcFiles = null; });
     added.forEach(function (e, i) {
       e.gc = true; e.id = 'gc' + i; if (plain(e.title)) e.quiz = false;
       var dup = null;
       ev.forEach(function (o) { if (!dup && !o.gc && o.w === e.w && o.d === e.d && norm(o.title) === norm(e.title) && e.cs.some(function (c) { return o.cs.indexOf(c) >= 0; })) dup = o; });
       if (!dup) ev.push(e);
-      else if (e.link && !dup.link) { dup.link = e.link; dup.gcLink = true; }
+      else {
+        if (e.link && !dup.link) { dup.link = e.link; dup.gcLink = true; }
+        if (e.desc) dup.gcDesc = e.desc;
+        if (e.files && e.files.length) dup.gcFiles = e.files;
+      }
     });
     if ((before !== ev.length || added.length) && !merging) { merging = true; try { window.dispatchEvent(new Event('hubcal-ready')); } finally { merging = false; } }
   }

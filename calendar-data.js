@@ -24,10 +24,18 @@
 //
 //   Titles show on one line (two for Classroom due dates) and descriptions on at most two; longer text ends in "…".
 //   Items with a Classroom post link lift, grow slightly and glow in their course's color on hover, like other
-//   links on the site. Clicking the item (mouse) or pressing Enter opens the post in a new tab; the popup has a
-//   "View post" link. Hover (mouse, about 0.3 s) or tap (touch) any calendar item for its full details. Moving
+//   links on the site. Clicking the item (mouse) or pressing Enter opens the post in a new tab; the popup has an
+//   "Open in Google Classroom" link. Hover (mouse, about 0.3 s) or tap (touch) any calendar item for its full details. Moving
 //   between items, scrolling or the calendar refreshing never leaves an item unable to open its popup: resting
 //   the mouse on an item always opens it. Phones show one day at a time.
+//
+// Popups
+//   A popup's text (a description or Classroom instructions) shows in full up to about 444 characters or 6 line
+//   breaks; longer text ends in "…" with a More button (Less folds it back). Each popup opens folded.
+//   Classroom attachments (Drive files, videos, links, Forms) show as buttons below the text.
+//   A Google Calendar event that matches a Classroom due date (same course, title and day) shows that post's
+//   instructions and attachments in its popup (its own description if the post has no instructions); the
+//   calendar cell still shows the event's own description.
 //
 // Subscribe
 //   The "Subscribe to calendar" button below the calendar opens the subscribe form (calendar app, courses,
@@ -177,9 +185,46 @@
         id: 'e' + i, w: w, d: d, cs: t.cs, ns: t.ns, hl: t.hl, title: t.title, quiz: QUIZ_RE.test(t.title),
         allDay: allDay, start: allDay ? null : start, end: allDay ? null : end,
         loc: String(e.location || '').replace(/\s+/g, ' ').trim(), desc: descOf(e.description),
-        link: e.gc && /^https?:\/\//i.test(String(e.link || '').trim()) ? String(e.link).trim() : ''
+        link: e.gc && /^https?:\/\//i.test(String(e.link || '').trim()) ? String(e.link).trim() : '',
+        files: e.gc ? filesOf(e.files) : []
       });
     });
+    return out;
+  }
+
+  // Classroom attachments: only ones with a web link become buttons.
+  function filesOf(list) {
+    var out = [];
+    (Array.isArray(list) ? list : []).forEach(function (f) {
+      if (!f) return;
+      var url = String(f.url || '').trim(); if (!/^https?:\/\//i.test(url)) return;
+      var title = String(f.title || '').replace(/\s+/g, ' ').trim() || url;
+      out.push({ type: String(f.type || '').toLowerCase(), title: title, url: url });
+    });
+    return out;
+  }
+  // Popup text folds after about 444 characters or 6 line breaks, whichever comes first.
+  var POP_FOLD_CHARS = 444, POP_FOLD_BREAKS = 6;
+  function popCut(text) {
+    var cut = text.length, breaks = 0;
+    for (var i = 0; i < text.length; i++) if (text[i] === '\n' && ++breaks > POP_FOLD_BREAKS) { cut = i; break; }
+    if (text.length > POP_FOLD_CHARS) {
+      var c = text.lastIndexOf(' ', POP_FOLD_CHARS); if (c < POP_FOLD_CHARS * 0.6) c = POP_FOLD_CHARS;
+      cut = Math.min(cut, c);
+    }
+    return cut;
+  }
+  // The first `cut` characters of the text; a link that starts before the cut is kept whole.
+  function popSegs(segs, cut) {
+    var out = [], n = 0;
+    for (var i = 0; i < segs.length && n < cut; i++) {
+      var g = segs[i], take = Math.min(g.text.length, cut - n);
+      if (take === g.text.length || g.href) out.push(g);
+      else out.push({ text: g.text.slice(0, take) });
+      n += g.text.length;
+    }
+    var z = out[out.length - 1];
+    if (z && !z.href) out[out.length - 1] = { text: z.text.replace(/\s+$/, '') };
     return out;
   }
 
@@ -271,6 +316,7 @@
     '[data-hcal-trig][role=link]:focus-visible{outline:3px solid var(--ink);outline-offset:2px;}',
     '.hcal-check{display:flex;align-items:center;gap:10px;min-height:40px;font-size:16px;cursor:pointer;}',
     '.hcal-check input{width:20px;height:20px;margin:0;accent-color:var(--ink);flex:none;}',
+    '.hcal-more{display:inline;background:none;border:0;padding:0 0 0 4px;margin:0;color:inherit;font:inherit;font-weight:700;text-decoration:underline;text-underline-offset:2px;cursor:pointer;white-space:nowrap;}',
     '.hcal-sr{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0;}'
   ].join('');
   function addCss() {
@@ -306,6 +352,7 @@
       var wk = useState(0), weekNo = wk[0], setWeek = wk[1];
       var dy = useState(null), dayPick = dy[0], setDay = dy[1];
       var pp = useState(null), pop = pp[0], setPop = pp[1];
+      var uf = useState(null), unfold = uf[0], setUnfold = uf[1]; // key of the popup whose text is unfolded
       var md = useState(false), modal = md[0], setModal = md[1]; // subscribe window open?
       var fm = useState(null), form = fm[0], setForm = fm[1];     // subscribe form: { app, courses: {id: bool}, sw }
       var opener = useRef(null), panelRef = useRef(null);
@@ -318,6 +365,7 @@
         clearT('open'); clearT('close'); clearT('fade');
         var r = node.getBoundingClientRect(), rect = { top: r.top, bottom: r.bottom, left: r.left };
         var wasShown = popRef.current && popRef.current.vis;
+        if (!popRef.current || popRef.current.key !== key) setUnfold(null); // each popup opens folded
         setPop({ key: key, ev: ev, day: day, rect: rect, vis: !!wasShown });
         if (!wasShown) requestAnimationFrame(function () { requestAnimationFrame(function () {
           setPop(function (p) { return p && p.key === key ? Object.assign({}, p, { vis: true }) : p; });
@@ -454,7 +502,7 @@
           a.className = 'hcal-ev';
           a.style = Object.assign({}, style, { '--ev-glow': gid ? 'var(--cg-' + gid + ', var(--glow))' : 'var(--glow)' });
           a.tabIndex = 0; a.role = 'link';
-          a['aria-label'] = ev.title + ', View in Google Classroom, opens in new tab';
+          a['aria-label'] = ev.title + ', Open in Google Classroom, opens in new tab';
           a.onKeyDown = function (e) { if (e.key === 'Enter') { e.preventDefault(); openPost(ev.link); } };
         }
         return a;
@@ -531,7 +579,7 @@
       }
       var legend = h('div', { style: { flex: 1, display: 'flex', gap: '8px 22px', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center', fontSize: '15px', color: 'var(--muted)' } },
         h('span', { style: { display: 'flex', alignItems: 'center', gap: '8px' } }, h('span', { 'aria-hidden': 'true', style: { width: '34px', height: '20px', borderRadius: '999px', background: 'var(--ink)' } }), 'Filled: Assessment'),
-        h('span', { style: { display: 'flex', alignItems: 'center', gap: '8px' } }, h('span', { 'aria-hidden': 'true', style: { width: '34px', height: '20px', borderRadius: '999px', border: '2px solid var(--ink)', boxSizing: 'border-box' } }), 'Outlined: Due Date'));
+        h('span', { style: { display: 'flex', alignItems: 'center', gap: '8px' } }, h('span', { 'aria-hidden': 'true', style: { width: '34px', height: '20px', borderRadius: '999px', border: '2px solid var(--ink)', boxSizing: 'border-box' } }), 'Outlined: Assignment'));
       var BTN = { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', minHeight: '48px', padding: '0 18px', borderRadius: '12px', border: '2px solid var(--line)', background: 'var(--surface)', color: 'var(--ink)', fontSize: '16px', fontWeight: 700, cursor: 'pointer' };
       var box = { border: '1px solid var(--line)', borderRadius: '24px', background: 'var(--surface)', overflow: 'hidden' };
       var body;
@@ -665,6 +713,24 @@
           : { bottom: vh - pop.rect.top + 8 + 'px', maxHeight: Math.max(120, above) + 'px' };
         var line = function (ic, content) { return h('div', { style: { display: 'flex', alignItems: 'flex-start', gap: '6px', fontSize: '14px', color: 'var(--muted)' } }, icon(ic, 18), h('span', { style: WRAP }, content)); };
         var map = mapHref(ev.loc);
+        // A Google Calendar event matching a Classroom due date borrows its instructions and attachments.
+        var pDesc = ev.gcDesc || ev.desc, pFiles = ev.gcFiles && ev.gcFiles.length ? ev.gcFiles : (ev.files || []);
+        var pText = null;
+        if (pDesc) {
+          var cut = popCut(pDesc.text), long = cut < pDesc.text.length, isOpen = unfold === pop.key;
+          pText = h('div', { style: Object.assign({ fontSize: '14px', whiteSpace: 'pre-line' }, WRAP) },
+            segNodes(long && !isOpen ? popSegs(pDesc.segs, cut) : pDesc.segs, false),
+            long && !isOpen ? '…' : null,
+            long ? h('button', { type: 'button', className: 'hcal-more', 'aria-expanded': isOpen ? 'true' : 'false',
+              onClick: function () { var k = pop.key; setUnfold(function (u) { return u === k ? null : k; }); } }, isOpen ? 'Less' : 'More') : null);
+        }
+        var FILE_ICON = { drive: 'description', youtube: 'smart_display', link: 'link', form: 'ballot' };
+        var FILE = { display: 'flex', alignItems: 'center', gap: '8px', minHeight: '44px', padding: '4px 12px', borderRadius: '12px', background: 'var(--surface2)', color: 'var(--ink)', textDecoration: 'none', fontSize: '14px', fontWeight: 700, maxWidth: '100%', boxSizing: 'border-box' };
+        var pAttach = pFiles.length ? h('div', { style: { display: 'flex', flexWrap: 'wrap', gap: '8px' } }, pFiles.map(function (f, i) {
+          return h('a', { key: i, href: f.url, target: '_blank', rel: 'noopener noreferrer', className: 'hcal-btn', style: FILE },
+            icon(FILE_ICON[f.type] || 'attach_file', 18),
+            h('span', { style: { overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', minWidth: 0 } }, f.title));
+        })) : null;
         popEl = h('div', {
           'data-hcal-pop': '1', role: 'dialog', 'aria-label': ev.title,
           onPointerEnter: function (e) { if (e.pointerType === 'mouse') clearT('close'); },
@@ -678,9 +744,10 @@
           h('div', { style: Object.assign({ fontSize: '17px', fontWeight: 700, lineHeight: 1.3 }, WRAP) }, ev.title),
           ev.allDay ? null : line('schedule', timeRange(ev.start, ev.end)),
           ev.loc ? line('location_on', map ? h('a', { href: map, target: '_blank', rel: 'noopener noreferrer', className: 'hcal-link' }, ev.loc) : ev.loc) : null,
-          ev.desc ? h('div', { style: Object.assign({ fontSize: '14px', whiteSpace: 'pre-line' }, WRAP) }, segNodes(ev.desc.segs, false)) : null,
+          pText,
+          pAttach,
           ev.link ? h('div', { style: { display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '4px 8px', margin: '0 -8px' } },
-            h('a', { href: ev.link, target: '_blank', rel: 'noopener noreferrer', className: 'hcal-link hcal-lift', style: ACT }, 'View post', icon('open_in_new', 16))) : null);
+            h('a', { href: ev.link, target: '_blank', rel: 'noopener noreferrer', className: 'hcal-link hcal-lift', style: ACT }, 'Open in Google Classroom', icon('open_in_new', 16))) : null);
         popEl = RD && RD.createPortal ? RD.createPortal(popEl, document.body) : popEl;
       }
       var modalEl = modal ? renderModal() : null;
@@ -763,7 +830,7 @@
   var api = window.HubCalendar = {
     events: EVENTS, week: week, element: element, courses: COURSES, live: false,
     status: function () { return phase(); }, reload: retryAll,
-    _test: { parseTitle: parseTitle, descOf: descOf, mapHref: mapHref, fromGoogle: fromGoogle, timeRange: timeRange, _load: LOAD,
+    _test: { parseTitle: parseTitle, descOf: descOf, mapHref: mapHref, fromGoogle: fromGoogle, filesOf: filesOf, popCut: popCut, popSegs: popSegs, timeRange: timeRange, _load: LOAD,
       feedUrl: feedUrl }
   };
   window.dispatchEvent(new Event('hubcal-ready'));
