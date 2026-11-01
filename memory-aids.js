@@ -7,6 +7,7 @@
     { title: 'Quadrilaterals', file: 'memory-aids/quadrilaterals.pdf', courses: ['geo'], topic: 'Geometry' },
     { title: 'Angle Relationships', file: 'memory-aids/angle-relationships.pdf', courses: ['g7', 'g8', 'geo'], topic: 'Geometry' },
     { title: 'The Pythagorean Theorem and Triangle Area', file: 'memory-aids/pythagorean-theorem-and-triangle-area.pdf', courses: ['g8', 'geo'], topic: 'Geometry' },
+    { title: 'Right Triangle Trigonometry', file: 'memory-aids/right-triangle-trigonometry.pdf', courses: ['geo', 'alg2', 'alg3'], topic: 'Geometry' },
     { title: 'Reflections', file: 'memory-aids/reflections.pdf', courses: ['g8', 'geo'], topic: 'Geometry' },
     { title: 'Circles', file: 'memory-aids/circles.pdf', courses: ['g7', 'geo'], topic: 'Geometry' },
     { title: 'Geometric Solids', file: 'memory-aids/geometric-solids.pdf', courses: ['g7', 'g8', 'geo'], topic: 'Geometry' },
