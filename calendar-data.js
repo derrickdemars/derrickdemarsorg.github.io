@@ -39,7 +39,9 @@
 //
 // Subscribe
 //   The "Subscribe to calendar" button below the calendar opens the subscribe form (calendar app, courses,
-//   school-wide). The live feed comes from the Worker at /api/calendar.ics. Feed timing (the site's display
+//   school-wide). HubCalendar.openSubscribe(['geo', ...]) opens the same form from any button on the page with
+//   exactly those courses ticked ([] = none); closing it returns focus to that button.
+//   The live feed comes from the Worker at /api/calendar.ics. Feed timing (the site's display
 //   is unchanged): timed events keep their times (a due time alone becomes 15 minutes from it); all-day
 //   school-wide and NS/HL events stay all-day; other all-day course items use bell-schedule.js:
 //   quiz/test/exam = the class period, anything else = 15 minutes from class start, one event per course.
@@ -389,19 +391,26 @@
       function drop() { clearT('open'); clearT('close'); clearT('fade'); hover.current = null; setPop(null); }
 
       // ----- Subscribe window
-      function openModal() {
+      function openModal(preset) {
         opener.current = document.activeElement;
-        startForm();
+        startForm(Array.isArray(preset) ? preset : null);
         setModal(true);
       }
+      // HubCalendar.openSubscribe(courses) reaches this view through a window event.
+      var subRef = useRef(null); subRef.current = openModal;
+      useEffect(function () {
+        function onSub(e) { if (subRef.current) subRef.current(e && e.detail && Array.isArray(e.detail.courses) ? e.detail.courses : []); }
+        window.addEventListener('hubcal-subscribe', onSub);
+        return function () { window.removeEventListener('hubcal-subscribe', onSub); };
+      }, []);
       function closeModal() {
         setModal(false);
         var o = opener.current; opener.current = null;
         if (o && o.focus && document.contains(o)) setTimeout(function () { o.focus(); }, 0);
       }
-      function startForm() {
+      function startForm(preset) {
         var on = {};
-        COURSES.forEach(function (c) { on[c.id] = home ? true : c.id === props.course; });
+        COURSES.forEach(function (c) { on[c.id] = preset ? preset.indexOf(c.id) >= 0 : (home ? true : c.id === props.course); });
         setForm({ app: 'google', courses: on, sw: true });
       }
 
@@ -830,6 +839,7 @@
   var api = window.HubCalendar = {
     events: EVENTS, week: week, element: element, courses: COURSES, live: false,
     status: function () { return phase(); }, reload: retryAll,
+    openSubscribe: function (courses) { window.dispatchEvent(new CustomEvent('hubcal-subscribe', { detail: { courses: Array.isArray(courses) ? courses.slice() : [] } })); },
     _test: { parseTitle: parseTitle, descOf: descOf, mapHref: mapHref, fromGoogle: fromGoogle, filesOf: filesOf, popCut: popCut, popSegs: popSegs, timeRange: timeRange, _load: LOAD,
       feedUrl: feedUrl }
   };

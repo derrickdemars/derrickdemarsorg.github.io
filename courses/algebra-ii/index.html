@@ -18,7 +18,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,500,1,0">
 <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/opendyslexic">
 <script src="hub-state.js"></script>
-<script src="calendar-data.js?v=3"></script>
+<script src="calendar-data.js?v=4"></script>
 <script src="bell-schedule.js"></script>
 <script src="memory-aids.js?v=5"></script>
 <script src="quick-links.js"></script>
@@ -34,6 +34,8 @@ a:focus-visible,button:focus-visible{box-shadow:var(--glow);}
 ::view-transition-old(root),::view-transition-new(root){animation-duration:var(--vt,280ms);animation-timing-function:cubic-bezier(0.45,0,0.55,1);}
 ::view-transition-group(site-header){animation-duration:0s;}
 button,textarea,input{font:inherit;letter-spacing:inherit;}
+.hub-next{flex:0 1 380px;}
+@media (max-width:640px){.hub-next{flex-basis:100%;}}
 </style>
 </helmet>
 <div style="min-height:100vh;display:flex;flex-direction:column;background:var(--bg);color:var(--ink);font-family:var(--font);">
@@ -60,10 +62,16 @@ button,textarea,input{font:inherit;letter-spacing:inherit;}
           <div style="flex:1;min-width:200px;">
             <div style="font-size:18px;font-weight:700;">{{ page.level }} math</div>
             <h1 style="margin:0;font-size:clamp(36px,5vw,50px);line-height:1.1;">{{ page.title }}</h1>
-            <div aria-live="polite">
-              <sc-if value="{{ next.show }}"><div style="margin-top:10px;display:flex;align-items:center;gap:8px;font-size:18px;font-weight:700;text-wrap:pretty;"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:22px;flex:none;">{{ next.icon }}</span><span>{{ next.text }}</span></div></sc-if>
+          </div>
+          <sc-if value="{{ next.show }}">
+          <div class="hub-next" aria-live="polite" style="box-sizing:border-box;min-width:260px;background:rgba(0,0,0,0.14);border-radius:20px;padding:14px 18px;display:flex;gap:10px;align-items:flex-start;">
+            <span class="material-symbols-rounded" aria-hidden="true" style="font-size:22px;flex:none;margin-top:1px;">{{ next.icon }}</span>
+            <div style="min-width:0;display:flex;flex-direction:column;gap:2px;text-wrap:pretty;">
+              <span style="font-size:18px;font-weight:700;line-height:1.3;">{{ next.line1 }}</span>
+              <sc-if value="{{ next.hasName }}"><span style="font-size:16px;font-weight:400;line-height:1.35;">{{ next.name }}</span></sc-if>
             </div>
           </div>
+          </sc-if>
         </div>
         <section aria-labelledby="cal-title" style="display:flex;flex-direction:column;gap:14px;">
         {{ calView }}
@@ -82,7 +90,10 @@ button,textarea,input{font:inherit;letter-spacing:inherit;}
               <li style="display:flex;gap:12px;align-items:flex-start;font-size:17px;text-wrap:pretty;"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:24px;margin-top:1px;flex:none;">checklist</span><span>Check IXL: have your child sign in and open the From your teacher tab at ixl.com/dashboard. A skill is complete at a SmartScore of 80.</span></li>
               <li style="display:flex;gap:12px;align-items:flex-start;font-size:17px;text-wrap:pretty;"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:24px;margin-top:1px;flex:none;">lightbulb</span><span>Study with the memory aids below before each quiz or test.</span></li>
             </ul>
-            <a href="guardians/" style="align-self:flex-start;display:flex;align-items:center;gap:6px;min-height:46px;padding:0 14px;border-radius:12px;border:2px solid var(--line);color:var(--ink);text-decoration:none;font-size:16px;font-weight:700;transition:transform var(--dur) ease,box-shadow var(--dur) ease;" style-hover="transform:translateY(var(--lift)) scale(var(--grow));box-shadow:var(--glow);" style-active="box-shadow:var(--glow);">Read the guardian guide<span class="material-symbols-rounded" aria-hidden="true" style="font-size:20px;">arrow_forward</span></a>
+            <div style="display:flex;flex-wrap:wrap;gap:10px;">
+            <a href="guardians/" style="display:flex;align-items:center;gap:6px;min-height:46px;padding:0 14px;border-radius:12px;border:2px solid var(--line);color:var(--ink);text-decoration:none;font-size:16px;font-weight:700;transition:transform var(--dur) ease,box-shadow var(--dur) ease;" style-hover="transform:translateY(var(--lift)) scale(var(--grow));box-shadow:var(--glow);" style-active="box-shadow:var(--glow);">Read the guardian guide<span class="material-symbols-rounded" aria-hidden="true" style="font-size:20px;">arrow_forward</span></a>
+              <sc-if value="{{ canSub }}"><button type="button" onClick="{{ subscribe }}" style="display:flex;align-items:center;gap:6px;min-height:46px;padding:0 14px;border-radius:12px;border:2px solid var(--line);background:transparent;color:var(--ink);font-size:16px;font-weight:700;cursor:pointer;transition:transform var(--dur) ease,box-shadow var(--dur) ease;" style-hover="transform:translateY(var(--lift)) scale(var(--grow));box-shadow:var(--glow);" style-active="box-shadow:var(--glow);"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:20px;">event_repeat</span>Subscribe to calendar</button></sc-if>
+            </div>
           </div>
         </section>
         </sc-if>
@@ -197,14 +208,14 @@ class Component extends DCLogic {
     if (!HC || !HC.status || !HC.week) return {show:false};
     const st = HC.status();
     if (st === 'failed') return {show:false};
-    if (st === 'loading') return {show:true, icon:'hourglass_empty', text:'Checking the calendar…'};
+    if (st === 'loading') return {show:true, icon:'hourglass_empty', line1:'Checking the calendar…', hasName:false};
     const days = [HC.week(0).days, HC.week(1).days], ti = days[0].findIndex(d => d.isToday);
     const t0 = e => e.start ? e.start.getTime() : 0;
     const hits = (HC.events || []).filter(e => e.quiz && !e.ns && !e.hl && e.cs && e.cs.indexOf(k) >= 0 && !(e.w === 0 && ti >= 0 && e.d < ti))
       .sort((a, b) => (a.w - b.w) || (a.d - b.d) || (t0(a) - t0(b)));
-    if (!hits.length) return {show:true, icon:'event_available', text:'No assessment scheduled in the next two weeks'};
+    if (!hits.length) return {show:true, icon:'event_available', line1:'No assessment scheduled in the next two weeks', hasName:false};
     const e = hits[0], day = days[e.w][e.d];
-    return {show:true, icon:'event', text:`Next assessment: ${String(e.title).replace(/\s+/g, ' ').trim()} · ${day.name.slice(0, 3)}, ${day.date}`};
+    return {show:true, icon:'event', line1:`Next assessment: ${day.name.slice(0, 3)}, ${day.date}`, name:String(e.title).replace(/\s+/g, ' ').trim(), hasName:true};
   }
   renderVals(){
     const k = this.key(), p = this.page();
@@ -219,6 +230,8 @@ class Component extends DCLogic {
       page: {...p, desc: p.course ? `The ${p.title} page is being built.` : p.desc, bullets: p.course ? COURSE_PLAN : p.bullets, textVar: p.course ? `var(--t-${k})` : 'var(--ink)', level: p.level || '', radius: p.radius || '24px', fill: p.fill || ''},
       isCourse: !!p.course,
       next: p.course ? this.nextAssessment(k) : {show:false},
+      canSub: !!(p.course && window.HubCalendar && window.HubCalendar.openSubscribe),
+      subscribe: () => window.HubCalendar && window.HubCalendar.openSubscribe([k]),
       showGuardians: GUARDIANS_PUBLIC || !!this.state.teacher,
       guardIntro: `Here’s how to help with ${p.title} at home.`,
       showSoon: !(p.course && window.HUB_LAUNCH), notCourse: !p.course,
