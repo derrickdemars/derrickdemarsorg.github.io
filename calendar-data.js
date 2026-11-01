@@ -23,9 +23,11 @@
 //   timed school-wide events. A description already shown in that cell isn't repeated.
 //
 //   Titles show on one line (two for Classroom due dates) and descriptions on at most two; longer text ends in "…".
-//   Items with a Classroom post link show a small ↗ after the title. Clicking the item (mouse) or pressing Enter
-//   opens the post in a new tab; the popup has a "View post" link. Over the ↗ (and ~6 px around it) no popup opens.
-//   Hover (mouse, about 0.3 s) or tap (touch) any calendar item for its full details. Phones show one day at a time.
+//   Items with a Classroom post link lift, grow slightly and glow in their course's color on hover, like other
+//   links on the site. Clicking the item (mouse) or pressing Enter opens the post in a new tab; the popup has a
+//   "View post" link. Hover (mouse, about 0.3 s) or tap (touch) any calendar item for its full details. Moving
+//   between items, scrolling or the calendar refreshing never leaves an item unable to open its popup: resting
+//   the mouse on an item always opens it. Phones show one day at a time.
 //
 // Subscribe
 //   The "Subscribe to calendar" button below the calendar opens the subscribe form (calendar app, courses,
@@ -259,8 +261,11 @@
     '.hcal-spin.hcal-calm{border-color:var(--spin);animation:hcal-pulse 1.6s ease-in-out infinite;}',
     '@keyframes hcal-rot{to{transform:rotate(360deg);}}',
     '@keyframes hcal-pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}',
-    '.hcal-go{flex:none;display:inline-flex;align-items:center;justify-content:center;padding:6px;margin:-5px -6px -6px -3px;position:relative;z-index:1;cursor:pointer;transition:transform var(--dur) ease;}',
-    '.hcal-go:hover{transform:translateY(var(--lift));}',
+    // Classroom-linked events: lift, grow and glow in the course color (--ev-glow, set per event).
+    '.hcal-ev{position:relative;cursor:pointer;transition:transform var(--dur) ease,box-shadow var(--dur) ease;}',
+    '.hcal-ev:hover{transform:translateY(var(--lift)) scale(var(--grow));box-shadow:var(--ev-glow,var(--glow));}',
+    // Invisible strip under a lifted event so a mouse on its bottom edge doesn't fall off it and flicker.
+    '.hcal-ev:hover::after{content:"";position:absolute;left:0;right:0;top:100%;height:4px;}',
     '.hcal-lift{transition:transform var(--dur) ease,box-shadow var(--dur) ease;}',
     '.hcal-lift:hover{transform:translateY(var(--lift)) scale(var(--grow));box-shadow:var(--glow);}',
     '[data-hcal-trig][role=link]:focus-visible{outline:3px solid var(--ink);outline-offset:2px;}',
@@ -305,6 +310,7 @@
       var fm = useState(null), form = fm[0], setForm = fm[1];     // subscribe form: { app, courses: {id: bool}, sw }
       var opener = useRef(null), panelRef = useRef(null);
       var T = useRef({ open: null, close: null, fade: null }), ptr = useRef('mouse'), hover = useRef(null), popRef = useRef(null);
+      var hoverAt = useRef(null); // { node, ev, day } of the item under the mouse, refreshed on every move
       popRef.current = pop;
 
       function clearT(k) { clearTimeout(T.current[k]); T.current[k] = null; }
@@ -317,16 +323,21 @@
           setPop(function (p) { return p && p.key === key ? Object.assign({}, p, { vis: true }) : p; });
         }); });
       }
-      function hide() {
-        clearT('open'); clearT('close');
+      // Fade the popup out. Leaves a pending open for another item alone, so moving from one item to
+      // the next never cancels the next item's popup.
+      function fadeOut() {
+        clearT('close');
         if (!popRef.current) return;
         var ms = fadeMs();
         if (!ms) { setPop(null); return; }
         setPop(function (p) { return p ? Object.assign({}, p, { vis: false }) : p; });
         clearT('fade');
-        T.current.fade = setTimeout(function () { setPop(function (p) { return p && !p.vis ? null : p; }); }, ms + 30);
+        T.current.fade = setTimeout(function () { T.current.fade = null; setPop(function (p) { return p && !p.vis ? null : p; }); }, ms + 30);
       }
-      function later() { clearT('close'); T.current.close = setTimeout(hide, CLOSE_MS); }
+      // Scroll, resize, a click elsewhere: also cancel any pending open and forget the hovered item,
+      // so the next mouse move over an item starts fresh.
+      function hide() { clearT('open'); hover.current = null; fadeOut(); }
+      function later() { clearT('close'); T.current.close = setTimeout(fadeOut, CLOSE_MS); }
       function drop() { clearT('open'); clearT('close'); clearT('fade'); hover.current = null; setPop(null); }
 
       // ----- Subscribe window
@@ -402,15 +413,25 @@
       var dayIdx = dayPick == null ? Math.max(0, todayIdx) : dayPick;
 
       // ----- popup triggers: mouse waits ~0.3 s; touch opens on tap.
-      function onGo(t) { return !!(t && t.closest && t.closest('[data-hcal-go]')); }
+      // Every mouse move checks the real state (is this item's popup showing or fading in? is its open
+      // timer pending?) and re-arms the timer if neither, so an item can never get stuck without a popup.
       function openPost(url) { window.open(url, '_blank', 'noopener'); }
-      function trig(ev, day, key, style) {
+      function trig(ev, day, key, style, cid) {
         var enter = function (node) {
-          if (hover.current === key) return;
+          hoverAt.current = { node: node, ev: ev, day: day };
+          var p = popRef.current;
+          if (p && p.key === key && (p.vis || !T.current.fade)) { hover.current = key; clearT('close'); return; }
+          if (hover.current === key && T.current.open) return;
           hover.current = key;
-          if (popRef.current && popRef.current.key === key) { clearT('close'); return; }
           clearT('open');
-          T.current.open = setTimeout(function () { if (hover.current === key) show(ev, day, key, node); }, OPEN_MS);
+          T.current.open = setTimeout(function () {
+            T.current.open = null;
+            var at = hoverAt.current;
+            if (hover.current !== key) return;
+            // The calendar re-rendered and replaced the item under the mouse: re-arm on the next move.
+            if (!at || !at.node || !at.node.isConnected) { hover.current = null; return; }
+            show(at.ev, at.day, key, at.node);
+          }, OPEN_MS);
         };
         var leave = function () {
           if (hover.current === key) hover.current = null;
@@ -419,17 +440,7 @@
         };
         var a = {
           key: key, 'data-hcal-trig': '1', style: style,
-          onPointerMove: function (e) {
-            if (e.pointerType !== 'mouse') return;
-            // Over the ↗ (and ~6 px around it): no new popup; one already open for this item stays open.
-            if (onGo(e.target)) {
-              clearT('open');
-              if (popRef.current && popRef.current.key === key) clearT('close');
-              else if (hover.current === key) hover.current = null;
-              return;
-            }
-            enter(e.currentTarget);
-          },
+          onPointerMove: function (e) { if (e.pointerType === 'mouse') enter(e.currentTarget); },
           onPointerLeave: function (e) { if (e.pointerType === 'mouse') leave(); },
           onClick: function (e) {
             var inLink = e.target.closest && e.target.closest('[data-hcal-nopop]');
@@ -439,6 +450,9 @@
           }
         };
         if (ev.link) {
+          var gid = cid || ev.cs[0];
+          a.className = 'hcal-ev';
+          a.style = Object.assign({}, style, { '--ev-glow': gid ? 'var(--cg-' + gid + ', var(--glow))' : 'var(--glow)' });
           a.tabIndex = 0; a.role = 'link';
           a['aria-label'] = ev.title + ', View in Google Classroom, opens in new tab';
           a.onKeyDown = function (e) { if (e.key === 'Enter') { e.preventDefault(); openPost(ev.link); } };
@@ -451,10 +465,7 @@
       }
       function title(ev, key, style) {
         var lines = ev.gc ? 2 : 1; // Classroom due dates get two lines; Google Calendar events one
-        if (!ev.link) return clamp([{ text: ev.title }], lines, style);
-        return h('span', { style: Object.assign({ display: 'flex', alignItems: 'flex-start', minWidth: 0 }, style || {}) },
-          clamp([{ text: ev.title }], lines, { flex: '1 1 auto' }),
-          h('span', { className: 'hcal-go', 'data-hcal-go': '1', title: 'View in Google Classroom', 'aria-hidden': 'true' }, icon('open_in_new', 14)));
+        return clamp([{ text: ev.title }], lines, style);
       }
       function desc(ev, key, style) { return ev.desc ? clamp(ev.desc.segs, 2, style) : null; }
       function time(ev, style) { return ev.allDay ? null : h('span', { style: Object.assign({ fontSize: '13px', fontWeight: 600 }, style || {}) }, timeRange(ev.start, ev.end)); }
@@ -482,19 +493,19 @@
         cell.chips.forEach(function (x) {
           var ev = x.ev, key = k + 'c:' + ev.id, test = ev.quiz;
           var multi = !ev.allDay || x.showDesc || /\n/.test(ev.title) || ev.title.length > 22;
-          out.push(h('div', trig(ev, day, key, Object.assign({ alignSelf: multi ? 'stretch' : 'flex-start', maxWidth: '100%', boxSizing: 'border-box', display: 'flex', flexDirection: 'column', gap: '2px', padding: '4px 10px', borderRadius: multi ? '14px' : '999px', border: '2px solid ' + c.fill, background: test ? c.fill : 'transparent', color: test ? '#15151a' : 'var(--ink)', fontSize: '14px', fontWeight: 700, lineHeight: 1.3 }, WRAP)),
+          out.push(h('div', trig(ev, day, key, Object.assign({ alignSelf: multi ? 'stretch' : 'flex-start', maxWidth: '100%', boxSizing: 'border-box', display: 'flex', flexDirection: 'column', gap: '2px', padding: '4px 10px', borderRadius: multi ? '14px' : '999px', border: '2px solid ' + c.fill, background: test ? c.fill : 'transparent', color: test ? '#15151a' : 'var(--ink)', fontSize: '14px', fontWeight: 700, lineHeight: 1.3 }, WRAP), c.id),
             title(ev, key), time(ev), x.showDesc ? desc(ev, key, { fontSize: '13px', fontWeight: 400 }) : null));
         });
         cell.plain.forEach(function (x) {
           var ev = x.ev, key = k + 'p:' + ev.id;
-          out.push(h('div', trig(ev, day, key, Object.assign({ display: 'flex', flexDirection: 'column', gap: '2px', lineHeight: 1.35 }, WRAP)),
+          out.push(h('div', trig(ev, day, key, Object.assign({ display: 'flex', flexDirection: 'column', gap: '2px', lineHeight: 1.35 }, WRAP), c.id),
             title(ev, key, { fontSize: '14px', fontWeight: 700 }),
             time(ev, { color: 'var(--muted)' }),
             x.showDesc ? desc(ev, key, { fontSize: '14px', color: 'var(--muted)' }) : null));
         });
         cell.timed.forEach(function (x) {
           var ev = x.ev, key = k + 's:' + ev.id;
-          out.push(h('div', trig(ev, day, key, Object.assign({ display: 'flex', flexDirection: 'column', gap: '2px', lineHeight: 1.35 }, WRAP)),
+          out.push(h('div', trig(ev, day, key, Object.assign({ display: 'flex', flexDirection: 'column', gap: '2px', lineHeight: 1.35 }, WRAP), c.id),
             h('div', { style: Object.assign({ display: 'flex', alignItems: 'flex-start', gap: '4px', fontSize: '14px', fontWeight: 700 }, WRAP) },
               ev.hl ? icon('celebration', 16, { marginTop: '1px' }) : null,
               h('div', { style: Object.assign({ display: 'flex', flexDirection: 'column', flex: 1 }, WRAP) }, title(ev, key))),
