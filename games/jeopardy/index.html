@@ -72,7 +72,7 @@ input::placeholder{color:var(--jp-muted);opacity:1}
             </div>
           </sc-if>
           <sc-if value="{{ locked }}" hint-placeholder-val="{{ true }}">
-            <button onClick="{{ openSignIn }}" style="margin-top:auto;display:inline-flex;align-items:center;gap:8px;align-self:flex-start;background:var(--jp-bg);color:var(--jp-muted);border:2px solid var(--jp-border);border-radius:8px;padding:10px 16px;font-size:calc(15px * var(--jp-scale));font-weight:700;cursor:pointer;min-height:44px" style-hover="color:var(--jp-text);border-color:var(--jp-accent)">&#128274; Teacher sign-in required</button>
+            <button onClick="{{ openSignIn }}" style="margin-top:auto;display:inline-flex;align-items:center;gap:8px;align-self:flex-start;background:var(--jp-bg);color:var(--jp-muted);border:2px solid var(--jp-border);border-radius:8px;padding:10px 16px;font-size:calc(15px * var(--jp-scale));font-weight:700;cursor:pointer;min-height:44px" style-hover="color:var(--jp-text);border-color:var(--jp-accent)">&#128274; Staff sign-in required</button>
           </sc-if>
         </article>
       </sc-for>
@@ -145,7 +145,7 @@ class Component extends DCLogic {
       emptyTitle: hasGames ? 'No matches' : 'No games yet for ' + s.cls,
       emptyBody: hasGames ? 'Try a different search.' : 'Add one entry to games.json with this class name and it will appear here.',
       lockLabel: s.teacher ? '\u{1F513} Lock' : '\u{1F512} Sign in',
-      lockTitle: s.teacher ? 'Lock the dashboard and games' : 'Teacher sign in',
+      lockTitle: s.teacher ? 'Lock the dashboard and games' : 'Staff sign in',
       toggleTeacher: () => { if (s.teacher) { JPLock.lock(); } else this.setState({ signInOpen: true }); },
       openSignIn: () => this.setState({ signInOpen: true }),
     };
