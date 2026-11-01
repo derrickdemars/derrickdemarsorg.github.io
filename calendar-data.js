@@ -22,8 +22,16 @@
 //   In a cell, each event's title, time and description stay together. Order: chips, NS/HL text,
 //   timed school-wide events. A description already shown in that cell isn't repeated.
 //
-//   Text over 33 characters or with more than two line breaks is cut with "…" and a More link.
-//   Hover (mouse, about 0.3 s) or tap (touch) any calendar item for its details. Phones show one day at a time.
+//   Titles show on one line (two for Classroom due dates) and descriptions on at most two; longer text ends in "…".
+//   Items with a Classroom post link show a small ↗ after the title. Clicking the item (mouse) or pressing Enter
+//   opens the post in a new tab; the popup has a "View post" link. Over the ↗ (and ~6 px around it) no popup opens.
+//   Hover (mouse, about 0.3 s) or tap (touch) any calendar item for its full details. Phones show one day at a time.
+//
+// Loading
+//   Until Google Calendar events and Classroom due dates have both arrived, the grid dims and a circular
+//   loader appears (after 0.3 s, so fast loads never show it), in the course's color on course pages.
+//   If Google Calendar fails or takes over 20 s: "Couldn't load events." with Try again.
+//   If only Classroom due dates fail or take over 20 s: events show, with a note and Try again.
 (function () {
   if (window.HubCalendar) return;
 
@@ -37,7 +45,7 @@
   ];
   var BY_ID = {};
   COURSES.forEach(function (c) { BY_ID[c.id] = c; });
-  var FOLD_CHARS = 33, FOLD_BREAKS = 2, OPEN_MS = 300, CLOSE_MS = 500;
+  var OPEN_MS = 300, CLOSE_MS = 500, SPIN_DELAY_MS = 300, LOAD_TIMEOUT_MS = 20000;
   var STRIPES = 'repeating-linear-gradient(45deg,var(--surface2) 0 8px,transparent 8px 16px)';
   var EVENTS = []; // filled from Google Calendar
 
@@ -138,24 +146,6 @@
     var plain = segs.map(function (g) { return g.text; }).join('');
     return { segs: segs, text: plain, key: plain.toLowerCase().replace(/\s+/g, ' ').trim() };
   }
-  // Where folded text is cut: after 33 characters or at the third line break, whichever comes first.
-  function cutAt(text) {
-    var c = Math.min(text.length, FOLD_CHARS), n = 0;
-    for (var i = 0; i < c; i++) if (text[i] === '\n' && ++n > FOLD_BREAKS) return i;
-    return c;
-  }
-  function needsFold(text) { return cutAt(text) < text.length; }
-  function cutSegs(segs, c) {
-    var out = [], used = 0;
-    for (var i = 0; i < segs.length && used < c; i++) {
-      var g = segs[i], t = g.text.slice(0, c - used);
-      used += t.length; out.push(g.href ? { text: t, href: g.href } : { text: t });
-    }
-    var last = out[out.length - 1];
-    if (last && !last.href) last.text = last.text.replace(/\s+$/, '');
-    out.push({ text: '…' });
-    return out;
-  }
   // Street addresses link to Google Maps; "Gym" or "Room 12" stay plain text.
   var STREET_RE = /\b\d{1,6}\s+(?:[A-Za-z0-9.'-]+\s+){0,4}(?:St|Street|Ave|Avenue|Rd|Road|Dr|Drive|Blvd|Boulevard|Hwy|Highway|Ln|Lane|Pkwy|Parkway|Way|Ct|Court|Cir|Circle|Pl|Place)\b/i;
   function mapHref(loc) { return loc && (STREET_RE.test(loc) || /\b\d{5}(?:-\d{4})?\b/.test(loc)) ? 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(loc) : ''; }
@@ -177,7 +167,8 @@
       out.push({
         id: 'e' + i, w: w, d: d, cs: t.cs, ns: t.ns, hl: t.hl, title: t.title, quiz: QUIZ_RE.test(t.title),
         allDay: allDay, start: allDay ? null : start, end: allDay ? null : end,
-        loc: String(e.location || '').replace(/\s+/g, ' ').trim(), desc: descOf(e.description)
+        loc: String(e.location || '').replace(/\s+/g, ' ').trim(), desc: descOf(e.description),
+        link: e.gc && /^https?:\/\//i.test(String(e.link || '').trim()) ? String(e.link).trim() : ''
       });
     });
     return out;
@@ -256,7 +247,17 @@
     '.hcal-row:active{box-shadow:var(--row-glow);}',
     '.hcal-link{color:inherit;text-decoration:underline;text-underline-offset:2px;}',
     '.hcal-cut{display:inline-block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;vertical-align:bottom;}',
-    '.hcal-more{display:inline;background:none;border:0;padding:0 0 0 4px;margin:0;color:inherit;font:inherit;font-size:13px;font-weight:700;text-decoration:underline;text-underline-offset:2px;cursor:pointer;white-space:nowrap;}'
+    '.hcal-clamp{display:-webkit-box;-webkit-box-orient:vertical;overflow:hidden;white-space:pre-line;}',
+    '.hcal-spin{width:40px;height:40px;box-sizing:border-box;border-radius:50%;border:4px solid var(--line);border-top-color:var(--spin);animation:hcal-rot 0.9s linear infinite;}',
+    '.hcal-spin.hcal-calm{border-color:var(--spin);animation:hcal-pulse 1.6s ease-in-out infinite;}',
+    '@keyframes hcal-rot{to{transform:rotate(360deg);}}',
+    '@keyframes hcal-pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}',
+    '.hcal-go{flex:none;display:inline-flex;align-items:center;justify-content:center;padding:6px;margin:-5px -6px -6px -3px;position:relative;z-index:1;cursor:pointer;transition:transform var(--dur) ease;}',
+    '.hcal-go:hover{transform:translateY(var(--lift));}',
+    '.hcal-lift{transition:transform var(--dur) ease,box-shadow var(--dur) ease;}',
+    '.hcal-lift:hover{transform:translateY(var(--lift)) scale(var(--grow));box-shadow:var(--glow);}',
+    '[data-hcal-trig][role=link]:focus-visible{outline:3px solid var(--ink);outline-offset:2px;}',
+    '.hcal-sr{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0;}'
   ].join('');
   function addCss() {
     if (document.getElementById('hcal-css')) return;
@@ -291,7 +292,6 @@
       var wk = useState(0), weekNo = wk[0], setWeek = wk[1];
       var dy = useState(null), dayPick = dy[0], setDay = dy[1];
       var pp = useState(null), pop = pp[0], setPop = pp[1];
-      var fo = useState({}), open = fo[0], setOpen = fo[1];
       var T = useRef({ open: null, close: null, fade: null }), ptr = useRef('mouse'), hover = useRef(null), popRef = useRef(null);
       popRef.current = pop;
 
@@ -327,6 +327,8 @@
           if (!(t && t.closest && t.closest('[data-hcal-pop],[data-hcal-trig]'))) hide();
         };
         window.addEventListener('hubcal-ready', bump);
+        window.addEventListener('hubcal-status', bump);
+        window.addEventListener('hubclassroom-ready', bump);
         window.addEventListener('hubbell-ready', bump);
         window.addEventListener('scroll', hide);
         window.addEventListener('resize', hide);
@@ -335,6 +337,8 @@
         var daily = setInterval(bump, 60000);
         return function () {
           window.removeEventListener('hubcal-ready', bump);
+          window.removeEventListener('hubcal-status', bump);
+          window.removeEventListener('hubclassroom-ready', bump);
           window.removeEventListener('hubbell-ready', bump);
           window.removeEventListener('scroll', hide);
           window.removeEventListener('resize', hide);
@@ -348,8 +352,9 @@
       var todayIdx = weeks[0].days.findIndex(function (d) { return d.isToday; });
       var dayIdx = dayPick == null ? Math.max(0, todayIdx) : dayPick;
 
-      // ----- popup triggers: mouse waits ~0.3 s; touch opens on tap. More/Less never opens one.
-      function onMore(t) { return !!(t && t.closest && t.closest('[data-hcal-more]')); }
+      // ----- popup triggers: mouse waits ~0.3 s; touch opens on tap.
+      function onGo(t) { return !!(t && t.closest && t.closest('[data-hcal-go]')); }
+      function openPost(url) { window.open(url, '_blank', 'noopener'); }
       function trig(ev, day, key, style) {
         var enter = function (node) {
           if (hover.current === key) return;
@@ -363,30 +368,46 @@
           clearT('open');
           if (popRef.current) later();
         };
-        return {
+        var a = {
           key: key, 'data-hcal-trig': '1', style: style,
-          onPointerMove: function (e) { if (e.pointerType !== 'mouse') return; if (onMore(e.target)) leave(); else enter(e.currentTarget); },
+          onPointerMove: function (e) {
+            if (e.pointerType !== 'mouse') return;
+            // Over the ↗ (and ~6 px around it): no new popup; one already open for this item stays open.
+            if (onGo(e.target)) {
+              clearT('open');
+              if (popRef.current && popRef.current.key === key) clearT('close');
+              else if (hover.current === key) hover.current = null;
+              return;
+            }
+            enter(e.currentTarget);
+          },
           onPointerLeave: function (e) { if (e.pointerType === 'mouse') leave(); },
           onClick: function (e) {
-            if (ptr.current === 'mouse') return;
-            if (e.target.closest && e.target.closest('[data-hcal-nopop],[data-hcal-more]')) return;
+            var inLink = e.target.closest && e.target.closest('[data-hcal-nopop]');
+            if (ptr.current === 'mouse') { if (ev.link && !inLink) openPost(ev.link); return; }
+            if (inLink) return;
             if (pop && pop.key === key && pop.vis) hide(); else show(ev, day, key, e.currentTarget);
           }
         };
+        if (ev.link) {
+          a.tabIndex = 0; a.role = 'link';
+          a['aria-label'] = ev.title + ', View in Google Classroom, opens in new tab';
+          a.onKeyDown = function (e) { if (e.key === 'Enter') { e.preventDefault(); openPost(ev.link); } };
+        }
+        return a;
       }
-      // ----- folded text: first 33 characters (or 3 lines), then "…" and More
-      function folded(segs, text, key, style, inCell) {
-        var cut = cutAt(text), long = cut < text.length, isOpen = !!open[key];
-        var shown = long && !isOpen ? cutSegs(segs, cut) : segs;
-        return h('span', { style: Object.assign({ display: 'block', whiteSpace: 'pre-line' }, WRAP, style || {}) },
-          segNodes(shown, inCell),
-          long ? h('button', {
-            type: 'button', className: 'hcal-more', 'data-hcal-more': '1', 'aria-expanded': isOpen ? 'true' : 'false',
-            onClick: function (e) { e.stopPropagation(); setOpen(function (o) { var n = Object.assign({}, o); n[key] = !o[key]; return n; }); }
-          }, isOpen ? 'Less' : 'More') : null);
+      // ----- clamped text: titles one line, descriptions two; the browser adds "…"; the popup shows it all
+      function clamp(segs, lines, style) {
+        return h('span', { className: 'hcal-clamp', style: Object.assign({ WebkitLineClamp: String(lines) }, WRAP, style || {}) }, segNodes(segs, true));
       }
-      function title(ev, key, style) { return folded([{ text: ev.title }], ev.title, key + ':t', style, true); }
-      function desc(ev, key, style) { return ev.desc ? folded(ev.desc.segs, ev.desc.text, key + ':d', style, true) : null; }
+      function title(ev, key, style) {
+        var lines = ev.gc ? 2 : 1; // Classroom due dates get two lines; Google Calendar events one
+        if (!ev.link) return clamp([{ text: ev.title }], lines, style);
+        return h('span', { style: Object.assign({ display: 'flex', alignItems: 'flex-start', minWidth: 0 }, style || {}) },
+          clamp([{ text: ev.title }], lines, { flex: '1 1 auto' }),
+          h('span', { className: 'hcal-go', 'data-hcal-go': '1', title: 'View in Google Classroom', 'aria-hidden': 'true' }, icon('open_in_new', 14)));
+      }
+      function desc(ev, key, style) { return ev.desc ? clamp(ev.desc.segs, 2, style) : null; }
       function time(ev, style) { return ev.allDay ? null : h('span', { style: Object.assign({ fontSize: '13px', fontWeight: 600 }, style || {}) }, timeRange(ev.start, ev.end)); }
 
       // ----- pieces
@@ -411,7 +432,7 @@
         var cell = day.cells[c.id], k = day.key + ':' + c.id + ':', out = [];
         cell.chips.forEach(function (x) {
           var ev = x.ev, key = k + 'c:' + ev.id, test = ev.quiz;
-          var multi = !ev.allDay || x.showDesc || needsFold(ev.title) || ev.title.length > 22;
+          var multi = !ev.allDay || x.showDesc || /\n/.test(ev.title) || ev.title.length > 22;
           out.push(h('div', trig(ev, day, key, Object.assign({ alignSelf: multi ? 'stretch' : 'flex-start', maxWidth: '100%', boxSizing: 'border-box', display: 'flex', flexDirection: 'column', gap: '2px', padding: '4px 10px', borderRadius: multi ? '14px' : '999px', border: '2px solid ' + c.fill, background: test ? c.fill : 'transparent', color: test ? '#15151a' : 'var(--ink)', fontSize: '14px', fontWeight: 700, lineHeight: 1.3 }, WRAP)),
             title(ev, key), time(ev), x.showDesc ? desc(ev, key, { fontSize: '13px', fontWeight: 400 }) : null));
         });
@@ -455,6 +476,27 @@
       var box = { border: '1px solid var(--line)', borderRadius: '24px', background: 'var(--surface)', overflow: 'hidden' };
       var body;
 
+      // ----- loading: dim the grid with a loader, or a failure message with Try again
+      var ph = phase(), spin = ph === 'loading' && Date.now() >= LOAD.spinAt, failed = ph === 'failed';
+      var dim = spin || failed;
+      var spinColor = home ? 'var(--ink)' : (BY_ID[props.course] ? BY_ID[props.course].fill : 'var(--ink)');
+      function boxStyle() { return Object.assign({}, box, { position: 'relative' }); }
+      function dimStyle() { return dim ? { opacity: 0.35, pointerEvents: 'none', userSelect: 'none' } : {}; }
+      function veil() {
+        if (!dim) return null;
+        return h('div', { key: 'veil', style: { position: 'absolute', inset: 0, display: 'grid', placeItems: 'center', padding: '16px', zIndex: 2 } },
+          failed
+            ? h('div', { style: { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px', padding: '18px 22px', borderRadius: '16px', background: 'var(--surface)', border: '1px solid var(--line)', textAlign: 'center' } },
+                h('span', { style: { fontSize: '18px', fontWeight: 700, color: 'var(--ink)' } }, 'Couldn’t load events.'),
+                h('button', { type: 'button', className: 'hcal-btn', style: BTN, onClick: function () { retryAll(); } }, 'Try again'))
+            : h('div', { className: 'hcal-spin' + (fadeMs() ? '' : ' hcal-calm'), 'aria-hidden': 'true', style: { '--spin': spinColor } }));
+      }
+      var live = h('span', { key: 'live', className: 'hcal-sr', role: 'status', 'aria-live': 'polite' },
+        spin ? 'Loading events' : failed ? 'Couldn’t load events.' : ph === 'partial' ? 'Classroom due dates didn’t load.' : '');
+      var note = ph === 'partial' ? h('div', { key: 'note', style: { display: 'flex', alignItems: 'center', gap: '8px 12px', flexWrap: 'wrap', fontSize: '15px', color: 'var(--muted)' } },
+        h('span', null, 'Classroom due dates didn’t load.'),
+        h('button', { type: 'button', className: 'hcal-btn', style: Object.assign({}, BTN, { minHeight: '36px', padding: '0 12px', fontSize: '14px' }), onClick: function () { retryClassroom(); } }, 'Try again')) : null;
+
       if (!narrow) {
         var wkObj = weeks[weekNo];
         body = [
@@ -462,8 +504,8 @@
             h('h2', { id: 'cal-title', style: { margin: 0, fontSize: '28px' } }, wkObj.label),
             legend,
             h('button', { type: 'button', className: 'hcal-btn', style: BTN, onClick: function () { drop(); setWeek(weekNo ? 0 : 1); } }, weekNo === 0 ? 'Next week →' : '← This week')),
-          h('div', { key: 'grid', style: box },
-            h('div', { role: 'table', 'aria-label': wkObj.label, style: { display: 'grid', gridTemplateColumns: home ? 'minmax(0,0.9fr) repeat(5,minmax(0,1fr))' : 'repeat(5,minmax(0,1fr))' } },
+          h('div', { key: 'grid', style: boxStyle(), 'aria-busy': ph === 'loading' ? 'true' : 'false' },
+            h('div', { role: 'table', 'aria-label': wkObj.label, style: Object.assign({ display: 'grid', gridTemplateColumns: home ? 'minmax(0,0.9fr) repeat(5,minmax(0,1fr))' : 'repeat(5,minmax(0,1fr))' }, dimStyle()) },
               h('div', { role: 'row', style: { display: 'contents' } },
                 home ? h('div', { role: 'columnheader', style: { background: 'var(--surface)', padding: '14px 12px', borderBottom: '1px solid var(--line)', fontSize: '15px', fontWeight: 700, color: 'var(--muted)', display: 'flex', alignItems: 'flex-end' } }, 'Class') : null,
                 wkObj.days.map(function (d, i) { return dayHead(d, i, true); })),
@@ -471,8 +513,11 @@
                 return h('div', { key: c.id, role: 'row', style: { display: 'contents' } },
                   home ? rowHead(c, true, true) : null,
                   wkObj.days.map(function (d, i) { return cell(d, c, i, true, home); }));
-              }))),
-          emptyWeek(wkObj) ? h('p', { key: 'empty', style: { margin: 0, fontSize: '17px', color: 'var(--muted)' } }, weekNo ? 'No events next week.' : 'No events this week.') : null
+              })),
+            veil()),
+          note,
+          live,
+          ph !== 'loading' && !failed && emptyWeek(wkObj) ? h('p', { key: 'empty', style: { margin: 0, fontSize: '17px', color: 'var(--muted)' } }, weekNo ? 'No events next week.' : 'No events this week.') : null
         ];
       } else {
         var wn = dayIdx >= 5 ? 1 : 0, day = weeks[wn].days[dayIdx % 5];
@@ -482,13 +527,17 @@
           h('div', { key: 'top', style: { display: 'flex', flexDirection: 'column', gap: '10px' } },
             h('h2', { id: 'cal-title', style: { margin: 0, fontSize: '26px' } }, weeks[wn].label),
             legend),
-          h('div', { key: 'day', role: 'group', 'aria-label': day.long, style: box },
-            dayHead(day, 0, false),
-            home
-              ? rows.map(function (c, r) {
-                  return h('div', { key: c.id, style: { display: 'grid', gridTemplateColumns: 'minmax(0,0.85fr) minmax(0,1.5fr)', borderTop: r ? '1px solid var(--line)' : '0' } }, rowHead(c, false, false), cell(day, c, 0, false, false));
-                })
-              : cell(day, rows[0], 0, false, false)),
+          h('div', { key: 'day', role: 'group', 'aria-label': day.long, 'aria-busy': ph === 'loading' ? 'true' : 'false', style: boxStyle() },
+            h('div', { style: dimStyle() },
+              dayHead(day, 0, false),
+              home
+                ? rows.map(function (c, r) {
+                    return h('div', { key: c.id, style: { display: 'grid', gridTemplateColumns: 'minmax(0,0.85fr) minmax(0,1.5fr)', borderTop: r ? '1px solid var(--line)' : '0' } }, rowHead(c, false, false), cell(day, c, 0, false, false));
+                  })
+                : cell(day, rows[0], 0, false, false)),
+            veil()),
+          note,
+          live,
           h('div', { key: 'nav', style: { display: 'flex', gap: '10px', width: '100%' } },
             h('button', { type: 'button', className: 'hcal-btn', style: NAV, disabled: dayIdx <= 0, onClick: function () { go(-1); } }, 'Previous Day'),
             h('button', { type: 'button', className: 'hcal-btn', style: NAV, disabled: dayIdx >= 9, onClick: function () { go(1); } }, 'Next Day'))
@@ -519,7 +568,8 @@
           h('div', { style: Object.assign({ fontSize: '17px', fontWeight: 700, lineHeight: 1.3 }, WRAP) }, ev.title),
           ev.allDay ? null : line('schedule', timeRange(ev.start, ev.end)),
           ev.loc ? line('location_on', map ? h('a', { href: map, target: '_blank', rel: 'noopener noreferrer', className: 'hcal-link' }, ev.loc) : ev.loc) : null,
-          ev.desc ? h('div', { style: Object.assign({ fontSize: '14px', whiteSpace: 'pre-line' }, WRAP) }, segNodes(ev.desc.segs, false)) : null);
+          ev.desc ? h('div', { style: Object.assign({ fontSize: '14px', whiteSpace: 'pre-line' }, WRAP) }, segNodes(ev.desc.segs, false)) : null,
+          ev.link ? h('a', { href: ev.link, target: '_blank', rel: 'noopener noreferrer', className: 'hcal-link hcal-lift', style: { alignSelf: 'flex-start', display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 8px', margin: '0 -8px', borderRadius: '10px', fontSize: '14px', fontWeight: 700 } }, 'View post', icon('open_in_new', 16)) : null);
         popEl = RD && RD.createPortal ? RD.createPortal(popEl, document.body) : popEl;
       }
       return h(R.Fragment, null, body, popEl);
@@ -532,19 +582,64 @@
     return R.createElement(View, props || {});
   }
 
+  // ---------- loading status (Google Calendar here; Classroom due dates from classroom-feed.js) ----------
+  // LOAD.cal: loading | ready | error. clDeadline: when a still-pending Classroom counts as failed.
+  var LOAD = { cal: 'loading', seq: 0, spinAt: Date.now() + SPIN_DELAY_MS, clDeadline: Date.now() + LOAD_TIMEOUT_MS };
+  function notify() { window.dispatchEvent(new Event('hubcal-status')); }
+  function notifyIn(ms) { setTimeout(notify, ms + 30); }
+  notifyIn(SPIN_DELAY_MS); notifyIn(LOAD_TIMEOUT_MS);
+  function clState() {
+    var C = window.HubClassroom;
+    if (!C || !C.status) return 'none';
+    var s = C.status();
+    if (s === 'off') return 'none';
+    if (s === 'ready' || s === 'error') return s;
+    return Date.now() >= LOAD.clDeadline ? 'error' : 'pending'; // idle (about to load) or loading
+  }
+  // loading | failed (Calendar failed) | partial (events shown, Classroom due dates failed) | ready
+  function phase() {
+    if (LOAD.cal === 'error') return 'failed';
+    var cl = clState();
+    if (LOAD.cal !== 'ready' || cl === 'pending') return 'loading';
+    return cl === 'error' ? 'partial' : 'ready';
+  }
+  function restartClassroom() {
+    var C = window.HubClassroom;
+    if (C && C.status && C.status() === 'error' && C.reload) C.reload(); // a still-pending request keeps going
+    LOAD.clDeadline = Date.now() + LOAD_TIMEOUT_MS; notifyIn(LOAD_TIMEOUT_MS);
+  }
+  function retryAll() {
+    if (clState() === 'error') restartClassroom();
+    LOAD.spinAt = Date.now() + SPIN_DELAY_MS; notifyIn(SPIN_DELAY_MS);
+    loadLive();
+  }
+  function retryClassroom() {
+    LOAD.spinAt = Date.now() + SPIN_DELAY_MS; notifyIn(SPIN_DELAY_MS);
+    restartClassroom(); notify();
+  }
+
   function loadLive() {
     var base = window.HubState && window.HubState.apiBase;
-    if (!base || !window.fetch) return;
-    fetch(base + '/api/calendar', { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
-      if (!d || !d.ok || !Array.isArray(d.events)) return;
+    var my = ++LOAD.seq;
+    function fail() { if (my !== LOAD.seq) return; LOAD.seq++; LOAD.cal = 'error'; notify(); }
+    if (!base || !window.fetch) { fail(); return; }
+    LOAD.cal = 'loading'; notify();
+    var ctl = window.AbortController ? new AbortController() : null;
+    var timer = setTimeout(function () { if (ctl) ctl.abort(); fail(); }, LOAD_TIMEOUT_MS);
+    fetch(base + '/api/calendar', { cache: 'no-store', signal: ctl ? ctl.signal : undefined }).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
+      if (my !== LOAD.seq) return;
+      clearTimeout(timer);
+      if (!d || !d.ok || !Array.isArray(d.events)) { fail(); return; }
       EVENTS.length = 0; Array.prototype.push.apply(EVENTS, fromGoogle(d.events));
-      api.live = true;
+      api.live = true; LOAD.cal = 'ready';
       window.dispatchEvent(new Event('hubcal-ready'));
-    }).catch(function () {});
+      notify();
+    }).catch(function () { clearTimeout(timer); fail(); });
   }
   var api = window.HubCalendar = {
     events: EVENTS, week: week, element: element, courses: COURSES, live: false,
-    _test: { parseTitle: parseTitle, descOf: descOf, needsFold: needsFold, cutAt: cutAt, cutSegs: cutSegs, mapHref: mapHref, fromGoogle: fromGoogle, timeRange: timeRange }
+    status: function () { return phase(); }, reload: retryAll,
+    _test: { parseTitle: parseTitle, descOf: descOf, mapHref: mapHref, fromGoogle: fromGoogle, timeRange: timeRange, _load: LOAD }
   };
   window.dispatchEvent(new Event('hubcal-ready'));
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', loadLive); else setTimeout(loadLive, 0);
