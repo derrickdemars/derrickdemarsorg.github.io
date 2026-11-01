@@ -11,7 +11,7 @@
 //
 // What a student sees for each post: the kind (Announcement, Assignment, Question, Material),
 // the topic, the title, the text (folded with More/Less), the due date for assignments (no time
-// on quiz/test/exam titles), attachment links, and an "Open in Classroom" link. Point values are
+// on quiz/test/exam titles), attachment links, and an "Open in Google Classroom" link. Point values are
 // never shown. Only posts to the
 // whole class are sent; the script never sends student names, comments, grades, or rosters.
 (function () {
@@ -126,7 +126,10 @@
     '.hgc-btn:not(:disabled):active{box-shadow:var(--glow);}',
     '.hgc-link{color:inherit;text-decoration:underline;text-underline-offset:2px;}',
     '.hgc-more{display:inline;background:none;border:0;padding:0 0 0 4px;margin:0;color:inherit;font:inherit;font-weight:700;text-decoration:underline;text-underline-offset:2px;cursor:pointer;white-space:nowrap;}',
-    '.hgc-card{transition:box-shadow var(--dur) ease;}'
+    '.hgc-card{transition:box-shadow var(--dur) ease;}',
+    '.hgc-lift{transition:transform var(--dur) ease,box-shadow var(--dur) ease;}',
+    '.hgc-lift:hover{transform:translateY(var(--lift)) scale(var(--grow));box-shadow:var(--glow);}',
+    '.hgc-inline{display:inline-block;max-width:100%;vertical-align:bottom;overflow-wrap:anywhere;padding:0 3px;margin:0 -3px;border-radius:6px;}'
   ].join('');
   function addCss() {
     if (document.getElementById('hgc-css')) return;
@@ -152,7 +155,7 @@
 
       var head = h('div', { key: 'head', style: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap' } },
         h('h2', { id: 'gc-title', style: { margin: 0, fontSize: '28px', display: 'flex', alignItems: 'center', gap: '10px' } }, icon('school', 30, { color: c.text }), 'Google Classroom'),
-        course && course.link ? h('a', { href: course.link, target: '_blank', rel: 'noopener', className: 'hgc-btn', style: LINK_BTN }, 'Open Classroom', icon('open_in_new', 20)) : null);
+        course && course.link ? h('a', { href: course.link, target: '_blank', rel: 'noopener', className: 'hgc-btn', style: LINK_BTN }, 'Open Google Classroom', icon('open_in_new', 20)) : null);
 
       function note(text) { return h('div', { key: 'note', style: { padding: '20px', border: '2px dashed var(--line)', borderRadius: '20px', fontSize: '18px', color: 'var(--muted)' } }, text); }
 
@@ -179,7 +182,7 @@
         var text = plainOf(segs), cut = cutAt(text), long = cut < text.length, isOpen = !!open[id];
         var use = long && !isOpen ? cutSegs(segs, cut) : segs;
         return h('p', { style: Object.assign({ margin: 0, fontSize: '17px', whiteSpace: 'pre-line', lineHeight: 'var(--lh)' }, WRAP) },
-          use.map(function (g, i) { return g.href ? h('a', { key: i, href: g.href, target: '_blank', rel: 'noopener noreferrer', className: 'hgc-link' }, g.text) : g.text; }),
+          use.map(function (g, i) { return g.href ? h('a', { key: i, href: g.href, target: '_blank', rel: 'noopener noreferrer', className: 'hgc-link hgc-lift hgc-inline' }, g.text) : g.text; }),
           long && !isOpen ? '…' : null,
           long ? h('button', { type: 'button', className: 'hgc-more', 'aria-expanded': isOpen ? 'true' : 'false', onClick: function () { setOpen(function (o) { var n = Object.assign({}, o); n[id] = !o[id]; return n; }); } }, isOpen ? 'Less' : 'More') : null);
       }
@@ -202,7 +205,7 @@
             var style = { display: 'flex', alignItems: 'center', gap: '8px', minHeight: '44px', padding: '4px 14px', borderRadius: '14px', background: 'var(--surface2)', color: 'var(--ink)', textDecoration: 'none', fontSize: '15px', fontWeight: 700, maxWidth: '100%', boxSizing: 'border-box' };
             return f.url ? h('a', { key: i, href: f.url, target: '_blank', rel: 'noopener', className: 'hgc-btn', style: style }, ic, label) : h('span', { key: i, style: style }, ic, label);
           })) : null,
-          p.link ? h('a', { href: p.link, target: '_blank', rel: 'noopener', className: 'hgc-link', style: { alignSelf: 'flex-start', display: 'flex', alignItems: 'center', gap: '6px', minHeight: '40px', fontSize: '15px', fontWeight: 700, color: 'var(--muted)' } }, 'Open in Classroom', icon('open_in_new', 18)) : null);
+          p.link ? h('a', { href: p.link, target: '_blank', rel: 'noopener', className: 'hgc-link hgc-lift', style: { alignSelf: 'flex-start', display: 'flex', alignItems: 'center', gap: '6px', minHeight: '40px', padding: '0 8px', margin: '0 -8px', borderRadius: '10px', fontSize: '15px', fontWeight: 700, color: 'var(--muted)' } }, 'Open in Google Classroom', icon('open_in_new', 18)) : null);
       }
 
       return h(R.Fragment, null, head, body);
@@ -228,7 +231,7 @@
         var day = p.due.day || (p.due.time ? centralDay(p.due.time) : p.due.date); if (!day) return;
         var noTime = /\b(quiz|test|exam)\b/i.test(p.title || '') || plain(p.title);
         var timed = !!p.due.time && centralClock(p.due.time) !== '23:59' && !noTime;
-        out.push({ date: day, title: TAG[k] + ' ' + (p.title || 'Assignment'), allDay: !timed, start: timed ? p.due.time : null, end: timed ? p.due.time : null, location: '', description: p.text || '', gc: true });
+        out.push({ date: day, title: TAG[k] + ' ' + (p.title || 'Assignment'), allDay: !timed, start: timed ? p.due.time : null, end: timed ? p.due.time : null, location: '', description: p.text || '', link: p.link || '', gc: true });
       });
     }
     return out;
@@ -242,10 +245,14 @@
     var added = DUE_ON_CALENDAR && DUE.length ? HC._test.fromGoogle(DUE) : [];
     var norm = function (t) { return String(t || '').toLowerCase().replace(/\s+/g, ' ').trim(); };
         ev.forEach(function (o) { if (plain(o.title)) o.quiz = false; });
+    // Links copied onto matching Google Calendar events are rebuilt each time, so none go stale.
+    ev.forEach(function (o) { if (o.gcLink) { o.link = ''; o.gcLink = false; } });
     added.forEach(function (e, i) {
       e.gc = true; e.id = 'gc' + i; if (plain(e.title)) e.quiz = false;
-      var dup = ev.some(function (o) { return !o.gc && o.w === e.w && o.d === e.d && norm(o.title) === norm(e.title) && e.cs.some(function (c) { return o.cs.indexOf(c) >= 0; }); });
+      var dup = null;
+      ev.forEach(function (o) { if (!dup && !o.gc && o.w === e.w && o.d === e.d && norm(o.title) === norm(e.title) && e.cs.some(function (c) { return o.cs.indexOf(c) >= 0; })) dup = o; });
       if (!dup) ev.push(e);
+      else if (e.link && !dup.link) { dup.link = e.link; dup.gcLink = true; }
     });
     if ((before !== ev.length || added.length) && !merging) { merging = true; try { window.dispatchEvent(new Event('hubcal-ready')); } finally { merging = false; } }
   }
