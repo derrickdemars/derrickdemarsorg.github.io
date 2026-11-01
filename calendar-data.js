@@ -27,6 +27,15 @@
 //   opens the post in a new tab; the popup has a "View post" link. Over the ↗ (and ~6 px around it) no popup opens.
 //   Hover (mouse, about 0.3 s) or tap (touch) any calendar item for its full details. Phones show one day at a time.
 //
+// Add to calendar / Subscribe
+//   Every popup has "Add to calendar": a window offers "Just this event" (Google Calendar link or an .ics
+//   file) or "Subscribe to the calendar". The "Subscribe to calendar" button below the calendar opens the
+//   subscribe form directly (calendar app, courses, school-wide). The live feed comes from the Worker at
+//   /api/calendar.ics. Export timing (Add to calendar and the feed only; the site's display is unchanged):
+//   timed events keep their times (a due time alone becomes 15 minutes from it); all-day school-wide and
+//   NS/HL events stay all-day; other all-day course items use bell-schedule.js: quiz/test/exam = the class
+//   period, anything else = 15 minutes from class start, one event per course.
+//
 // Loading
 //   Until Google Calendar events and Classroom due dates have both arrived, the grid dims and a circular
 //   loader appears (after 0.3 s, so fast loads never show it), in the course's color on course pages.
@@ -257,6 +266,10 @@
     '.hcal-lift{transition:transform var(--dur) ease,box-shadow var(--dur) ease;}',
     '.hcal-lift:hover{transform:translateY(var(--lift)) scale(var(--grow));box-shadow:var(--glow);}',
     '[data-hcal-trig][role=link]:focus-visible{outline:3px solid var(--ink);outline-offset:2px;}',
+    '.hcal-opt{display:flex;flex-direction:column;align-items:flex-start;gap:4px;width:100%;box-sizing:border-box;text-align:left;padding:14px 16px;border-radius:14px;border:2px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;cursor:pointer;}',
+    '.hcal-row-btn{display:flex;align-items:center;gap:10px;width:100%;box-sizing:border-box;min-height:48px;padding:0 16px;border-radius:12px;border:2px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-size:16px;font-weight:700;cursor:pointer;text-align:left;}',
+    '.hcal-check{display:flex;align-items:center;gap:10px;min-height:40px;font-size:16px;cursor:pointer;}',
+    '.hcal-check input{width:20px;height:20px;margin:0;accent-color:var(--ink);flex:none;}',
     '.hcal-sr{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0;}'
   ].join('');
   function addCss() {
@@ -292,6 +305,9 @@
       var wk = useState(0), weekNo = wk[0], setWeek = wk[1];
       var dy = useState(null), dayPick = dy[0], setDay = dy[1];
       var pp = useState(null), pop = pp[0], setPop = pp[1];
+      var md = useState(null), modal = md[0], setModal = md[1]; // { step: choose|event|sub, ev, direct }
+      var fm = useState(null), form = fm[0], setForm = fm[1];     // subscribe form: { app, courses: {id: bool}, sw }
+      var opener = useRef(null), panelRef = useRef(null);
       var T = useRef({ open: null, close: null, fade: null }), ptr = useRef('mouse'), hover = useRef(null), popRef = useRef(null);
       popRef.current = pop;
 
@@ -316,6 +332,51 @@
       }
       function later() { clearT('close'); T.current.close = setTimeout(hide, CLOSE_MS); }
       function drop() { clearT('open'); clearT('close'); clearT('fade'); hover.current = null; setPop(null); }
+
+      // ----- Add to calendar / Subscribe window
+      function openModal(m) {
+        opener.current = document.activeElement;
+        if (m.step === 'sub') startForm();
+        setModal(m);
+      }
+      function closeModal() {
+        setModal(null);
+        var o = opener.current; opener.current = null;
+        if (o && o.focus && document.contains(o)) setTimeout(function () { o.focus(); }, 0);
+      }
+      function startForm() {
+        var on = {};
+        COURSES.forEach(function (c) { on[c.id] = home ? true : c.id === props.course; });
+        setForm({ app: 'google', courses: on, sw: true });
+      }
+      // Courses a single item is added for: the course page's own course; on Home, this device's Subscribe
+      // choices that match the item, otherwise all of the item's courses.
+      function eventCourses(ev) {
+        if (!ev.cs.length) return [];
+        if (!home && ev.cs.indexOf(props.course) >= 0) return [props.course];
+        var p = loadPrefs(), pick = p ? ev.cs.filter(function (id) { return p.courses.indexOf(id) >= 0; }) : [];
+        return pick.length ? pick : ev.cs.slice();
+      }
+
+      useEffect(function () {
+        if (!modal) return;
+        var panel = panelRef.current;
+        var first = panel && panel.querySelector('[data-hcal-first]') || (panel && panel.querySelector('button,input,a[href]'));
+        if (first) first.focus();
+        var prev = document.body.style.overflow; document.body.style.overflow = 'hidden';
+        var key = function (e) {
+          if (e.key === 'Escape') { e.preventDefault(); closeModal(); return; }
+          if (e.key !== 'Tab' || !panelRef.current) return;
+          var f = Array.prototype.filter.call(panelRef.current.querySelectorAll('button,input,a[href]'), function (n) { return !n.disabled; });
+          if (!f.length) return;
+          var a = f[0], z = f[f.length - 1];
+          if (e.shiftKey && document.activeElement === a) { e.preventDefault(); z.focus(); }
+          else if (!e.shiftKey && document.activeElement === z) { e.preventDefault(); a.focus(); }
+          else if (!panelRef.current.contains(document.activeElement)) { e.preventDefault(); a.focus(); }
+        };
+        document.addEventListener('keydown', key, true);
+        return function () { document.removeEventListener('keydown', key, true); document.body.style.overflow = prev; };
+      }, [modal && modal.step, !!modal]);
 
       useEffect(function () {
         addCss();
@@ -544,7 +605,84 @@
         ];
       }
 
+      body.push(h('div', { key: 'sub', style: { display: 'flex' } },
+        h('button', { type: 'button', className: 'hcal-btn', style: Object.assign({}, BTN, narrow ? { width: '100%' } : {}), onClick: function () { openModal({ step: 'sub', direct: true }); } },
+          icon('event_repeat', 20), 'Subscribe to calendar')));
+
+      function renderModal() {
+        var ev = modal.ev, step = modal.step;
+        var titleId = 'hcal-md-title';
+        var top = h('div', { style: { display: 'flex', alignItems: 'center', gap: '12px' } },
+          (step === 'event' || (step === 'sub' && !modal.direct))
+            ? h('button', { type: 'button', className: 'hcal-link', style: { background: 'none', border: 0, padding: '4px 0', color: 'var(--muted)', font: 'inherit', fontSize: '15px', fontWeight: 700, cursor: 'pointer' }, onClick: function () { setModal(Object.assign({}, modal, { step: 'choose' })); } }, '← Back')
+            : null,
+          h('span', { style: { flex: 1 } }),
+          h('button', { type: 'button', 'aria-label': 'Close', className: 'hcal-btn', style: { width: '40px', height: '40px', display: 'grid', placeItems: 'center', borderRadius: '10px', border: '2px solid var(--line)', background: 'var(--surface)', color: 'var(--ink)', cursor: 'pointer', padding: 0 }, onClick: closeModal }, icon('close', 20)));
+        var heading = function (t) { return h('h2', { id: titleId, style: { margin: 0, fontSize: '24px', lineHeight: 1.25 } }, t); };
+        var sub = function (t) { return h('p', { style: Object.assign({ margin: 0, fontSize: '15px', color: 'var(--muted)' }, WRAP) }, t); };
+        var parts;
+        if (step === 'choose') {
+          parts = [heading('Add to calendar'), sub(ev.title),
+            h('button', { type: 'button', className: 'hcal-opt hcal-btn', 'data-hcal-first': '1', onClick: function () { setModal(Object.assign({}, modal, { step: 'event' })); } },
+              h('span', { style: { fontSize: '17px', fontWeight: 700 } }, 'Just this event'),
+              h('span', { style: Object.assign({ fontSize: '14px', color: 'var(--muted)' }, WRAP) }, 'A one-time copy of “' + ev.title + '”. It won’t change if the event changes.')),
+            h('button', { type: 'button', className: 'hcal-opt hcal-btn', onClick: function () { startForm(); setModal(Object.assign({}, modal, { step: 'sub' })); } },
+              h('span', { style: { fontSize: '17px', fontWeight: 700 } }, 'Subscribe to the calendar'),
+              h('span', { style: { fontSize: '14px', color: 'var(--muted)' } }, 'All events for your courses, from the past two weeks through next week. Updates automatically.'))];
+        } else if (step === 'event') {
+          var ids = perCourse(ev) ? eventCourses(ev) : [];
+          var items = ids.length ? ids.map(function (id) { return exportItems(ev, id); }) : [exportItems(ev, '')];
+          parts = [heading('Just this event'), sub(ev.title),
+            h('div', { style: { fontSize: '15px', fontWeight: 700, color: 'var(--muted)' } }, 'Choose your calendar app'),
+            items.map(function (x, i) {
+              var label = items.length > 1 ? 'Google Calendar – ' + (BY_ID[x.course] ? BY_ID[x.course].name : x.course) : 'Google Calendar';
+              return h('button', { key: 'g' + i, type: 'button', className: 'hcal-row-btn hcal-btn', 'data-hcal-first': i === 0 ? '1' : undefined, 'data-hcal-google': '1',
+                onClick: function () { window.open(googleUrl(x), '_blank', 'noopener'); if (items.length === 1) closeModal(); } }, icon('event', 20), label);
+            }),
+            h('button', { type: 'button', className: 'hcal-row-btn hcal-btn', 'data-hcal-ics': '1', onClick: function () { downloadIcs(items, ev.title); closeModal(); } }, icon('download', 20), 'Apple, Outlook, other')];
+        } else {
+          var f = form || { app: 'google', courses: {}, sw: true };
+          var chosen = COURSES.filter(function (c) { return f.courses[c.id]; }).map(function (c) { return c.id; });
+          var can = chosen.length > 0 || f.sw;
+          var set = function (patch) { setForm(Object.assign({}, f, patch)); };
+          var radio = function (val, label, note) {
+            return h('label', { className: 'hcal-check', style: { alignItems: 'flex-start' } },
+              h('input', { type: 'radio', name: 'hcal-app', checked: f.app === val, 'data-hcal-first': f.app === val ? '1' : undefined, onChange: function () { set({ app: val }); }, style: { marginTop: '2px' } }),
+              h('span', { style: { display: 'flex', flexDirection: 'column', gap: '2px' } }, h('span', { style: { fontWeight: 700 } }, label), note ? h('span', { style: { fontSize: '14px', color: 'var(--muted)' } }, note) : null));
+          };
+          var group = function (label, kids) {
+            return h('fieldset', { style: { margin: 0, padding: 0, border: 0, display: 'flex', flexDirection: 'column', gap: '4px' } },
+              h('legend', { style: { padding: 0, marginBottom: '6px', fontSize: '15px', fontWeight: 700, color: 'var(--muted)' } }, label), kids);
+          };
+          parts = [heading('Subscribe to calendar'),
+            group('Calendar app', [
+              h(R.Fragment, { key: 'g' }, radio('google', 'Google Calendar', 'Google Calendar can take up to a day to show changes.')),
+              h(R.Fragment, { key: 'o' }, radio('other', 'Apple, Outlook, other'))]),
+            group('Courses', COURSES.map(function (c) {
+              return h('label', { key: c.id, className: 'hcal-check' },
+                h('input', { type: 'checkbox', checked: !!f.courses[c.id], 'data-hcal-course': c.id, onChange: function () { var n = Object.assign({}, f.courses); n[c.id] = !n[c.id]; set({ courses: n }); } }),
+                h('span', { 'aria-hidden': 'true', style: { width: '14px', height: '14px', borderRadius: c.radius === '50%' ? '50%' : '4px', background: c.fill, flex: 'none' } }),
+                c.name);
+            })),
+            h('label', { className: 'hcal-check' },
+              h('input', { type: 'checkbox', checked: !!f.sw, 'data-hcal-sw': '1', onChange: function () { set({ sw: !f.sw }); } }),
+              h('span', { style: { fontWeight: 700 } }, 'Include school-wide events')),
+            h('div', { style: { display: 'flex', gap: '10px', justifyContent: 'flex-end', flexWrap: 'wrap', marginTop: '4px' } },
+              h('button', { type: 'button', className: 'hcal-btn', style: BTN, onClick: closeModal }, 'Cancel'),
+              h('button', { type: 'button', className: 'hcal-btn', 'data-hcal-subscribe': '1', disabled: !can, style: Object.assign({}, BTN, { background: 'var(--ink)', color: 'var(--bg)', borderColor: 'var(--ink)' }),
+                onClick: function () { subscribe(f.app, chosen, f.sw); closeModal(); } }, icon('event_repeat', 20), 'Subscribe'))];
+        }
+        var panel = h('div', { ref: panelRef, role: 'dialog', 'aria-modal': 'true', 'aria-labelledby': titleId, 'data-hcal-modal': '1',
+          style: Object.assign({ background: 'var(--surface)', color: 'var(--ink)', border: '1px solid var(--line)', boxSizing: 'border-box', display: 'flex', flexDirection: 'column', gap: '14px', overflowY: 'auto', fontFamily: 'var(--font)', lineHeight: 1.4, textAlign: 'left' },
+            narrow ? { position: 'fixed', inset: 0, padding: 'calc(16px + env(safe-area-inset-top, 0px)) 18px calc(18px + env(safe-area-inset-bottom, 0px))', borderRadius: 0 }
+                   : { width: 'min(460px, calc(100vw - 32px))', maxHeight: 'calc(100vh - 48px)', padding: '18px 22px 22px', borderRadius: '20px', boxShadow: '0 20px 48px rgba(0,0,0,0.4)' }) },
+          top, parts);
+        return h('div', { 'data-hcal-backdrop': '1', onPointerDown: function (e) { if (e.target === e.currentTarget) closeModal(); },
+          style: { position: 'fixed', inset: 0, zIndex: 400, background: 'rgba(0,0,0,0.55)', display: 'grid', placeItems: 'center' } }, panel);
+      }
+
       // ----- popup (fades in and out with the site's animation speed)
+      var ACT = { display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 8px', borderRadius: '10px', fontSize: '14px', fontWeight: 700 };
       var popEl = null;
       if (pop) {
         var ev = pop.ev, vw = window.innerWidth, vh = window.innerHeight;
@@ -569,10 +707,15 @@
           ev.allDay ? null : line('schedule', timeRange(ev.start, ev.end)),
           ev.loc ? line('location_on', map ? h('a', { href: map, target: '_blank', rel: 'noopener noreferrer', className: 'hcal-link' }, ev.loc) : ev.loc) : null,
           ev.desc ? h('div', { style: Object.assign({ fontSize: '14px', whiteSpace: 'pre-line' }, WRAP) }, segNodes(ev.desc.segs, false)) : null,
-          ev.link ? h('a', { href: ev.link, target: '_blank', rel: 'noopener noreferrer', className: 'hcal-link hcal-lift', style: { alignSelf: 'flex-start', display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 8px', margin: '0 -8px', borderRadius: '10px', fontSize: '14px', fontWeight: 700 } }, 'View post', icon('open_in_new', 16)) : null);
+          h('div', { style: { display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '4px 8px', margin: '0 -8px' } },
+            ev.link ? h('a', { href: ev.link, target: '_blank', rel: 'noopener noreferrer', className: 'hcal-link hcal-lift', style: ACT }, 'View post', icon('open_in_new', 16)) : null,
+            h('button', { type: 'button', className: 'hcal-link hcal-lift', style: Object.assign({ background: 'none', border: 0, color: 'inherit', font: 'inherit', cursor: 'pointer' }, ACT),
+              onClick: function () { var e = pop.ev; drop(); openModal({ step: 'choose', ev: e }); } }, icon('calendar_add_on', 16), 'Add to calendar')));
         popEl = RD && RD.createPortal ? RD.createPortal(popEl, document.body) : popEl;
       }
-      return h(R.Fragment, null, body, popEl);
+      var modalEl = modal ? renderModal() : null;
+      if (modalEl && RD && RD.createPortal) modalEl = RD.createPortal(modalEl, document.body);
+      return h(R.Fragment, null, body, popEl, modalEl);
     };
   }
   function element(props) {
@@ -580,6 +723,97 @@
     if (!R || !R.useState) return null;
     if (!View) View = makeView();
     return R.createElement(View, props || {});
+  }
+
+  // ---------- add to calendar / subscribe ----------
+  var SITE_URL = 'https://derrickdemars.org/', SITE_NAME = 'Dr. DeMars | Math Hub', HUB_TZ = 'America/Chicago';
+  var PREFS_KEY = 'hubcal-subscribe';
+  function loadPrefs() { try { var p = JSON.parse(localStorage.getItem(PREFS_KEY) || 'null'); return p && Array.isArray(p.courses) ? p : null; } catch (e) { return null; } }
+  function savePrefs(p) { try { localStorage.setItem(PREFS_KEY, JSON.stringify(p)); } catch (e) {} }
+  // A course's class period from bell-schedule.js (not homeroom), e.g. Geometry = Period 1.
+  function classPeriod(id) {
+    var list = (window.HubBell && window.HubBell.periods) || [];
+    for (var i = 0; i < list.length; i++) if (list[i].c === id && !list[i].homeroom && list[i].start && list[i].end) return list[i];
+    return null;
+  }
+  // Minutes Central time is ahead of UTC at a moment (negative), and a Central wall-clock time as a Date.
+  function tzOffset(ms) {
+    var parts = new Intl.DateTimeFormat('en-US', { timeZone: HUB_TZ, hourCycle: 'h23', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' }).formatToParts(new Date(ms));
+    var g = function (t) { for (var i = 0; i < parts.length; i++) if (parts[i].type === t) return +parts[i].value; return 0; };
+    return (Date.UTC(g('year'), g('month') - 1, g('day'), g('hour') % 24, g('minute'), g('second')) - ms) / 60000;
+  }
+  function central(day, hm) {
+    var p = hm.split(':'), guess = Date.UTC(day.getFullYear(), day.getMonth(), day.getDate(), +p[0], +p[1]);
+    var t = guess - tzOffset(guess) * 60000;
+    return new Date(guess - tzOffset(t) * 60000);
+  }
+  function evDay(ev) { var m = monday(0), d = new Date(m); d.setDate(m.getDate() + ev.w * 7 + ev.d); return d; }
+  function notesFor(ev) {
+    var out = [];
+    if (ev.desc && ev.desc.text) out.push(ev.desc.text);
+    if (ev.link) out.push('View in Google Classroom: ' + ev.link);
+    out.push(SITE_NAME + ': ' + SITE_URL);
+    return out.join('\n\n');
+  }
+  // Does this item's exported time depend on the course? (all-day course items that aren't NS/HL)
+  function perCourse(ev) { return ev.allDay && ev.cs.length > 0 && !ev.ns && !ev.hl; }
+  // The calendar entries one item becomes for one course (or none: school-wide / course-independent).
+  function exportItems(ev, id) {
+    var day = evDay(ev), base = { title: ev.title, notes: notesFor(ev), loc: ev.loc || '', course: id || '' };
+    if (!ev.allDay && ev.start) {
+      var end = ev.end && ev.end > ev.start ? ev.end : new Date(ev.start.getTime() + 15 * 60000);
+      return Object.assign({ allDay: false, start: ev.start, end: end }, base);
+    }
+    var p = perCourse(ev) && id ? classPeriod(id) : null;
+    if (!p) return Object.assign({ allDay: true, day: day }, base);
+    var s = central(day, p.start);
+    return Object.assign({ allDay: false, start: s, end: ev.quiz ? central(day, p.end) : new Date(s.getTime() + 15 * 60000) }, base);
+  }
+  function pad2(n) { return (n < 10 ? '0' : '') + n; }
+  function ymd(d) { return d.getFullYear() + pad2(d.getMonth() + 1) + pad2(d.getDate()); }
+  function nextDay(d) { return new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1); }
+  function utcStamp(d) { return d.getUTCFullYear() + pad2(d.getUTCMonth() + 1) + pad2(d.getUTCDate()) + 'T' + pad2(d.getUTCHours()) + pad2(d.getUTCMinutes()) + pad2(d.getUTCSeconds()) + 'Z'; }
+  function googleUrl(x) {
+    var dates = x.allDay ? ymd(x.day) + '/' + ymd(nextDay(x.day)) : utcStamp(x.start) + '/' + utcStamp(x.end);
+    return 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' + encodeURIComponent(x.title) + '&dates=' + dates +
+      '&details=' + encodeURIComponent(x.notes) + (x.loc ? '&location=' + encodeURIComponent(x.loc) : '');
+  }
+  function icsEsc(v) { return String(v).replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\r?\n/g, '\\n'); }
+  function icsFold(line) { var out = [], s = line; while (s.length > 60) { out.push(s.slice(0, 60)); s = ' ' + s.slice(60); } out.push(s); return out.join('\r\n'); }
+  function hashOf(s) { var h = 5381; for (var i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) >>> 0; return h.toString(36); }
+  function icsFor(items) {
+    var now = utcStamp(new Date()), L = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//derrickdemars.org//Math Hub//EN', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH'];
+    items.forEach(function (x) {
+      var when = x.allDay ? ymd(x.day) : utcStamp(x.start);
+      L.push('BEGIN:VEVENT', 'UID:hub-' + hashOf(x.title + '|' + when + '|' + x.course) + '@derrickdemars.org', 'DTSTAMP:' + now);
+      if (x.allDay) L.push('DTSTART;VALUE=DATE:' + ymd(x.day), 'DTEND;VALUE=DATE:' + ymd(nextDay(x.day)));
+      else L.push('DTSTART:' + utcStamp(x.start), 'DTEND:' + utcStamp(x.end));
+      L.push('SUMMARY:' + icsEsc(x.title));
+      if (x.notes) L.push('DESCRIPTION:' + icsEsc(x.notes));
+      if (x.loc) L.push('LOCATION:' + icsEsc(x.loc));
+      L.push('END:VEVENT');
+    });
+    L.push('END:VCALENDAR');
+    return L.map(icsFold).join('\r\n') + '\r\n';
+  }
+  function downloadIcs(items, name) {
+    var text = icsFor(items), file = String(name || 'event').replace(/[\\\/:*?"<>|]+/g, '').trim().slice(0, 60) || 'event';
+    var ios = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    if (ios) { window.location.href = 'data:text/calendar;charset=utf-8,' + encodeURIComponent(text); return; } // iPhone/iPad: opens "Add to Calendar"
+    var url = URL.createObjectURL(new Blob([text], { type: 'text/calendar;charset=utf-8' }));
+    var a = document.createElement('a'); a.href = url; a.download = file + '.ics';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
+  }
+  function feedUrl(courses, sw) {
+    var base = (window.HubState && window.HubState.apiBase) || '';
+    return base.replace(/^https?:/, 'webcal:') + '/api/calendar.ics?c=' + courses.join(',') + '&sw=' + (sw ? 1 : 0);
+  }
+  function subscribe(app, courses, sw) {
+    savePrefs({ courses: courses, sw: sw, app: app });
+    var webcal = feedUrl(courses, sw);
+    if (app === 'google') window.open('https://calendar.google.com/calendar/render?cid=' + encodeURIComponent(webcal), '_blank', 'noopener');
+    else window.location.href = webcal;
   }
 
   // ---------- loading status (Google Calendar here; Classroom due dates from classroom-feed.js) ----------
@@ -639,7 +873,8 @@
   var api = window.HubCalendar = {
     events: EVENTS, week: week, element: element, courses: COURSES, live: false,
     status: function () { return phase(); }, reload: retryAll,
-    _test: { parseTitle: parseTitle, descOf: descOf, mapHref: mapHref, fromGoogle: fromGoogle, timeRange: timeRange, _load: LOAD }
+    _test: { parseTitle: parseTitle, descOf: descOf, mapHref: mapHref, fromGoogle: fromGoogle, timeRange: timeRange, _load: LOAD,
+      exportItems: exportItems, googleUrl: googleUrl, icsFor: icsFor, feedUrl: feedUrl, central: central }
   };
   window.dispatchEvent(new Event('hubcal-ready'));
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', loadLive); else setTimeout(loadLive, 0);
