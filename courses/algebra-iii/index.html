@@ -79,9 +79,10 @@ button,textarea,input{font:inherit;letter-spacing:inherit;}
           <sc-for list="{{ aidRows }}" as="a">
             <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:12px 16px 12px 12px;background:var(--surface);border:1px solid var(--line);border-radius:20px;">
               <a href="{{ a.file }}" target="_blank" rel="noopener" style="flex:1 1 260px;min-width:0;display:flex;align-items:center;gap:16px;color:var(--ink);text-decoration:none;border-radius:14px;transition:transform var(--dur) ease;" style-hover="transform:translateY(var(--lift)) scale(var(--grow));">
-                <span style="flex:none;width:64px;height:84px;border-radius:10px;background:{{ a.thumbBg }};border:1px solid var(--line);overflow:hidden;display:grid;place-items:center;">
-                  
-                  <sc-if value="{{ a.noThumb }}"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:30px;color:#6b6b75;">description</span></sc-if>
+                <span style="position:relative;flex:none;width:64px;height:84px;border-radius:10px;background:{{ a.boxBg }};border:1px solid var(--line);overflow:hidden;display:grid;place-items:center;">
+                  <sc-if value="{{ a.thumbLoading }}"><span class="{{ a.spinClass }}" aria-hidden="true"></span></sc-if>
+                  <sc-if value="{{ a.hasThumb }}"><span class="hubaid-img" style="background:{{ a.thumbBg }};"></span></sc-if>
+                  <sc-if value="{{ a.thumbFailed }}"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:30px;color:#6b6b75;">description</span></sc-if>
                 </span>
                 <span style="display:flex;flex-direction:column;gap:4px;min-width:0;"><span style="font-size:19px;font-weight:700;line-height:1.25;">{{ a.title }}</span><span style="font-size:15px;color:var(--muted);">{{ a.topic }}</span></span>
               </a>
@@ -144,7 +145,7 @@ const FALLBACK = {title:'Coming soon',icon:'construction',desc:'This page is not
 
 class Component extends DCLogic {
   calState = 0;
-  state = { thumbs: {}, teacher: !!(window.HubState && window.HubState.get().teacher) };
+  state = { thumbs: {}, failed: {}, teacher: !!(window.HubState && window.HubState.get().teacher) };
   componentDidMount(){
     this.onHub = () => { if (window.HubState) { const v = window.HubState.get(); this.setState({teacher: !!v.teacher, signedIn: !!v.signedIn, role: v.role}); } };
     window.addEventListener('hubchange', this.onHub);
@@ -167,7 +168,7 @@ class Component extends DCLogic {
   loadThumbs(){
     const p = this.page(); if (!p.course || !window.HubAids || this.loadingThumbs) return;
     this.loadingThumbs = true;
-    window.HubAids.forCourse(this.key()).forEach(a => window.HubAids.thumb(a.file, 64).then(url => { if (url) this.setState(s => ({thumbs: {...s.thumbs, [a.file]: url}})); }));
+    window.HubAids.forCourse(this.key()).forEach(a => window.HubAids.thumb(a.file, 64).then(url => this.setState(s => url ? {thumbs: {...s.thumbs, [a.file]: url}} : {failed: {...s.failed, [a.file]: true}})));
   }
   key(){ if (window.HUB_PAGE) return window.HUB_PAGE; try { return new URLSearchParams(location.search).get('page') || ''; } catch(e){ return ''; } }
   page(){ return PAGES[this.key()] || FALLBACK; }
@@ -176,7 +177,7 @@ class Component extends DCLogic {
     const locked = !!p.teacher && !(p.games ? this.state.signedIn : this.state.teacher);
     return {
       linkButtons: p.course && window.HubLinks ? window.HubLinks.forCourse(k, this.state.role || '') : [],
-      aidRows: p.course && window.HubAids ? window.HubAids.forCourse(k).map(a => ({...a, dl: a.file.split('/').pop(), thumbBg: this.state.thumbs[a.file] ? `#fff url(${this.state.thumbs[a.file]}) top / cover no-repeat` : '#fff', hasThumb: !!this.state.thumbs[a.file], noThumb: !this.state.thumbs[a.file]})) : [],
+      aidRows: p.course && window.HubAids ? window.HubAids.forCourse(k).map(a => ({...a, dl: a.file.split('/').pop(), ...window.HubAids.view(a.file, this.state.thumbs, this.state.failed)})) : [],
       noAids: !!p.course && !!window.HubAids && !window.HubAids.forCourse(k).length,
       calView: p.course && window.HubCalendar && window.HubCalendar.element ? window.HubCalendar.element({mode: 'course', course: k}) : null,
       classView: p.course && window.HubClassroom ? window.HubClassroom.element({course: k}) : null,

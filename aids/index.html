@@ -69,9 +69,10 @@ button,textarea,input,select{font:inherit;letter-spacing:inherit;}
       <sc-for list="{{ rows }}" as="a" hint-placeholder-count="6">
         <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:12px 16px 12px 12px;background:var(--surface);border:1px solid var(--line);border-radius:20px;opacity:{{ a.op }};">
           <a href="{{ a.file }}" target="_blank" rel="noopener" style="flex:1 1 280px;min-width:0;display:flex;align-items:center;gap:16px;color:var(--ink);text-decoration:none;border-radius:14px;transition:transform var(--dur) ease;" style-hover="transform:translateY(var(--lift)) scale(var(--grow));">
-            <span style="flex:none;width:64px;height:84px;border-radius:10px;background:{{ a.thumbBg }};border:1px solid var(--line);overflow:hidden;display:grid;place-items:center;">
-              
-              <sc-if value="{{ a.noThumb }}"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:30px;color:#6b6b75;">description</span></sc-if>
+            <span style="position:relative;flex:none;width:64px;height:84px;border-radius:10px;background:{{ a.boxBg }};border:1px solid var(--line);overflow:hidden;display:grid;place-items:center;">
+              <sc-if value="{{ a.thumbLoading }}"><span class="{{ a.spinClass }}" aria-hidden="true"></span></sc-if>
+              <sc-if value="{{ a.hasThumb }}"><span class="hubaid-img" style="background:{{ a.thumbBg }};"></span></sc-if>
+              <sc-if value="{{ a.thumbFailed }}"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:30px;color:#6b6b75;">description</span></sc-if>
             </span>
             <span style="display:flex;flex-direction:column;gap:4px;min-width:0;">
               <span style="font-size:19px;font-weight:700;line-height:1.25;">{{ a.title }}</span>
@@ -109,7 +110,7 @@ const COURSES = [
   {id:'alg2', name:'Algebra II', icon:'show_chart', fill:'oklch(0.67 0.2 25)', radius:'24px'}
 ];
 class Component extends DCLogic {
-  state = { selected: [], topic: '', thumbs: {}, hiddenFiles: [], removed: [], teacher: !!(window.HubState && window.HubState.get().teacher), toast: '' };
+  state = { selected: [], topic: '', thumbs: {}, failed: {}, hiddenFiles: [], removed: [], teacher: !!(window.HubState && window.HubState.get().teacher), toast: '' };
   componentDidMount(){
     this.onHub = () => { if (window.HubState) this.setState({teacher: !!window.HubState.get().teacher}); };
     this.onAids = () => this.loadThumbs();
@@ -127,7 +128,7 @@ class Component extends DCLogic {
   loadThumbs(){
     if (!window.HubAids || this.loading) return;
     this.loading = true;
-    window.HubAids.aids.forEach(a => window.HubAids.thumb(a.file, 64).then(url => { if (url) this.setState(s => ({thumbs: {...s.thumbs, [a.file]: url}})); }));
+    window.HubAids.aids.forEach(a => window.HubAids.thumb(a.file, 64).then(url => this.setState(s => url ? {thumbs: {...s.thumbs, [a.file]: url}} : {failed: {...s.failed, [a.file]: true}})));
   }
   showToast(m){ clearTimeout(this.tt); this.setState({toast:m}); this.tt = setTimeout(() => this.setState({toast:''}), 2600); }
   renderVals(){
@@ -151,7 +152,7 @@ class Component extends DCLogic {
       empty: !list.length && !!H,
       rows: list.map(a => {
         const hidden = s.hiddenFiles.includes(a.file);
-        return {...a, thumbBg: s.thumbs[a.file] ? `#fff url(${s.thumbs[a.file]}) top / cover no-repeat` : '#fff', hasThumb: !!s.thumbs[a.file], noThumb: !s.thumbs[a.file],
+        return {...a, ...H.view(a.file, s.thumbs, s.failed),
           dl: a.file.split('/').pop(), hidden, op: hidden ? '0.6' : '1',
           hideIcon: hidden ? 'visibility' : 'visibility_off', hideLabel: hidden ? `Show ${a.title} to students` : `Hide ${a.title} from students`,
           edit: () => this.showToast(`Edit ${a.title}`),
