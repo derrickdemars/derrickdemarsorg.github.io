@@ -16,7 +16,7 @@
     { id: 'tools', label: 'Math tools' }
   ];
   var LINKS = [
-    { group: 'accounts', name: 'Google Classroom', desc: 'Class posts and assignments', icon: 'school', url: 'https://classroom.google.com' },
+    { group: 'accounts', name: 'Google Classroom', desc: 'Class posts', icon: 'school', url: 'https://classroom.google.com' },
     { group: 'accounts', name: 'Gradelink', desc: 'School portal', icon: 'account_box', url: 'https://www.gradelink.com' },
     { group: 'practice', name: 'Edmentum', desc: 'Online lessons and practice', icon: 'laptop_chromebook', url: 'https://auth.edmentum.com/elf/login', notOn: ['home'] },
     { group: 'practice', name: 'IXL', desc: 'Skill practice', icon: 'checklist', url: 'https://www.ixl.com' },
