@@ -6,7 +6,7 @@
 // Due dates on the calendar: each assignment or question with a due date becomes a chip in its
 // course's row, outlined for a due date or filled when the title has quiz/test/exam, like a
 // Google Calendar event titled "GEO Practice set 4.2". A due time other than 11:59 PM shows on the
-// chip. A Classroom due date is skipped if the Math Hub calendar already has that course and title
+// chip, except for quiz/test/exam titles and NO_DUE_WORD titles, which show the date only. A Classroom due date is skipped if the Math Hub calendar already has that course and title
 // on that day, so nothing shows twice.
 //
 // What a student sees for each post: the kind (Announcement, Assignment, Question, Material),
@@ -226,7 +226,8 @@
       c.due.forEach(function (p) {
         if (!p.due) return;
         var day = p.due.day || (p.due.time ? centralDay(p.due.time) : p.due.date); if (!day) return;
-        var timed = !!p.due.time && centralClock(p.due.time) !== '23:59';
+        var noTime = /\b(quiz|test|exam)\b/i.test(p.title || '') || plain(p.title);
+        var timed = !!p.due.time && centralClock(p.due.time) !== '23:59' && !noTime;
         out.push({ date: day, title: TAG[k] + ' ' + (p.title || 'Assignment'), allDay: !timed, start: timed ? p.due.time : null, end: timed ? p.due.time : null, location: '', description: p.text || '', gc: true });
       });
     }
