@@ -16,6 +16,7 @@
     { title: 'Perfect Squares', file: 'memory-aids/perfect-squares.pdf', courses: ['g8', 'alg1'], topic: 'Number Sense' },
     { title: 'Inequalities', file: 'memory-aids/inequalities.pdf', courses: ['g7', 'g8', 'alg1'], topic: 'Algebra' },
     { title: 'Factoring Quadratics by Grouping', file: 'memory-aids/factoring-quadratics-by-grouping.pdf', courses: ['alg1', 'alg2'], topic: 'Algebra' },
+    { title: 'Parent Functions and Transformations of Functions', file: 'memory-aids/parent-functions-and-transformations-of-functions.pdf', courses: ['alg1', 'alg2', 'alg3'], topic: 'Algebra' },
     { title: 'Sequences and Series', file: 'memory-aids/sequences-and-series.pdf', courses: ['alg3'], topic: 'Algebra' },
     { title: 'Polar Coordinates', file: 'memory-aids/polar-coordinates.pdf', courses: ['alg3'], topic: 'Geometry' },
     { title: 'Statistical Terms', file: 'memory-aids/statistical-terms.pdf', courses: ['g7', 'alg3'], topic: 'Statistics' },
