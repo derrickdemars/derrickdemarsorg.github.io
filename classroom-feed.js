@@ -129,6 +129,10 @@
     '.hgc-card{transition:box-shadow var(--dur) ease;}',
     '.hgc-lift{transition:transform var(--dur) ease,box-shadow var(--dur) ease;}',
     '.hgc-lift:hover{transform:translateY(var(--lift)) scale(var(--grow));box-shadow:var(--glow);}',
+    '.hgc-spin{flex:none;width:40px;height:40px;box-sizing:border-box;border-radius:50%;border:4px solid var(--line);border-top-color:var(--spin);animation:hgc-rot 0.9s linear infinite;}',
+    '.hgc-spin.hgc-calm{border-color:var(--spin);animation:hgc-pulse 1.6s ease-in-out infinite;}',
+    '@keyframes hgc-rot{to{transform:rotate(360deg);}}',
+    '@keyframes hgc-pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}',
     '.hgc-inline{display:inline-block;max-width:100%;vertical-align:bottom;overflow-wrap:anywhere;padding:0 3px;margin:0 -3px;border-radius:6px;}'
   ].join('');
   function addCss() {
@@ -157,10 +161,18 @@
         h('h2', { id: 'gc-title', style: { margin: 0, fontSize: '28px', display: 'flex', alignItems: 'center', gap: '10px' } }, icon('school', 30, { color: c.text }), 'Google Classroom'),
         course && course.link ? h('a', { href: course.link, target: '_blank', rel: 'noopener', className: 'hgc-btn', style: LINK_BTN }, 'Open Google Classroom', icon('open_in_new', 20)) : null);
 
+      // Loading: text right away; after 0.3 s a spinner in the course color (slow fade with reduce motion).
+      // The spinner's space is kept from the start so nothing shifts.
+      function loadingNote() {
+        var show = Date.now() >= SPIN_AT;
+        return h('div', { key: 'note', style: { display: 'flex', alignItems: 'center', gap: '14px', minHeight: '84px', boxSizing: 'border-box', padding: '20px', border: '2px dashed var(--line)', borderRadius: '20px', fontSize: '18px', color: 'var(--muted)' } },
+          h('span', { style: WRAP }, 'Loading Classroom posts…'),
+          h('span', { className: show ? 'hgc-spin' + (motionOn() ? '' : ' hgc-calm') : '', 'aria-hidden': 'true', style: show ? { '--spin': c.fill } : { flex: 'none', width: '40px', height: '40px' } }));
+      }
       function note(text) { return h('div', { key: 'note', style: { padding: '20px', border: '2px dashed var(--line)', borderRadius: '20px', fontSize: '18px', color: 'var(--muted)' } }, text); }
 
       var body;
-      if (STATUS === 'loading' && !course) body = note('Loading Classroom posts…');
+      if (STATUS === 'loading' && !course) body = loadingNote();
       else if (STATUS === 'error' && !course) body = note('Classroom posts aren’t available right now. Try again in a few minutes.');
       else if (!course) body = note('This course isn’t connected to Google Classroom yet.');
       else if (course.error) body = note('Classroom posts aren’t available right now.');
@@ -197,9 +209,9 @@
             icon(k.icon, 20, { color: c.text }),
             meta.map(function (t, i) { return h('span', { key: i, style: { display: 'flex', alignItems: 'center', gap: '8px' } }, i ? h('span', { 'aria-hidden': 'true' }, '·') : null, t); })),
           p.title ? h('h3', { style: Object.assign({ margin: 0, fontSize: '20px', lineHeight: 1.25 }, WRAP) }, p.title) : null,
-          folded(p.text, p.id),
           due ? h('div', { style: { display: 'flex', alignItems: 'center', gap: '8px 18px', flexWrap: 'wrap', fontSize: '16px', fontWeight: 700 } },
             h('span', { style: { display: 'flex', alignItems: 'center', gap: '6px', color: due.past ? 'var(--muted)' : 'var(--ink)' } }, icon('event', 20), due.text + (due.past ? ' (past)' : ''))) : null,
+          folded(p.text, p.id),
           p.files && p.files.length ? h('div', { style: { display: 'flex', gap: '8px', flexWrap: 'wrap' } }, p.files.map(function (f, i) {
             var ic = icon(FILE_ICON[f.type] || 'attach_file', 20), label = h('span', { style: { overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '40ch' } }, f.title);
             var style = { display: 'flex', alignItems: 'center', gap: '8px', minHeight: '44px', padding: '4px 14px', borderRadius: '14px', background: 'var(--surface2)', color: 'var(--ink)', textDecoration: 'none', fontSize: '15px', fontWeight: 700, maxWidth: '100%', boxSizing: 'border-box' };
@@ -266,12 +278,15 @@
     if (USE_WORKER && base) return base + '/api/classroom';
     return '';
   }
+  var SPIN_AT = 0;
+  // The site's animation speed (--dur) is 0 when "Reduce motion" is on.
+  function motionOn() { var v = (getComputedStyle(document.documentElement).getPropertyValue('--dur') || '').trim(); return !(v && parseFloat(v) === 0); }
   function announce() { window.dispatchEvent(new Event('hubclassroom-ready')); }
   function load() {
     if (DEMO) { DATA = demo(); DUE = dueEvents(DATA); STATUS = 'ready'; announce(); mergeCalendar(); return; }
     var url = feedUrl();
     if (!url || !window.fetch) { STATUS = 'off'; announce(); return; }
-    STATUS = 'loading'; announce();
+    STATUS = 'loading'; SPIN_AT = Date.now() + 300; announce(); setTimeout(announce, 330);
     fetch(url, { cache: 'no-store', redirect: 'follow' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
       if (!d || !d.ok || !d.courses) throw new Error('bad feed');
       DATA = {};
