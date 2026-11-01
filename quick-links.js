@@ -17,7 +17,8 @@
     geogebra: { label: 'GeoGebra', icon: 'change_history', home: 'https://www.geogebra.org' },
     ixl: { label: 'IXL', icon: 'checklist', home: 'https://www.ixl.com' },
     wayground: { label: 'Wayground', icon: 'travel_explore', home: 'https://wayground.com' },
-    drive: { label: 'Google Drive', icon: 'folder', home: 'https://drive.google.com' }
+    drive: { label: 'Google Drive', icon: 'folder', home: 'https://drive.google.com' },
+    kuta: { label: 'Kuta Works', icon: 'edit_note', home: 'https://student.works.kutasoftware.com/signin' }
   };
   // Course pages show the home page's quick links as a button row. Keep these in sync with LINKS in /index.html.
   var HOME = [
@@ -30,7 +31,8 @@
   ];
   // Extra course-specific buttons. Placeholder URLs ('') point to the tool's home page.
   var COURSE = {
-    geo: [{ tool: 'drive', title: 'Answer keys', url: '', teacherOnly: true, answerKey: true }]
+    geo: [{ tool: 'drive', title: 'Answer keys', url: '', teacherOnly: true, answerKey: true }],
+    alg3: [{ tool: 'kuta', title: 'Kuta Works', url: 'https://student.works.kutasoftware.com/signin' }]
   };
   // who: 'teacher' (Dr. DeMars) sees everything; 'sub' and 'staff' (Staff login) also see answer keys; anyone else sees public links.
   function forCourse(id, who) {
