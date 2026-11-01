@@ -20,7 +20,7 @@
     { group: 'accounts', name: 'Gradelink', desc: 'School portal', icon: 'account_box', url: 'https://www.gradelink.com' },
     { group: 'practice', name: 'Edmentum', desc: 'Online lessons and practice', icon: 'laptop_chromebook', url: 'https://auth.edmentum.com/elf/login', notOn: ['home'] },
     { group: 'practice', name: 'IXL', desc: 'Skill practice', icon: 'checklist', url: 'https://www.ixl.com' },
-    { group: 'practice', name: 'Kuta Works', desc: 'Online assignments', icon: 'edit_note', url: 'https://student.works.kutasoftware.com/signin', courses: ['home', 'alg3'] },
+    { group: 'practice', name: 'Kuta Works', desc: 'Online assignments', icon: 'edit_note', url: 'https://student.works.kutasoftware.com/signin', courses: ['alg3'] },
     { group: 'practice', name: 'MajorClarity', desc: 'Career and college readiness', icon: 'explore', url: 'https://app.paper.co/majorclarity', notOn: ['home'] },
     { group: 'practice', name: 'Wayground', desc: 'Quizzes and lessons', icon: 'travel_explore', url: 'https://wayground.com' },
     { group: 'tools', name: 'Desmos', desc: 'Graphing calculator', icon: 'function', url: 'https://www.desmos.com/calculator' },
