@@ -10,8 +10,9 @@
 // on that day, so nothing shows twice.
 //
 // What a student sees for each post: the kind (Announcement, Assignment, Question, Material),
-// the topic, the posted date, the title, the text (folded with More/Less), the due date and
-// points for assignments, attachment links, and an "Open in Classroom" link. Only posts to the
+// the topic, the title, the text (folded with More/Less), the due date for assignments (no time
+// on quiz/test/exam titles), attachment links, and an "Open in Classroom" link. Point values are
+// never shown. Only posts to the
 // whole class are sent; the script never sends student names, comments, grades, or rosters.
 (function () {
   if (window.HubClassroom) return;
@@ -109,12 +110,12 @@
     return 'Posted ' + fmtDay(d, false);
   }
   function startOfDay(d) { var x = new Date(d); x.setHours(0, 0, 0, 0); return x; }
-  function dueLabel(due) {
+  function dueLabel(due, noTime) {
     if (!due) return null;
     var d = due.time ? toDate(due.time) : null;
     if (!d) { var parts = String(due.date || '').split('-'); if (parts.length !== 3) return null; d = new Date(+parts[0], +parts[1] - 1, +parts[2]); }
     var past = due.time ? d < new Date() : startOfDay(d) < startOfDay(new Date());
-    var s = 'Due ' + fmtDay(d, true) + (due.time ? ' · ' + fmtTime(d) : '');
+    var s = 'Due ' + fmtDay(d, true) + (due.time && !noTime ? ' · ' + fmtTime(d) : '');
     return { text: s, past: past };
   }
 
@@ -184,7 +185,7 @@
       }
 
       function card(p) {
-        var k = KINDS[p.kind] || KINDS.announcement, due = dueLabel(p.due);
+        var k = KINDS[p.kind] || KINDS.announcement, assess = /\b(quiz|test|exam)\b/i.test(p.title || '') || plain(p.title), due = dueLabel(p.due, assess);
         if (due && plain(p.title)) due.text = due.text.replace(/^Due /, '');
         var meta = [k.label];
         if (p.topic) meta.push(p.topic);
@@ -194,9 +195,8 @@
             meta.map(function (t, i) { return h('span', { key: i, style: { display: 'flex', alignItems: 'center', gap: '8px' } }, i ? h('span', { 'aria-hidden': 'true' }, '·') : null, t); })),
           p.title ? h('h3', { style: Object.assign({ margin: 0, fontSize: '20px', lineHeight: 1.25 }, WRAP) }, p.title) : null,
           folded(p.text, p.id),
-          due || p.points != null ? h('div', { style: { display: 'flex', alignItems: 'center', gap: '8px 18px', flexWrap: 'wrap', fontSize: '16px', fontWeight: 700 } },
-            due ? h('span', { style: { display: 'flex', alignItems: 'center', gap: '6px', color: due.past ? 'var(--muted)' : 'var(--ink)' } }, icon('event', 20), due.text + (due.past ? ' (past)' : '')) : null,
-            p.points != null ? h('span', { style: { display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--muted)' } }, icon('star', 20), p.points + (p.points === 1 ? ' point' : ' points')) : null) : null,
+          due ? h('div', { style: { display: 'flex', alignItems: 'center', gap: '8px 18px', flexWrap: 'wrap', fontSize: '16px', fontWeight: 700 } },
+            h('span', { style: { display: 'flex', alignItems: 'center', gap: '6px', color: due.past ? 'var(--muted)' : 'var(--ink)' } }, icon('event', 20), due.text + (due.past ? ' (past)' : ''))) : null,
           p.files && p.files.length ? h('div', { style: { display: 'flex', gap: '8px', flexWrap: 'wrap' } }, p.files.map(function (f, i) {
             var ic = icon(FILE_ICON[f.type] || 'attach_file', 20), label = h('span', { style: { overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '40ch' } }, f.title);
             var style = { display: 'flex', alignItems: 'center', gap: '8px', minHeight: '44px', padding: '4px 14px', borderRadius: '14px', background: 'var(--surface2)', color: 'var(--ink)', textDecoration: 'none', fontSize: '15px', fontWeight: 700, maxWidth: '100%', boxSizing: 'border-box' };
