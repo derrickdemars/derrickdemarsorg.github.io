@@ -87,8 +87,9 @@ button,textarea,input{font:inherit;letter-spacing:inherit;}
           <div style="background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:14px;">
             <p style="margin:0;font-size:18px;text-wrap:pretty;">{{ guardIntro }}</p>
             <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px;">
-              <li style="display:flex;gap:12px;align-items:flex-start;font-size:17px;text-wrap:pretty;"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:24px;margin-top:1px;flex:none;">checklist</span><span>Check IXL: have your child sign in and open the From your teacher tab at ixl.com/dashboard. A skill is complete at a SmartScore of 80.</span></li>
+              <li style="display:flex;gap:12px;align-items:flex-start;font-size:17px;text-wrap:pretty;"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:24px;margin-top:1px;flex:none;">checklist</span><div style="display:flex;flex-direction:column;gap:12px;min-width:0;"><span>Check IXL: have your child sign in and open the From your teacher tab at ixl.com/dashboard. A skill is complete at a SmartScore of 80.</span><div role="note" style="display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:16px;background:var(--surface2);border:2px solid var(--ink);"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:24px;flex:none;margin-top:1px;">warning</span><p style="margin:0;font-size:16px;text-wrap:pretty;"><strong>Sign in first.</strong> Students sometimes forget to sign in to IXL, and then their progress isn’t saved. Make sure students are signed in and practicing skills from their dashboard.</p></div></div></li>
               <li style="display:flex;gap:12px;align-items:flex-start;font-size:17px;text-wrap:pretty;"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:24px;margin-top:1px;flex:none;">lightbulb</span><span>Study with the memory aids below before each quiz or test.</span></li>
+              <li style="display:flex;gap:12px;align-items:flex-start;font-size:17px;text-wrap:pretty;"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:24px;margin-top:1px;flex:none;">menu_book</span><span>See the <a href="{{ binderHref }}" style="font-weight:700;text-underline-offset:3px;">Binder</a> section below for what’s in your child’s binder and how to use it.</span></li>
             </ul>
             <div style="display:flex;flex-wrap:wrap;gap:10px;">
             <a href="guardians/" style="display:flex;align-items:center;gap:6px;min-height:46px;padding:0 14px;border-radius:12px;border:2px solid var(--line);color:var(--ink);text-decoration:none;font-size:16px;font-weight:700;transition:transform var(--dur) ease,box-shadow var(--dur) ease;" style-hover="transform:translateY(var(--lift)) scale(var(--grow));box-shadow:var(--glow);" style-active="box-shadow:var(--glow);">Read the guardian guide<span class="material-symbols-rounded" aria-hidden="true" style="font-size:20px;">arrow_forward</span></a>
@@ -119,6 +120,32 @@ button,textarea,input{font:inherit;letter-spacing:inherit;}
               </div>
             </div>
           </sc-for>
+        </section>
+        <section id="binder" aria-labelledby="binder-title" style="display:flex;flex-direction:column;gap:12px;scroll-margin-top:96px;">
+          <h2 id="binder-title" style="margin:0;font-size:28px;">Binder</h2>
+          <div style="display:flex;flex-wrap:wrap;gap:24px 32px;align-items:flex-start;">
+            <div style="flex:1 1 340px;min-width:0;display:flex;flex-direction:column;gap:14px;">
+                <p style="margin:0;font-size:17px;max-width:66ch;text-wrap:pretty;">Students keep their work in a binder with two parts. Worksheets go in the front, newest first. Behind a divider, the back holds memory aids, rules, procedures, and other materials that vary by course.</p>
+                <p style="margin:0;font-size:17px;max-width:66ch;text-wrap:pretty;">Worksheets have more practice problems than the class finishes: Dr. DeMars shows how to solve them, the class solves some together, and students practice on their own. The extra problems are for more practice outside class, alone or with a guardian or tutor.</p>
+                <p style="margin:0;font-size:17px;max-width:66ch;text-wrap:pretty;">Binders have a set place in the classroom, and the class uses them nearly every day. Students are welcome to take them home, as long as they bring them back for class. Students can use their binders on most warm-ups, quizzes, and other assessments.</p>
+              <h3 style="margin:6px 0 0;font-size:19px;">How to use it well</h3>
+              <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px;">
+                  <li style="display:flex;gap:12px;align-items:flex-start;font-size:17px;text-wrap:pretty;"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:24px;flex:none;margin-top:1px;">vertical_align_top</span><span>Put each new worksheet on top, in front of the last one.</span></li>
+                  <li style="display:flex;gap:12px;align-items:flex-start;font-size:17px;text-wrap:pretty;"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:24px;flex:none;margin-top:1px;">bookmarks</span><span>Keep memory aids and other reference pages behind the divider.</span></li>
+                  <li style="display:flex;gap:12px;align-items:flex-start;font-size:17px;text-wrap:pretty;"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:24px;flex:none;margin-top:1px;">edit</span><span>Write a printed name and the date on every page.</span></li>
+                  <li style="display:flex;gap:12px;align-items:flex-start;font-size:17px;text-wrap:pretty;"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:24px;flex:none;margin-top:1px;">quiz</span><span>Before a quiz or test, work the extra problems and review that topic’s memory aids.</span></li>
+                  <li style="display:flex;gap:12px;align-items:flex-start;font-size:17px;text-wrap:pretty;"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:24px;flex:none;margin-top:1px;">home</span><span>When a binder goes home, bring it back in time for class, since it’s used nearly every day.</span></li>
+              </ul>
+            </div>
+            <figure style="margin:0;flex:1 1 300px;min-width:0;max-width:440px;display:flex;flex-direction:column;gap:10px;">
+              <div aria-hidden="true" style="background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:16px;display:flex;flex-direction:column;gap:8px;">
+                <div style="background:var(--surface2);border:2px solid var(--ink);border-radius:14px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start;"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:26px;flex:none;margin-top:1px;">description</span><div style="display:flex;flex-direction:column;gap:2px;min-width:0;"><span style="font-size:16px;font-weight:700;line-height:1.3;">Front: worksheets, newest on top</span><span style="font-size:14px;color:var(--muted);">The first thing you see when you open it</span></div></div>
+                <div style="border:2px dashed var(--muted);border-radius:10px;padding:6px 12px;text-align:center;font-size:14px;font-weight:700;color:var(--muted);">Divider</div>
+                <div style="background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start;"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:26px;flex:none;margin-top:1px;">folder_open</span><div style="display:flex;flex-direction:column;gap:2px;min-width:0;"><span style="font-size:16px;font-weight:700;line-height:1.3;">Back: memory aids, rules, procedures, and more</span><span style="font-size:14px;color:var(--muted);">Varies by course</span></div></div>
+              </div>
+              <figcaption style="font-size:15px;color:var(--muted);">How a binder is organized.</figcaption>
+            </figure>
+          </div>
         </section>
         <section aria-labelledby="links-title" style="display:flex;flex-direction:column;gap:12px;">
           <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
@@ -232,6 +259,7 @@ class Component extends DCLogic {
       next: p.course ? this.nextAssessment(k) : {show:false},
       canSub: !!(p.course && window.HubCalendar && window.HubCalendar.openSubscribe),
       subscribe: () => window.HubCalendar && window.HubCalendar.openSubscribe([k]),
+      binderHref: location.pathname + '#binder',
       showGuardians: GUARDIANS_PUBLIC || !!this.state.teacher,
       guardIntro: `Here’s how to help with ${p.title} at home.`,
       showSoon: !(p.course && window.HUB_LAUNCH), notCourse: !p.course,
