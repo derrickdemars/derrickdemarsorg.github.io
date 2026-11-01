@@ -33,24 +33,36 @@ a:focus-visible,button:focus-visible{box-shadow:var(--glow);}
 ::view-transition-old(root),::view-transition-new(root){animation-duration:var(--vt,280ms);animation-timing-function:cubic-bezier(0.45,0,0.55,1);}
 ::view-transition-group(site-header){animation-duration:0s;}
 button,textarea,input{font:inherit;letter-spacing:inherit;}
+/* Course tiles: icon on top, name, then time. By default the name sits just above the time. */
+.hub-tile-icon{margin-bottom:24px;}
+.hub-tile-name{margin-top:auto;}
+.hub-tile-time{margin-top:4px;}
+/* 3-column layout with Quick Links beside it. The tile column has room for 3 tiles (726px) once the
+   content area is 1038.13px wide, so this rule starts there: the tiles fill down to the bottom of
+   Quick Links in two equal rows, and each name is centered between its icon and its time. */
+@container (min-width:1038.15px){
+  .hub-classes{align-self:stretch;}
+  .hub-tiles{flex:1 0 auto;grid-auto-rows:1fr;}
+  .hub-tile-icon{margin-bottom:0;}
+  .hub-tile-name{margin-block:auto;padding-block:12px;}
+  .hub-tile-time{margin-top:0;}
+}
 </style>
 </helmet>
 <div style="min-height:100vh;display:flex;flex-direction:column;background:var(--bg);color:var(--ink);font-family:var(--font);">
   <a href="./#main" style="position:absolute;left:16px;top:-120px;z-index:200;padding:14px 20px;border-radius:12px;background:var(--ink);color:var(--bg);font-size:17px;font-weight:700;text-decoration:none;" style-focus="top:16px;">Skip to main content</a>
   <dc-import name="Site Header" active="home" hint-size="100%,76px" style="position:sticky;top:0;z-index:50;display:block;"></dc-import>
-  <main id="main" tabindex="-1" style="animation:hubfade var(--fade) ease both;flex:1;width:100%;max-width:1280px;margin:0 auto;box-sizing:border-box;padding:40px clamp(16px,4vw,48px) 72px;display:flex;flex-wrap:wrap;gap:32px;align-items:flex-start;outline:none;">
-    <div style="flex:999 1 600px;min-width:0;display:flex;flex-direction:column;gap:28px;">
+  <main id="main" tabindex="-1" style="container-type:inline-size;animation:hubfade var(--fade) ease both;flex:1;width:100%;max-width:1280px;margin:0 auto;box-sizing:border-box;padding:40px clamp(16px,4vw,48px) 72px;display:flex;flex-wrap:wrap;gap:32px;align-items:flex-start;outline:none;">
+    <div class="hub-classes" style="flex:999 1 600px;min-width:0;display:flex;flex-direction:column;gap:28px;">
       <h1 style="margin:0;font-size:clamp(34px,5vw,46px);line-height:1.1;">Pick your class</h1>
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(230px,100%),1fr));gap:18px;">
+      <div class="hub-tiles" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(230px,100%),1fr));gap:18px;">
         <sc-for list="{{ courses }}" as="c" hint-placeholder-count="6">
-          <a href="{{ c.href }}" style="--tile-glow:{{ c.glowVar }};position:relative;overflow:hidden;background:var(--surface);color:var(--ink);text-decoration:none;border:2px solid {{ c.borderColor }};box-shadow:{{ c.ring }};border-radius:28px;padding:24px;min-height:200px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;gap:24px;transition:transform var(--dur) ease,box-shadow var(--dur) ease;" style-hover="transform:translateY(var(--lift)) scale(var(--grow));box-shadow:var(--tile-glow);--shape-op:var(--shape-hover);" style-active="box-shadow:var(--tile-glow);--shape-op:var(--shape-hover);">
+          <a href="{{ c.href }}" style="--tile-glow:{{ c.glowVar }};position:relative;overflow:hidden;background:var(--surface);color:var(--ink);text-decoration:none;border:2px solid {{ c.borderColor }};box-shadow:{{ c.ring }};border-radius:28px;padding:24px;min-height:200px;box-sizing:border-box;display:flex;flex-direction:column;transition:transform var(--dur) ease,box-shadow var(--dur) ease;" style-hover="transform:translateY(var(--lift)) scale(var(--grow));box-shadow:var(--tile-glow);--shape-op:var(--shape-hover);" style-active="box-shadow:var(--tile-glow);--shape-op:var(--shape-hover);">
             <span aria-hidden="true" style="position:absolute;right:-28px;top:-28px;width:120px;height:120px;border-radius:{{ c.radius }};background:{{ c.fill }};opacity:var(--shape-op,0.22);transition:opacity var(--dur) ease;"></span>
             <sc-if value="{{ c.hasTag }}"><span style="position:absolute;top:18px;right:18px;z-index:1;display:flex;align-items:center;gap:4px;padding:4px 12px;border-radius:999px;background:var(--ink);color:var(--bg);font-size:14px;font-weight:700;"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:16px;">{{ c.tagIcon }}</span>{{ c.tag }}</span></sc-if>
-            <span class="material-symbols-rounded" aria-hidden="true" style="position:relative;width:80px;height:80px;border-radius:{{ c.radius }};background:{{ c.fill }};color:#15151a;display:grid;place-items:center;font-size:44px;">{{ c.icon }}</span>
-            <span style="position:relative;display:flex;align-items:flex-end;justify-content:space-between;gap:12px;">
-              <span><span style="display:block;font-size:28px;font-weight:700;line-height:1.15;color:{{ c.textVar }};">{{ c.name }}</span><span style="display:flex;align-items:center;gap:6px;font-size:17px;color:var(--muted);margin-top:4px;"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:18px;">schedule</span>{{ c.time }}</span></span>
-              <span class="material-symbols-rounded" aria-hidden="true" style="font-size:28px;color:var(--muted);">arrow_forward</span>
-            </span>
+            <span class="material-symbols-rounded hub-tile-icon" aria-hidden="true" style="position:relative;flex:none;width:80px;height:80px;border-radius:{{ c.radius }};background:{{ c.fill }};color:#15151a;display:grid;place-items:center;font-size:44px;">{{ c.icon }}</span>
+            <span class="hub-tile-name" style="position:relative;display:block;padding-right:40px;font-size:28px;font-weight:700;line-height:1.15;color:{{ c.textVar }};">{{ c.name }}</span>
+            <span class="hub-tile-time" style="position:relative;display:flex;align-items:center;gap:6px;padding-right:40px;font-size:17px;color:var(--muted);"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:18px;">schedule</span>{{ c.time }}<span class="material-symbols-rounded" aria-hidden="true" style="position:absolute;right:0;bottom:0;font-size:28px;color:var(--muted);">arrow_forward</span></span>
           </a>
         </sc-for>
       </div>
