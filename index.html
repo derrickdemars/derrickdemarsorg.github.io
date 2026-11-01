@@ -88,7 +88,8 @@ const LINKS = [
   {name:'Desmos',desc:'Graphing calculator',icon:'function',url:'https://www.desmos.com/calculator'},
   {name:'GeoGebra',desc:'Geometry tools',icon:'change_history',url:'https://www.geogebra.org'},
   {name:'IXL',desc:'Skill practice',icon:'checklist',url:'https://www.ixl.com'},
-  {name:'Wayground',desc:'Quizzes and lessons',icon:'travel_explore',url:'https://wayground.com'}
+  {name:'Wayground',desc:'Quizzes and lessons',icon:'travel_explore',url:'https://wayground.com'},
+  {name:'Kuta Works',desc:'Online assignments',icon:'edit_note',url:'https://student.works.kutasoftware.com/signin'}
 ];
 class Component extends DCLogic {
   syncPhone(){ const on = !!this.props.phone; if (on !== this.lastPhone && window.HubState && window.HubState.setPhonePreview){ this.lastPhone = on; window.HubState.setPhonePreview(on); } }
