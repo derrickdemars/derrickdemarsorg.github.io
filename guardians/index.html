@@ -19,7 +19,7 @@
 <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/opendyslexic">
 <script src="hub-state.js"></script>
 <script src="calendar-data.js?v=4"></script>
-<script src="classroom-feed.js?v=2"></script>
+<script src="classroom-feed.js?v=3"></script>
 <script src="bell-schedule.js"></script>
 <style>@view-transition{navigation:auto;}section[id]{scroll-margin-top:96px;}
 </style>
@@ -88,7 +88,7 @@
           </div>
           <div style="display:flex;flex-direction:column;gap:8px;">
             <h3 style="margin:0;font-size:19px;">Where it lives</h3>
-            <p style="margin:0;font-size:17px;max-width:66ch;text-wrap:pretty;">Binders have a set place in the classroom, and we use them in class nearly every day. Students are welcome to take them home, as long as they bring them back for class. Students can use their binders on most warm-ups, quizzes, and other assessments, so a complete, organized binder helps on test day.</p>
+            <p style="margin:0;font-size:17px;max-width:66ch;text-wrap:pretty;">Binders have a set place in the classroom, and we use them in class nearly every day. Students are welcome to take them home, as long as they bring them back for class. Students are permitted to use their binders on most warm-ups, quizzes, and other assessments, so a complete, organized binder is one of the best tools for success in Dr. DeMars’s class.</p>
           </div>
           <div style="display:flex;flex-direction:column;gap:8px;">
             <h3 style="margin:0;font-size:19px;">How to use it well</h3>
@@ -101,14 +101,6 @@
             </ul>
           </div>
         </div>
-        <figure style="margin:0;flex:1 1 300px;min-width:0;max-width:440px;display:flex;flex-direction:column;gap:10px;">
-          <div aria-hidden="true" style="background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:16px;display:flex;flex-direction:column;gap:8px;">
-            <div style="background:var(--surface2);border:2px solid var(--ink);border-radius:14px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start;"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:26px;flex:none;margin-top:1px;">description</span><div style="display:flex;flex-direction:column;gap:2px;min-width:0;"><span style="font-size:16px;font-weight:700;line-height:1.3;">Front: worksheets, newest on top</span><span style="font-size:14px;color:var(--muted);">The first thing you see when you open it</span></div></div>
-            <div style="border:2px dashed var(--muted);border-radius:10px;padding:6px 12px;text-align:center;font-size:14px;font-weight:700;color:var(--muted);">Divider</div>
-            <div style="background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start;"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:26px;flex:none;margin-top:1px;">folder_open</span><div style="display:flex;flex-direction:column;gap:2px;min-width:0;"><span style="font-size:16px;font-weight:700;line-height:1.3;">Back: memory aids, rules, procedures, and more</span><span style="font-size:14px;color:var(--muted);">Varies by course</span></div></div>
-          </div>
-          <figcaption style="font-size:15px;color:var(--muted);">How a binder is organized.</figcaption>
-        </figure>
       </div>
     </section>
 
@@ -158,7 +150,7 @@
 
     <section id="retakes" aria-labelledby="g-retakes" style="display:flex;flex-direction:column;gap:14px;">
       <h2 id="g-retakes" style="margin:0;font-size:28px;line-height:1.2;">Retakes, late work, and extended time</h2>
-      <div style="background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:20px;display:flex;flex-direction:column;gap:22px;max-width:760px;">
+      <div style="background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:20px;display:flex;flex-direction:column;gap:22px;">
         <div style="display:flex;flex-direction:column;gap:12px;">
           <h3 style="margin:0;font-size:19px;">Retakes</h3>
           <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px;">
@@ -170,7 +162,7 @@
           <h3 style="margin:0;font-size:19px;">Absences and late work</h3>
           <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px;">
             <li style="display:flex;gap:12px;align-items:flex-start;font-size:17px;text-wrap:pretty;"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:24px;margin-top:1px;flex:none;">event_available</span><span>Work and tests missed because of an absence, excused or not, are due within the same number of school days your child was absent.</span></li>
-            <li style="display:flex;gap:12px;align-items:flex-start;font-size:17px;text-wrap:pretty;"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:24px;margin-top:1px;flex:none;">schedule</span><span>Work turned in after the due date loses one letter grade (10 points, so an 85 becomes a 75). The exceptions are when Dr. DeMars approved more time in advance, or when the lateness comes from an excused absence he approved. This includes IXL skills.</span></li>
+            <li style="display:flex;gap:12px;align-items:flex-start;font-size:17px;text-wrap:pretty;"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:24px;margin-top:1px;flex:none;">schedule</span><span>Work turned in after the due date loses one letter grade (10 points, so an 85 becomes a 75). This includes IXL skills.</span></li>
           </ul>
         </div>
         <div style="display:flex;flex-direction:column;gap:12px;">
@@ -194,20 +186,16 @@
           <div style="background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:20px;display:flex;flex-direction:column;gap:10px;">
             <div style="display:flex;align-items:center;gap:10px;"><span class="material-symbols-rounded" aria-hidden="true" style="width:40px;height:40px;border-radius:12px;background:var(--surface2);display:grid;place-items:center;font-size:24px;flex:none;">menu_book</span><h3 style="margin:0;font-size:19px;">Bring the binder home</h3></div>
             <p style="margin:0;font-size:16px;text-wrap:pretty;flex:1;">Students are welcome to take their binders home, but we use them in class nearly every day, so they need to come back for class. See what’s in them and how to use them well.</p>
-            <a href="guardians/#binder" style="display:flex;align-items:center;gap:6px;min-height:44px;padding:0 14px;border-radius:12px;border:2px solid var(--line);color:var(--ink);text-decoration:none;font-size:15px;font-weight:700;transition:transform var(--dur) ease,box-shadow var(--dur) ease;align-self:flex-start;" style-hover="transform:translateY(var(--lift)) scale(var(--grow));box-shadow:var(--glow);" style-active="box-shadow:var(--glow);">Read about the binder<span class="material-symbols-rounded" aria-hidden="true" style="font-size:20px;">arrow_downward</span></a>
+            <a href="guardians/#binder" style="display:flex;align-items:center;gap:6px;min-height:44px;padding:0 14px;border-radius:12px;border:2px solid var(--line);color:var(--ink);text-decoration:none;font-size:15px;font-weight:700;transition:transform var(--dur) ease,box-shadow var(--dur) ease;align-self:flex-start;" style-hover="transform:translateY(var(--lift)) scale(var(--grow));box-shadow:var(--glow);" style-active="box-shadow:var(--glow);"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:20px;">menu_book</span>Read about the binder</a>
           </div>
           <div style="background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:20px;display:flex;flex-direction:column;gap:10px;">
             <div style="display:flex;align-items:center;gap:10px;"><span class="material-symbols-rounded" aria-hidden="true" style="width:40px;height:40px;border-radius:12px;background:var(--surface2);display:grid;place-items:center;font-size:24px;flex:none;">edit_note</span><h3 style="margin:0;font-size:19px;">Work the extra problems</h3></div>
             <p style="margin:0;font-size:16px;text-wrap:pretty;">Worksheets have more problems than we finish in class. The rest are extra practice your child can do alone, with you, or with a tutor.</p>
           </div>
           <div style="background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:20px;display:flex;flex-direction:column;gap:10px;">
-            <div style="display:flex;align-items:center;gap:10px;"><span class="material-symbols-rounded" aria-hidden="true" style="width:40px;height:40px;border-radius:12px;background:var(--surface2);display:grid;place-items:center;font-size:24px;flex:none;">schedule</span><h3 style="margin:0;font-size:19px;">Start a few days early</h3></div>
-            <p style="margin:0;font-size:16px;text-wrap:pretty;">Short practice over three or four nights sticks better than one long session the night before.</p>
-          </div>
-          <div style="background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:20px;display:flex;flex-direction:column;gap:10px;">
             <div style="display:flex;align-items:center;gap:10px;"><span class="material-symbols-rounded" aria-hidden="true" style="width:40px;height:40px;border-radius:12px;background:var(--surface2);display:grid;place-items:center;font-size:24px;flex:none;">lightbulb</span><h3 style="margin:0;font-size:19px;">Use the memory aids</h3></div>
             <p style="margin:0;font-size:16px;text-wrap:pretty;flex:1;">Each course page lists its memory aids. They open as PDFs on a phone or Chromebook. Ask your child to explain one to you in their own words.</p>
-            <a href="aids/" style="display:flex;align-items:center;gap:6px;min-height:44px;padding:0 14px;border-radius:12px;border:2px solid var(--line);color:var(--ink);text-decoration:none;font-size:15px;font-weight:700;transition:transform var(--dur) ease,box-shadow var(--dur) ease;align-self:flex-start;" style-hover="transform:translateY(var(--lift)) scale(var(--grow));box-shadow:var(--glow);" style-active="box-shadow:var(--glow);">All memory aids<span class="material-symbols-rounded" aria-hidden="true" style="font-size:20px;">arrow_forward</span></a>
+            <a href="aids/" style="display:flex;align-items:center;gap:6px;min-height:44px;padding:0 14px;border-radius:12px;border:2px solid var(--line);color:var(--ink);text-decoration:none;font-size:15px;font-weight:700;transition:transform var(--dur) ease,box-shadow var(--dur) ease;align-self:flex-start;" style-hover="transform:translateY(var(--lift)) scale(var(--grow));box-shadow:var(--glow);" style-active="box-shadow:var(--glow);"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:20px;">lightbulb</span>All memory aids</a>
           </div>
           <div style="background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:20px;display:flex;flex-direction:column;gap:10px;">
             <div style="display:flex;align-items:center;gap:10px;"><span class="material-symbols-rounded" aria-hidden="true" style="width:40px;height:40px;border-radius:12px;background:var(--surface2);display:grid;place-items:center;font-size:24px;flex:none;">checklist</span><h3 style="margin:0;font-size:19px;">Finish the IXL skills</h3></div>

@@ -322,6 +322,9 @@
     status: function () { return STATUS; },
     visible: visible,
     reload: load,
+    // Read-only: a course's posts and due-dated work as received ({ title, text, posted, link, files: [{ title, url }] }).
+    // memory-aids.js uses it to move memory aids linked in recent posts to the top of the course page.
+    posts: function (course) { var c = DATA && DATA[course]; return c && !c.error ? (c.posts || []).concat(c.due || []) : []; },
     live: false,
     _test: { segsOf: segsOf, cutAt: cutAt, cutSegs: cutSegs, dueLabel: dueLabel, postedLabel: postedLabel, dueEvents: dueEvents, mergeCalendar: mergeCalendar }
   };

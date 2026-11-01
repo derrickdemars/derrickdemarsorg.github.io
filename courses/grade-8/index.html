@@ -20,9 +20,9 @@
 <script src="hub-state.js"></script>
 <script src="calendar-data.js?v=4"></script>
 <script src="bell-schedule.js"></script>
-<script src="memory-aids.js?v=5"></script>
+<script src="memory-aids.js?v=6"></script>
 <script src="quick-links.js"></script>
-<script src="classroom-feed.js?v=2"></script>
+<script src="classroom-feed.js?v=3"></script>
 <style>
 :root{--bg:#131317;--surface:#1c1c22;--surface2:#27272f;--line:#33333c;--ink:#f3f2ee;--muted:#b6b5bf;--font:"Helvetica Neue",Helvetica,Arial,sans-serif;--lh:1.5;--ls:0;--lift:-3px;--dur:160ms;--tileborder:0px solid transparent;--grow:1.02;--fade:300ms;--shape-hover:0.34;--glow:0 0 0 1px rgba(255,255,255,0.12),0 0 20px rgba(255,255,255,0.12);--cg-geo:var(--glow);--cg-alg1:var(--glow);--cg-alg2:var(--glow);--cg-alg3:var(--glow);--cg-g7:var(--glow);--cg-g8:var(--glow);--t-g7:oklch(0.86 0.12 150);--t-g8:oklch(0.84 0.09 250);--t-alg1:oklch(0.86 0.11 60);--t-geo:oklch(0.83 0.1 300);--t-alg2:oklch(0.83 0.1 25);--t-alg3:oklch(0.92 0.12 95);color-scheme:dark;}
 html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);line-height:var(--lh);letter-spacing:var(--ls);}
@@ -81,28 +81,8 @@ button,textarea,input{font:inherit;letter-spacing:inherit;}
           {{ classView }}
         </section>
         </sc-if>
-        <sc-if value="{{ showGuardians }}">
-        <section aria-labelledby="fg-title" style="display:flex;flex-direction:column;gap:12px;">
-          <h2 id="fg-title" style="margin:0;font-size:28px;">For guardians</h2>
-          <div style="background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:14px;">
-            <p style="margin:0;font-size:18px;text-wrap:pretty;">{{ guardIntro }}</p>
-            <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px;">
-              <li style="display:flex;gap:12px;align-items:flex-start;font-size:17px;text-wrap:pretty;"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:24px;margin-top:1px;flex:none;">checklist</span><div style="display:flex;flex-direction:column;gap:12px;min-width:0;"><span>Check IXL: have your child sign in and open the From your teacher tab at ixl.com/dashboard. A skill is complete at a SmartScore of 80.</span><div role="note" style="display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:16px;background:var(--surface2);border:2px solid var(--ink);"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:24px;flex:none;margin-top:1px;">warning</span><p style="margin:0;font-size:16px;text-wrap:pretty;"><strong>Sign in first.</strong> Students sometimes forget to sign in to IXL, and then their progress isn’t saved. Make sure students are signed in and practicing skills from their dashboard.</p></div></div></li>
-              <li style="display:flex;gap:12px;align-items:flex-start;font-size:17px;text-wrap:pretty;"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:24px;margin-top:1px;flex:none;">lightbulb</span><span>Study with the memory aids below before each quiz or test.</span></li>
-              <li style="display:flex;gap:12px;align-items:flex-start;font-size:17px;text-wrap:pretty;"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:24px;margin-top:1px;flex:none;">menu_book</span><span>See the <a href="{{ binderHref }}" style="font-weight:700;text-underline-offset:3px;">Binder</a> section below for what’s in your child’s binder and how to use it.</span></li>
-            </ul>
-            <div style="display:flex;flex-wrap:wrap;gap:10px;">
-            <a href="guardians/" style="display:flex;align-items:center;gap:6px;min-height:46px;padding:0 14px;border-radius:12px;border:2px solid var(--line);color:var(--ink);text-decoration:none;font-size:16px;font-weight:700;transition:transform var(--dur) ease,box-shadow var(--dur) ease;" style-hover="transform:translateY(var(--lift)) scale(var(--grow));box-shadow:var(--glow);" style-active="box-shadow:var(--glow);">Read the guardian guide<span class="material-symbols-rounded" aria-hidden="true" style="font-size:20px;">arrow_forward</span></a>
-              <sc-if value="{{ canSub }}"><button type="button" onClick="{{ subscribe }}" style="display:flex;align-items:center;gap:6px;min-height:46px;padding:0 14px;border-radius:12px;border:2px solid var(--line);background:transparent;color:var(--ink);font-size:16px;font-weight:700;cursor:pointer;transition:transform var(--dur) ease,box-shadow var(--dur) ease;" style-hover="transform:translateY(var(--lift)) scale(var(--grow));box-shadow:var(--glow);" style-active="box-shadow:var(--glow);"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:20px;">event_repeat</span>Subscribe to calendar</button></sc-if>
-            </div>
-          </div>
-        </section>
-        </sc-if>
         <section aria-labelledby="aids-title" style="display:flex;flex-direction:column;gap:12px;">
-          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
-            <h2 id="aids-title" style="margin:0;font-size:28px;">Memory aids</h2>
-            <a href="aids/" style="display:flex;align-items:center;gap:6px;min-height:46px;padding:0 14px;border-radius:12px;border:2px solid var(--line);color:var(--ink);text-decoration:none;font-size:16px;font-weight:700;transition:transform var(--dur) ease,box-shadow var(--dur) ease;" style-hover="transform:translateY(var(--lift)) scale(var(--grow));box-shadow:var(--glow);" style-active="box-shadow:var(--glow);">All memory aids<span class="material-symbols-rounded" aria-hidden="true" style="font-size:20px;">arrow_forward</span></a>
-          </div>
+          <h2 id="aids-title" style="margin:0;font-size:28px;">Memory aids</h2>
           <sc-if value="{{ noAids }}"><div style="padding:20px;border:2px dashed var(--line);border-radius:20px;font-size:18px;color:var(--muted);">No memory aids for this course yet.</div></sc-if>
           <sc-for list="{{ aidRows }}" as="a">
             <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:12px 16px 12px 12px;background:var(--surface);border:1px solid var(--line);border-radius:20px;">
@@ -120,6 +100,7 @@ button,textarea,input{font:inherit;letter-spacing:inherit;}
               </div>
             </div>
           </sc-for>
+          <a href="aids/" style="align-self:flex-start;display:flex;align-items:center;gap:6px;min-height:46px;padding:0 14px;border-radius:12px;border:2px solid var(--line);color:var(--ink);text-decoration:none;font-size:16px;font-weight:700;transition:transform var(--dur) ease,box-shadow var(--dur) ease;" style-hover="transform:translateY(var(--lift)) scale(var(--grow));box-shadow:var(--glow);" style-active="box-shadow:var(--glow);"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:20px;">lightbulb</span>All memory aids</a>
         </section>
         <section id="binder" aria-labelledby="binder-title" style="display:flex;flex-direction:column;gap:12px;scroll-margin-top:96px;">
           <h2 id="binder-title" style="margin:0;font-size:28px;">Binder</h2>
@@ -127,7 +108,7 @@ button,textarea,input{font:inherit;letter-spacing:inherit;}
             <div style="flex:1 1 340px;min-width:0;display:flex;flex-direction:column;gap:14px;">
                 <p style="margin:0;font-size:17px;max-width:66ch;text-wrap:pretty;">Students keep their work in a binder with two parts. Worksheets go in the front, newest first. Behind a divider, the back holds memory aids, rules, procedures, and other materials that vary by course.</p>
                 <p style="margin:0;font-size:17px;max-width:66ch;text-wrap:pretty;">Worksheets have more practice problems than the class finishes: Dr. DeMars shows how to solve them, the class solves some together, and students practice on their own. The extra problems are for more practice outside class, alone or with a guardian or tutor.</p>
-                <p style="margin:0;font-size:17px;max-width:66ch;text-wrap:pretty;">Binders have a set place in the classroom, and the class uses them nearly every day. Students are welcome to take them home, as long as they bring them back for class. Students can use their binders on most warm-ups, quizzes, and other assessments.</p>
+                <p style="margin:0;font-size:17px;max-width:66ch;text-wrap:pretty;">Binders have a set place in the classroom, and the class uses them nearly every day. Students are welcome to take them home, as long as they bring them back for class. Students are permitted to use their binders on most warm-ups, quizzes, and other assessments, so a complete, organized binder is one of the best tools for success in Dr. DeMars’s class.</p>
               <h3 style="margin:6px 0 0;font-size:19px;">How to use it well</h3>
               <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px;">
                   <li style="display:flex;gap:12px;align-items:flex-start;font-size:17px;text-wrap:pretty;"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:24px;flex:none;margin-top:1px;">vertical_align_top</span><span>Put each new worksheet on top, in front of the last one.</span></li>
@@ -137,19 +118,28 @@ button,textarea,input{font:inherit;letter-spacing:inherit;}
                   <li style="display:flex;gap:12px;align-items:flex-start;font-size:17px;text-wrap:pretty;"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:24px;flex:none;margin-top:1px;">home</span><span>When a binder goes home, bring it back in time for class, since it’s used nearly every day.</span></li>
               </ul>
             </div>
-            <figure style="margin:0;flex:1 1 300px;min-width:0;max-width:440px;display:flex;flex-direction:column;gap:10px;">
-              <div aria-hidden="true" style="background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:16px;display:flex;flex-direction:column;gap:8px;">
-                <div style="background:var(--surface2);border:2px solid var(--ink);border-radius:14px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start;"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:26px;flex:none;margin-top:1px;">description</span><div style="display:flex;flex-direction:column;gap:2px;min-width:0;"><span style="font-size:16px;font-weight:700;line-height:1.3;">Front: worksheets, newest on top</span><span style="font-size:14px;color:var(--muted);">The first thing you see when you open it</span></div></div>
-                <div style="border:2px dashed var(--muted);border-radius:10px;padding:6px 12px;text-align:center;font-size:14px;font-weight:700;color:var(--muted);">Divider</div>
-                <div style="background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start;"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:26px;flex:none;margin-top:1px;">folder_open</span><div style="display:flex;flex-direction:column;gap:2px;min-width:0;"><span style="font-size:16px;font-weight:700;line-height:1.3;">Back: memory aids, rules, procedures, and more</span><span style="font-size:14px;color:var(--muted);">Varies by course</span></div></div>
-              </div>
-              <figcaption style="font-size:15px;color:var(--muted);">How a binder is organized.</figcaption>
-            </figure>
           </div>
         </section>
+        <sc-if value="{{ showGuardians }}">
+        <section aria-labelledby="fg-title" style="display:flex;flex-direction:column;gap:12px;">
+          <h2 id="fg-title" style="margin:0;font-size:28px;">For guardians</h2>
+          <div style="background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:14px;">
+            <p style="margin:0;font-size:18px;text-wrap:pretty;">{{ guardIntro }}</p>
+            <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px;">
+              <li style="display:flex;gap:12px;align-items:flex-start;font-size:17px;text-wrap:pretty;"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:24px;margin-top:1px;flex:none;">checklist</span><div style="display:flex;flex-direction:column;gap:12px;min-width:0;"><span>Check IXL: have your child sign in and open the From your teacher tab at ixl.com/dashboard. A skill is complete at a SmartScore of 80.</span><div role="note" style="display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:16px;background:var(--surface2);border:2px solid var(--ink);"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:24px;flex:none;margin-top:1px;">warning</span><p style="margin:0;font-size:16px;text-wrap:pretty;"><strong>Sign in first.</strong> Students sometimes forget to sign in to IXL, and then their progress isn’t saved. Make sure students are signed in and practicing skills from their dashboard.</p></div></div></li>
+              <li style="display:flex;gap:12px;align-items:flex-start;font-size:17px;text-wrap:pretty;"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:24px;margin-top:1px;flex:none;">lightbulb</span><span>Study with the memory aids above before each quiz or test.</span></li>
+              <li style="display:flex;gap:12px;align-items:flex-start;font-size:17px;text-wrap:pretty;"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:24px;margin-top:1px;flex:none;">menu_book</span><span>See the <a href="{{ binderHref }}" style="font-weight:700;text-underline-offset:3px;">Binder</a> section above for what’s in your child’s binder and how to use it.</span></li>
+            </ul>
+            <div style="display:flex;flex-wrap:wrap;gap:10px;">
+            <a href="guardians/" style="display:flex;align-items:center;gap:6px;min-height:46px;padding:0 14px;border-radius:12px;border:2px solid var(--line);color:var(--ink);text-decoration:none;font-size:16px;font-weight:700;transition:transform var(--dur) ease,box-shadow var(--dur) ease;" style-hover="transform:translateY(var(--lift)) scale(var(--grow));box-shadow:var(--glow);" style-active="box-shadow:var(--glow);"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:20px;">family_restroom</span>Read the guardian guide</a>
+              <sc-if value="{{ canSub }}"><button type="button" onClick="{{ subscribe }}" style="display:flex;align-items:center;gap:6px;min-height:46px;padding:0 14px;border-radius:12px;border:2px solid var(--line);background:transparent;color:var(--ink);font-size:16px;font-weight:700;cursor:pointer;transition:transform var(--dur) ease,box-shadow var(--dur) ease;" style-hover="transform:translateY(var(--lift)) scale(var(--grow));box-shadow:var(--glow);" style-active="box-shadow:var(--glow);"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:20px;">event_repeat</span>Subscribe to calendar</button></sc-if>
+            </div>
+          </div>
+        </section>
+        </sc-if>
         <section aria-labelledby="links-title" style="display:flex;flex-direction:column;gap:12px;">
           <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
-            <h2 id="links-title" style="margin:0;font-size:28px;">Links</h2>
+            <h2 id="links-title" style="margin:0;font-size:28px;">Quick Links</h2>
           </div>
           <div style="display:flex;flex-wrap:wrap;gap:10px;">
             <sc-for list="{{ linkButtons }}" as="l">
@@ -201,19 +191,21 @@ const FALLBACK = {title:'Coming soon',icon:'construction',desc:'This page is not
 
 class Component extends DCLogic {
   calState = 0;
-  state = { thumbs: {}, failed: {}, teacher: !!(window.HubState && window.HubState.get().teacher) };
+  state = { thumbs: {}, failed: {}, aidPick: null, teacher: !!(window.HubState && window.HubState.get().teacher) };
   componentDidMount(){
     this.onHub = () => { if (window.HubState) { const v = window.HubState.get(); this.setState({teacher: !!v.teacher, signedIn: !!v.signedIn, role: v.role}); } };
     window.addEventListener('hubchange', this.onHub);
     window.addEventListener('hubstate-ready', this.onHub);
-    this.onCal = () => this.forceUpdate(); window.addEventListener('hubcal-ready', this.onCal); window.addEventListener('hubcal-status', this.onCal);
-    this.onClass = () => this.forceUpdate(); window.addEventListener('hubclassroom-ready', this.onClass);
+    this.onCal = () => { this.settleAids(false); this.forceUpdate(); }; window.addEventListener('hubcal-ready', this.onCal); window.addEventListener('hubcal-status', this.onCal);
+    this.onClass = () => { this.settleAids(false); this.forceUpdate(); }; window.addEventListener('hubclassroom-ready', this.onClass);
+    this.aidTimer = setTimeout(() => this.settleAids(true), 2000); this.settleAids(false);
     this.onLinks = () => this.forceUpdate(); window.addEventListener('hublinks-ready', this.onLinks);
     this.onAids = () => this.loadThumbs(); window.addEventListener('hubaids-ready', this.onAids); this.loadThumbs();
     this.onHub();
     document.title = this.page().title + ' | Dr. DeMars | Math Hub';
   }
   componentWillUnmount(){
+    clearTimeout(this.aidTimer);
     window.removeEventListener('hubchange', this.onHub);
     window.removeEventListener('hubstate-ready', this.onHub);
     window.removeEventListener('hubcal-ready', this.onCal);
@@ -227,7 +219,16 @@ class Component extends DCLogic {
     this.loadingThumbs = true;
     window.HubAids.forCourse(this.key()).forEach(a => window.HubAids.thumb(a.file, 64).then(url => this.setState(s => url ? {thumbs: {...s.thumbs, [a.file]: url}} : {failed: {...s.failed, [a.file]: true}})));
   }
+  // The three memory aids shown: picked once, when the calendar and Classroom have loaded (or after 2 seconds),
+  // so the list doesn't reshuffle while someone is reading it. Until then it shows the first three in list order.
+  settleAids(force){
+    if (this.state.aidPick || !this.page().course || !window.HubAids || !window.HubAids.top) return;
+    const HC = window.HubCalendar, ready = !!(HC && HC.status && HC.status() !== 'loading');
+    if (!force && !ready) return;
+    this.setState({aidPick: window.HubAids.top(this.key(), 3).map(a => a.file)});
+  }
   key(){ if (window.HUB_PAGE) return window.HUB_PAGE; try { return new URLSearchParams(location.search).get('page') || ''; } catch(e){ return ''; } }
+  shownAids(k){ const all = window.HubAids.forCourse(k); return this.state.aidPick ? this.state.aidPick.map(f => all.find(a => a.file === f)).filter(Boolean) : all.slice(0, 3); }
   page(){ return PAGES[this.key()] || FALLBACK; }
   // The earliest quiz, test or exam for this course in the calendar's two weeks, from today on.
   nextAssessment(k){
@@ -249,7 +250,7 @@ class Component extends DCLogic {
     const locked = !!p.teacher && !(p.games ? this.state.signedIn : this.state.teacher);
     return {
       linkButtons: p.course && window.HubLinks ? window.HubLinks.forCourse(k, this.state.role || '') : [],
-      aidRows: p.course && window.HubAids ? window.HubAids.forCourse(k).map(a => ({...a, dl: a.file.split('/').pop(), ...window.HubAids.view(a.file, this.state.thumbs, this.state.failed)})) : [],
+      aidRows: p.course && window.HubAids ? this.shownAids(k).map(a => ({...a, dl: a.file.split('/').pop(), ...window.HubAids.view(a.file, this.state.thumbs, this.state.failed)})) : [],
       noAids: !!p.course && !!window.HubAids && !window.HubAids.forCourse(k).length,
       calView: p.course && window.HubCalendar && window.HubCalendar.element ? window.HubCalendar.element({mode: 'course', course: k}) : null,
       classView: p.course && window.HubClassroom ? window.HubClassroom.element({course: k}) : null,
