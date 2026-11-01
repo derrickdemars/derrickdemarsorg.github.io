@@ -60,6 +60,9 @@ button,textarea,input{font:inherit;letter-spacing:inherit;}
           <div style="flex:1;min-width:200px;">
             <div style="font-size:18px;font-weight:700;">{{ page.level }} math</div>
             <h1 style="margin:0;font-size:clamp(36px,5vw,50px);line-height:1.1;">{{ page.title }}</h1>
+            <div aria-live="polite">
+              <sc-if value="{{ next.show }}"><div style="margin-top:10px;display:flex;align-items:center;gap:8px;font-size:18px;font-weight:700;text-wrap:pretty;"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:22px;flex:none;">{{ next.icon }}</span><span>{{ next.text }}</span></div></sc-if>
+            </div>
           </div>
         </div>
         <section aria-labelledby="cal-title" style="display:flex;flex-direction:column;gap:14px;">
@@ -68,6 +71,19 @@ button,textarea,input{font:inherit;letter-spacing:inherit;}
         <sc-if value="{{ hasClass }}">
         <section aria-labelledby="gc-title" style="display:flex;flex-direction:column;gap:14px;">
           {{ classView }}
+        </section>
+        </sc-if>
+        <sc-if value="{{ showGuardians }}">
+        <section aria-labelledby="fg-title" style="display:flex;flex-direction:column;gap:12px;">
+          <h2 id="fg-title" style="margin:0;font-size:28px;">For guardians</h2>
+          <div style="background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:14px;">
+            <p style="margin:0;font-size:18px;text-wrap:pretty;">{{ guardIntro }}</p>
+            <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px;">
+              <li style="display:flex;gap:12px;align-items:flex-start;font-size:17px;text-wrap:pretty;"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:24px;margin-top:1px;flex:none;">checklist</span><span>Check IXL: have your child sign in and open the From your teacher tab at ixl.com/dashboard. A skill is complete at a SmartScore of 80.</span></li>
+              <li style="display:flex;gap:12px;align-items:flex-start;font-size:17px;text-wrap:pretty;"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:24px;margin-top:1px;flex:none;">lightbulb</span><span>Study with the memory aids below before each quiz or test.</span></li>
+            </ul>
+            <a href="guardians/" style="align-self:flex-start;display:flex;align-items:center;gap:6px;min-height:46px;padding:0 14px;border-radius:12px;border:2px solid var(--line);color:var(--ink);text-decoration:none;font-size:16px;font-weight:700;transition:transform var(--dur) ease,box-shadow var(--dur) ease;" style-hover="transform:translateY(var(--lift)) scale(var(--grow));box-shadow:var(--glow);" style-active="box-shadow:var(--glow);">Read the guardian guide<span class="material-symbols-rounded" aria-hidden="true" style="font-size:20px;">arrow_forward</span></a>
+          </div>
         </section>
         </sc-if>
         <section aria-labelledby="aids-title" style="display:flex;flex-direction:column;gap:12px;">
@@ -128,6 +144,8 @@ button,textarea,input{font:inherit;letter-spacing:inherit;}
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script>
+// While this is false, the For guardians section shows only in teacher view (see guardians/index.html).
+const GUARDIANS_PUBLIC = false;
 const COURSE_PLAN = ['Study guides','Extra worksheets','Memory aids','Links and videos','Upcoming tests','All organized by topic'];
 const PAGES = {
   geo:{course:true,title:'Geometry',level:'High school',icon:'architecture',fill:'oklch(0.67 0.19 300)',radius:'50%'},
@@ -150,7 +168,7 @@ class Component extends DCLogic {
     this.onHub = () => { if (window.HubState) { const v = window.HubState.get(); this.setState({teacher: !!v.teacher, signedIn: !!v.signedIn, role: v.role}); } };
     window.addEventListener('hubchange', this.onHub);
     window.addEventListener('hubstate-ready', this.onHub);
-    this.onCal = () => this.forceUpdate(); window.addEventListener('hubcal-ready', this.onCal);
+    this.onCal = () => this.forceUpdate(); window.addEventListener('hubcal-ready', this.onCal); window.addEventListener('hubcal-status', this.onCal);
     this.onClass = () => this.forceUpdate(); window.addEventListener('hubclassroom-ready', this.onClass);
     this.onLinks = () => this.forceUpdate(); window.addEventListener('hublinks-ready', this.onLinks);
     this.onAids = () => this.loadThumbs(); window.addEventListener('hubaids-ready', this.onAids); this.loadThumbs();
@@ -161,6 +179,7 @@ class Component extends DCLogic {
     window.removeEventListener('hubchange', this.onHub);
     window.removeEventListener('hubstate-ready', this.onHub);
     window.removeEventListener('hubcal-ready', this.onCal);
+    window.removeEventListener('hubcal-status', this.onCal);
     window.removeEventListener('hubclassroom-ready', this.onClass);
     window.removeEventListener('hubaids-ready', this.onAids);
     window.removeEventListener('hublinks-ready', this.onLinks);
@@ -172,6 +191,21 @@ class Component extends DCLogic {
   }
   key(){ if (window.HUB_PAGE) return window.HUB_PAGE; try { return new URLSearchParams(location.search).get('page') || ''; } catch(e){ return ''; } }
   page(){ return PAGES[this.key()] || FALLBACK; }
+  // The earliest quiz, test or exam for this course in the calendar's two weeks, from today on.
+  nextAssessment(k){
+    const HC = window.HubCalendar;
+    if (!HC || !HC.status || !HC.week) return {show:false};
+    const st = HC.status();
+    if (st === 'failed') return {show:false};
+    if (st === 'loading') return {show:true, icon:'hourglass_empty', text:'Checking the calendar…'};
+    const days = [HC.week(0).days, HC.week(1).days], ti = days[0].findIndex(d => d.isToday);
+    const t0 = e => e.start ? e.start.getTime() : 0;
+    const hits = (HC.events || []).filter(e => e.quiz && !e.ns && !e.hl && e.cs && e.cs.indexOf(k) >= 0 && !(e.w === 0 && ti >= 0 && e.d < ti))
+      .sort((a, b) => (a.w - b.w) || (a.d - b.d) || (t0(a) - t0(b)));
+    if (!hits.length) return {show:true, icon:'event_available', text:'No assessment scheduled in the next two weeks'};
+    const e = hits[0], day = days[e.w][e.d];
+    return {show:true, icon:'event', text:`Next assessment: ${String(e.title).replace(/\s+/g, ' ').trim()} · ${day.name.slice(0, 3)}, ${day.date}`};
+  }
   renderVals(){
     const k = this.key(), p = this.page();
     const locked = !!p.teacher && !(p.games ? this.state.signedIn : this.state.teacher);
@@ -184,6 +218,9 @@ class Component extends DCLogic {
       hasClass: !!(p.course && window.HubClassroom && window.HubClassroom.visible() && ['ready','loading','error'].indexOf(window.HubClassroom.status()) >= 0),
       page: {...p, desc: p.course ? `The ${p.title} page is being built.` : p.desc, bullets: p.course ? COURSE_PLAN : p.bullets, textVar: p.course ? `var(--t-${k})` : 'var(--ink)', level: p.level || '', radius: p.radius || '24px', fill: p.fill || ''},
       isCourse: !!p.course,
+      next: p.course ? this.nextAssessment(k) : {show:false},
+      showGuardians: GUARDIANS_PUBLIC || !!this.state.teacher,
+      guardIntro: `Here’s how to help with ${p.title} at home.`,
       showSoon: !(p.course && window.HUB_LAUNCH), notCourse: !p.course,
       viaGames: !!p.games,
       locked, open: !locked,

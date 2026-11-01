@@ -100,11 +100,12 @@
 
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:420},&quot;active&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;home&quot;,&quot;games&quot;,&quot;planner&quot;,&quot;settings&quot;,&quot;subs&quot;,&quot;none&quot;],&quot;default&quot;:&quot;home&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:420},&quot;active&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;home&quot;,&quot;guardians&quot;,&quot;games&quot;,&quot;planner&quot;,&quot;settings&quot;,&quot;subs&quot;,&quot;none&quot;],&quot;default&quot;:&quot;home&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
 const HUB_DEFAULT = {theme:'dark',font:'standard',contrast:false,motion:true,teacher:false,teacherLeft:0,signOutSoon:false};
 const CS_MAP = {g7:'courses/grade-7/',g8:'courses/grade-8/',alg1:'courses/algebra-i/',geo:'courses/geometry/',alg2:'courses/algebra-ii/',alg3:'courses/algebra-iii/',feud:'games/family-feud/',jeopardy:'games/jeopardy/',planner:'planner/'};
 const NAV = [
   {id:'home',label:'Home',short:'Home',icon:'home',href:'./'},
+  {id:'guardians',label:'Guardians',short:'Guardians',icon:'family_restroom',href:'guardians/',teacherOnly:true},
   {id:'subs',label:'Substitute',short:'Subs',icon:'badge',href:'subs/'},
   {id:'games',label:'Games',short:'Games',icon:'sports_esports',href:'games/',teacherOnly:'signedIn'},
   {id:'planner',label:'Lesson Planner',short:'Planner',icon:'edit_calendar',href:'planner/',liveHref:'/planner/',teacherOnly:true},
