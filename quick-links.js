@@ -1,5 +1,4 @@
-// Quick links: main tiles + course-specific links. Feeds the Quick Links page and every course page.
-// Course links with placeholder URLs point to each tool's home page until real links are added.
+// Quick links: main tiles, the home page's links for course pages, and course-specific extras.
 (function () {
   if (window.HubLinks) return;
   var MAIN = [
@@ -20,31 +19,32 @@
     wayground: { label: 'Wayground', icon: 'travel_explore', home: 'https://wayground.com' },
     drive: { label: 'Google Drive', icon: 'folder', home: 'https://drive.google.com' }
   };
-  var TOOL_ORDER = ['classroom', 'desmos', 'geogebra', 'ixl', 'wayground', 'drive'];
-  function L(tool, title, extra) { var o = { tool: tool, title: title, url: '' }; for (var k in extra) o[k] = extra[k]; return o; }
+  // Course pages show the home page's quick links as a button row. Keep these in sync with LINKS in /index.html.
+  var HOME = [
+    { name: 'Google Classroom', icon: 'school', url: 'https://classroom.google.com' },
+    { name: 'Gradelink', icon: 'account_box', url: 'https://www.gradelink.com' },
+    { name: 'Desmos', icon: 'function', url: 'https://www.desmos.com/calculator' },
+    { name: 'GeoGebra', icon: 'change_history', url: 'https://www.geogebra.org' },
+    { name: 'IXL', icon: 'checklist', url: 'https://www.ixl.com' },
+    { name: 'Wayground', icon: 'travel_explore', url: 'https://wayground.com' }
+  ];
+  // Extra course-specific buttons. Placeholder URLs ('') point to the tool's home page.
   var COURSE = {
-    geo: [L('classroom', 'Geometry class'), L('desmos', 'Trig ratio sliders'), L('geogebra', 'Right triangle explorer'), L('geogebra', 'Dilation explorer'), L('ixl', 'Geometry skill plan'), L('wayground', 'Similarity review quiz'), L('drive', 'Answer keys folder', { teacherOnly: true, answerKey: true })],
-    alg1: [L('classroom', 'Algebra I class'), L('desmos', 'Slope-intercept explorer'), L('geogebra', 'Systems of equations explorer'), L('ixl', 'Algebra I skill plan'), L('wayground', 'Linear functions quiz')],
-    alg3: [L('classroom', 'Algebra III class'), L('desmos', 'Sequences grapher'), L('geogebra', 'Conic sections explorer'), L('ixl', 'Algebra III skill plan'), L('wayground', 'Matrices quiz')],
-    g7: [L('classroom', '7th Grade Math class'), L('desmos', 'Proportional relationships'), L('geogebra', 'Angles explorer'), L('ixl', '7th grade skill plan'), L('wayground', 'Ratios quiz')],
-    g8: [L('classroom', '8th Grade Math class'), L('desmos', 'Linear or nonlinear?'), L('geogebra', 'Transformations explorer'), L('ixl', '8th grade skill plan'), L('wayground', 'Pythagorean theorem quiz')],
-    alg2: [L('classroom', 'Algebra II class'), L('desmos', 'Parent functions'), L('geogebra', 'Unit circle explorer'), L('ixl', 'Algebra II skill plan'), L('wayground', 'Quadratics quiz')]
+    geo: [{ tool: 'drive', title: 'Answer keys', url: '', teacherOnly: true, answerKey: true }]
   };
-  // Group links by tool. who: 'teacher' (Dr. DeMars) sees everything; 'sub' and 'staff' (Staff login) also see answer keys; anyone else sees public links.
-  function group(list, who) {
+  // who: 'teacher' (Dr. DeMars) sees everything; 'sub' and 'staff' (Staff login) also see answer keys; anyone else sees public links.
+  function forCourse(id, who) {
     var teacher = who === true || who === 'teacher', sub = who === 'sub' || who === 'staff';
-    var out = [];
-    TOOL_ORDER.forEach(function (t) {
-      var items = list.filter(function (l) { return l.tool === t && (teacher || !l.teacherOnly || (sub && l.answerKey)); })
-        .map(function (l) { var o = {}; for (var k in l) o[k] = l[k]; o.href = l.url || TOOLS[t].home; o.placeholder = !l.url; return o; });
-      if (items.length) out.push({ tool: t, label: TOOLS[t].label, icon: TOOLS[t].icon, items: items });
+    var out = HOME.map(function (l) { return { name: l.name, icon: l.icon, href: l.url, teacherOnly: false }; });
+    (COURSE[id] || []).forEach(function (l) {
+      if (l.teacherOnly && !teacher && !(sub && l.answerKey)) return;
+      out.push({ name: l.title, icon: TOOLS[l.tool].icon, href: l.url || TOOLS[l.tool].home, teacherOnly: !!l.teacherOnly });
     });
     return out;
   }
   window.HubLinks = {
-    main: MAIN, tools: TOOLS, course: COURSE,
-    forCourse: function (id, teacher) { return group(COURSE[id] || [], teacher); },
-    group: group
+    main: MAIN, home: HOME, tools: TOOLS, course: COURSE,
+    forCourse: forCourse
   };
   window.dispatchEvent(new Event('hublinks-ready'));
 })();

@@ -96,14 +96,9 @@ button,textarea,input{font:inherit;letter-spacing:inherit;}
           <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
             <h2 id="links-title" style="margin:0;font-size:28px;">Links</h2>
           </div>
-          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(280px,100%),1fr));gap:12px;align-items:start;">
-            <sc-for list="{{ linkGroups }}" as="g">
-              <div style="background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:8px;">
-                <div style="display:flex;align-items:center;gap:8px;font-size:15px;font-weight:700;color:var(--muted);"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:20px;">{{ g.icon }}</span>{{ g.label }}</div>
-                <sc-for list="{{ g.items }}" as="it">
-                  <a href="{{ it.href }}" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:10px;min-height:48px;padding:6px 12px;border-radius:14px;background:var(--surface2);color:var(--ink);text-decoration:none;font-size:17px;font-weight:700;transition:transform var(--dur) ease,box-shadow var(--dur) ease;" style-hover="transform:translateY(var(--lift)) scale(var(--grow));box-shadow:var(--glow);" style-active="box-shadow:var(--glow);"><span style="flex:1;min-width:0;">{{ it.title }}<sc-if value="{{ it.teacherOnly }}"><span style="display:inline-block;margin-left:8px;font-size:12px;font-weight:700;padding:1px 8px;border-radius:999px;border:1.5px solid currentColor;vertical-align:middle;">Teacher only</span></sc-if></span><span class="material-symbols-rounded" aria-hidden="true" style="font-size:18px;color:var(--muted);">open_in_new</span></a>
-                </sc-for>
-              </div>
+          <div style="display:flex;flex-wrap:wrap;gap:10px;">
+            <sc-for list="{{ linkButtons }}" as="l">
+              <a href="{{ l.href }}" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:8px;min-height:46px;padding:0 14px;border-radius:12px;border:2px solid var(--line);background:var(--surface);color:var(--ink);text-decoration:none;font-size:16px;font-weight:700;transition:transform var(--dur) ease,box-shadow var(--dur) ease;" style-hover="transform:translateY(var(--lift)) scale(var(--grow));box-shadow:var(--glow);" style-active="box-shadow:var(--glow);"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:20px;">{{ l.icon }}</span>{{ l.name }}<sc-if value="{{ l.teacherOnly }}"><span style="display:inline-block;font-size:12px;font-weight:700;padding:1px 8px;border-radius:999px;border:1.5px solid currentColor;">Teacher only</span></sc-if></a>
             </sc-for>
           </div>
         </section>
@@ -125,14 +120,6 @@ button,textarea,input{font:inherit;letter-spacing:inherit;}
           </sc-for>
         </div>
         </sc-if>
-        <sc-if value="{{ isCourse }}">
-          <div style="flex:1 1 280px;background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:26px;display:flex;flex-direction:column;gap:12px;box-sizing:border-box;">
-            <h2 style="margin:0;font-size:22px;">Topics</h2>
-            <sc-for list="{{ page.topics }}" as="t">
-              <div style="display:flex;align-items:center;gap:10px;font-size:18px;padding:8px 0;border-top:1px solid var(--line);"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:20px;color:{{ page.textVar }};">{{ page.icon }}</span>{{ t }}</div>
-            </sc-for>
-          </div>
-        </sc-if>
       </div>
     </sc-if>
   </main>
@@ -142,12 +129,12 @@ button,textarea,input{font:inherit;letter-spacing:inherit;}
 <script type="text/x-dc" data-dc-script>
 const COURSE_PLAN = ['Study guides','Extra worksheets','Memory aids','Links and videos','Upcoming tests','All organized by topic'];
 const PAGES = {
-  geo:{course:true,title:'Geometry',level:'High school',icon:'architecture',fill:'oklch(0.67 0.19 300)',radius:'50%',topics:['Tools & Transformations','Congruence & Proof','Similarity','Right Triangles & Trig','Circles','Area & Volume']},
-  alg1:{course:true,title:'Algebra I',level:'High school',icon:'calculate',fill:'oklch(0.76 0.16 55)',radius:'24px',topics:['Expressions & Equations','Linear Functions','Systems of Equations','Exponential Functions','Polynomials','Quadratics']},
-  alg3:{course:true,title:'Algebra III',level:'High school',icon:'ssid_chart',fill:'oklch(0.88 0.16 95)',radius:'50%',topics:['Functions Review','Matrices','Sequences & Series','Conic Sections','Trigonometry','Data & Probability']},
-  g7:{course:true,title:'7th Grade Math',level:'Middle school',icon:'square_foot',fill:'oklch(0.74 0.17 150)',radius:'24px',topics:['Ratios & Proportions','Rational Numbers','Expressions & Equations','Geometry','Probability','Statistics']},
-  g8:{course:true,title:'8th Grade Math',level:'Middle school',icon:'straighten',fill:'oklch(0.69 0.15 250)',radius:'50%',topics:['Real Numbers & Exponents','Linear Equations','Functions','Transformations','Pythagorean Theorem','Statistics']},
-  alg2:{course:true,title:'Algebra II',level:'High school',icon:'show_chart',fill:'oklch(0.67 0.2 25)',radius:'24px',topics:['Functions & Transformations','Quadratics & Complex Numbers','Polynomial Functions','Rational Functions','Exponential & Log Functions','Trigonometric Functions']},
+  geo:{course:true,title:'Geometry',level:'High school',icon:'architecture',fill:'oklch(0.67 0.19 300)',radius:'50%'},
+  alg1:{course:true,title:'Algebra I',level:'High school',icon:'calculate',fill:'oklch(0.76 0.16 55)',radius:'24px'},
+  alg3:{course:true,title:'Algebra III',level:'High school',icon:'ssid_chart',fill:'oklch(0.88 0.16 95)',radius:'50%'},
+  g7:{course:true,title:'7th Grade Math',level:'Middle school',icon:'square_foot',fill:'oklch(0.74 0.17 150)',radius:'24px'},
+  g8:{course:true,title:'8th Grade Math',level:'Middle school',icon:'straighten',fill:'oklch(0.69 0.15 250)',radius:'50%'},
+  alg2:{course:true,title:'Algebra II',level:'High school',icon:'show_chart',fill:'oklch(0.67 0.2 25)',radius:'24px'},
   learn:{title:'How We Learn',icon:'diversity_3',desc:'An interactive diagram about autism, dyslexia, and ADHD.',bullets:['Tap a circle or an overlap to read its traits and strengths','A plain-language meaning for each trait','What each trait can look like in class']},
   planner:{teacher:true,title:'Lesson Planner',icon:'edit_calendar',desc:'Your lesson planner app, available from any device.',bullets:['Opens inside the hub after sign-in','Teacher only']},
   jeopardy:{teacher:true,games:true,title:'Jeopardy',icon:'grid_view',desc:'This page will connect to your Jeopardy dashboard.',bullets:['Game boards for each course','Team scores on the board']},
@@ -188,13 +175,13 @@ class Component extends DCLogic {
     const k = this.key(), p = this.page();
     const locked = !!p.teacher && !(p.games ? this.state.signedIn : this.state.teacher);
     return {
-      linkGroups: p.course && window.HubLinks ? window.HubLinks.forCourse(k, this.state.role || '').map(g => ({...g, items: g.items.map(it => ({...it, teacherOnly: !!it.teacherOnly}))})) : [],
+      linkButtons: p.course && window.HubLinks ? window.HubLinks.forCourse(k, this.state.role || '') : [],
       aidRows: p.course && window.HubAids ? window.HubAids.forCourse(k).map(a => ({...a, dl: a.file.split('/').pop(), thumbBg: this.state.thumbs[a.file] ? `#fff url(${this.state.thumbs[a.file]}) top / cover no-repeat` : '#fff', hasThumb: !!this.state.thumbs[a.file], noThumb: !this.state.thumbs[a.file]})) : [],
       noAids: !!p.course && !!window.HubAids && !window.HubAids.forCourse(k).length,
       calView: p.course && window.HubCalendar && window.HubCalendar.element ? window.HubCalendar.element({mode: 'course', course: k}) : null,
       classView: p.course && window.HubClassroom ? window.HubClassroom.element({course: k}) : null,
       hasClass: !!(p.course && window.HubClassroom && window.HubClassroom.visible() && ['ready','loading','error'].indexOf(window.HubClassroom.status()) >= 0),
-      page: {...p, desc: p.course ? `The ${p.title} page is being built.` : p.desc, bullets: p.course ? COURSE_PLAN : p.bullets, topics: p.topics || [], textVar: p.course ? `var(--t-${k})` : 'var(--ink)', level: p.level || '', radius: p.radius || '24px', fill: p.fill || ''},
+      page: {...p, desc: p.course ? `The ${p.title} page is being built.` : p.desc, bullets: p.course ? COURSE_PLAN : p.bullets, textVar: p.course ? `var(--t-${k})` : 'var(--ink)', level: p.level || '', radius: p.radius || '24px', fill: p.fill || ''},
       isCourse: !!p.course,
       showSoon: !(p.course && window.HUB_LAUNCH), notCourse: !p.course,
       viaGames: !!p.games,
