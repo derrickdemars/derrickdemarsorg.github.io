@@ -6,6 +6,10 @@
 //   { id, name, file, size, type, courses: [ids], categories: [ids], description, keywords: [], uploaded, updated }
 //   courses: g7, g8, alg1, geo, alg2, alg3.  categories: ws (Worksheets & Study Guides), media (Images & Videos), inter (Interactives).
 //   file: path from the site root, e.g. misc-resources/worksheets/factoring-practice.pdf
+//
+// Uploading takes two calls: the browser turns the file into base64 and sends it to /api/resources/blob
+// (the Worker streams it to GitHub without reading it, which keeps it within the free plan's CPU limit),
+// then /api/resources/upload commits it with its list entry.
 (function () {
   if (window.HubResources) return;
   var COURSES = [
@@ -29,7 +33,8 @@
     html: 'HTML', htm: 'HTML', tex: 'TeX', zip: 'ZIP'
   };
   var ICON = { PDF: 'picture_as_pdf', Image: 'image', Video: 'movie', Audio: 'music_note', HTML: 'web', TeX: 'functions', ZIP: 'folder_zip', Other: 'draft' };
-  var MAX_BYTES = 95 * 1024 * 1024, WARN_BYTES = 25 * 1024 * 1024;
+  // 70 MB: base64 makes a file a third larger, and Cloudflare refuses requests over 100 MB.
+  var MAX_BYTES = 70 * 1024 * 1024, WARN_BYTES = 25 * 1024 * 1024;
   var LIST_URL = 'misc-resources.json';
 
   function ext(name) { var m = /\.([A-Za-z0-9]+)$/.exec(String(name || '')); return m ? m[1].toLowerCase() : ''; }
@@ -52,6 +57,15 @@
     var e = ext(name), base = String(name || '').replace(/\.[A-Za-z0-9]+$/, '');
     base = base.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 80) || 'file';
     return e ? base + '.' + e : base;
+  }
+  // The file as base64 text (the browser does this natively, so it is fast even on a Chromebook).
+  function readBase64(file) {
+    return new Promise(function (resolve, reject) {
+      var fr = new FileReader();
+      fr.onload = function () { var s = String(fr.result || ''); resolve(s.slice(s.indexOf(',') + 1)); };
+      fr.onerror = function () { reject(new Error('read')); };
+      fr.readAsDataURL(file);
+    });
   }
   function words(s) { return String(s || '').toLowerCase().split(/[^a-z0-9.+#]+/).filter(Boolean); }
 
@@ -97,10 +111,22 @@
         .catch(function (e) { R.error = e && e.message || 'load failed'; if (!R.items) R.items = []; window.dispatchEvent(new CustomEvent('hubresources-ready', { detail: R.items })); return R.items; });
     },
     // Worker calls (teacher only). Each resolves the Worker's JSON: { ok, item?, message? }.
-    upload: function (meta, file) {
+    // onStage(text) is told what is happening, for the spinner's label.
+    upload: function (meta, file, onStage) {
       var H = window.HubState; if (!H || !H.get().teacher) return Promise.resolve({ ok: false, message: 'Sign in as Dr. DeMars first.' });
-      var fd = new FormData(); fd.append('meta', JSON.stringify(meta)); fd.append('file', file, file.name);
-      return H.api('/api/resources/upload', { method: 'POST', body: fd });
+      var say = function (t) { if (onStage) onStage(t); };
+      say('Preparing the file…');
+      return readBase64(file).then(function (b64) {
+        say('Sending the file to GitHub…');
+        var body = new Blob(['{"encoding":"base64","content":"', b64, '"}'], { type: 'application/json' });
+        return H.api('/api/resources/blob', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: body });
+      }, function () { return { ok: false, message: 'That file could not be read. Try choosing it again.' }; })
+        .then(function (d) {
+          if (!d || d.ok !== true || !d.sha) return { ok: false, message: (d && d.message) || 'The file did not reach GitHub. Try again.' };
+          say('Saving it to the site…');
+          return H.api('/api/resources/upload', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ meta: meta, sha: d.sha, filename: file.name, size: file.size }) });
+        });
     },
     update: function (meta) {
       var H = window.HubState; if (!H || !H.get().teacher) return Promise.resolve({ ok: false, message: 'Sign in as Dr. DeMars first.' });
