@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<base href="/">
+<script>window.HUB_LAUNCH=true;</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>@view-transition{navigation:auto;}</style>
+<script src="hub-state.js"></script>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<title>Miscellaneous Resources | Dr. DeMars | Math Hub</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,500,1,0">
+<link rel="stylesheet" href="https://fonts.cdnfonts.com/css/opendyslexic">
+<script src="hub-state.js"></script>
+<script src="misc-resources.js?v=1"></script>
+<style>
+:root{--bg:#131317;--surface:#1c1c22;--surface2:#27272f;--line:#33333c;--ink:#f3f2ee;--muted:#b6b5bf;--font:"Helvetica Neue",Helvetica,Arial,sans-serif;--lh:1.5;--ls:0;--lift:-3px;--dur:160ms;--tileborder:0px solid transparent;--grow:1.02;--fade:300ms;--shape-hover:0.34;--glow:0 0 0 1px rgba(255,255,255,0.12),0 0 20px rgba(255,255,255,0.12);--cg-geo:var(--glow);--cg-alg1:var(--glow);--cg-alg2:var(--glow);--cg-alg3:var(--glow);--cg-g7:var(--glow);--cg-g8:var(--glow);--t-g7:oklch(0.86 0.12 150);--t-g8:oklch(0.84 0.09 250);--t-alg1:oklch(0.86 0.11 60);--t-geo:oklch(0.83 0.1 300);--t-alg2:oklch(0.83 0.1 25);--t-alg3:oklch(0.92 0.12 95);color-scheme:dark;}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);line-height:var(--lh);letter-spacing:var(--ls);}
+a{color:var(--ink);}
+a:hover{color:var(--ink);}
+:focus-visible{outline:3px solid var(--ink);outline-offset:3px;}
+a:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible{box-shadow:var(--glow);}
+@keyframes hubfade{from{opacity:0}to{opacity:1}}
+@keyframes mrspin{to{transform:rotate(360deg)}}
+@keyframes mrflash{0%{background:color-mix(in oklab,var(--ink) 22%,var(--surface))}100%{background:var(--surface)}}
+::view-transition-old(root),::view-transition-new(root){animation-duration:var(--vt,280ms);animation-timing-function:cubic-bezier(0.45,0,0.55,1);}
+::view-transition-group(site-header){animation-duration:0s;}
+button,textarea,input,select{font:inherit;letter-spacing:inherit;}
+.mr-spin{display:inline-block;width:22px;height:22px;border-radius:50%;border:3px solid currentColor;border-right-color:transparent;animation:mrspin 0.8s linear infinite;flex:none;}
+.mr-groups{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;}
+.mr-group{container-type:inline-size;}
+.mr-row{display:grid;grid-template-columns:minmax(0,1fr) 100px 62px 68px auto;grid-template-areas:"name date type size act";gap:4px 10px;align-items:center;}
+.c-name{grid-area:name;}.c-date{grid-area:date;}.c-type{grid-area:type;}.c-size{grid-area:size;}.c-act{grid-area:act;}
+.mr-flash{animation:mrflash 2.6s ease-out both;}
+@media (max-width:1000px){.mr-groups{grid-template-columns:minmax(0,1fr);}}
+/* Narrow group (three side by side on a laptop, or a phone): two-line rows and a compact sort bar instead of columns. */
+@container (max-width:540px){
+  .mr-row{grid-template-columns:max-content max-content minmax(0,1fr) auto;grid-template-areas:"name name name act" "date type size act";gap:0 10px;}
+  .mr-row.mr-head{display:flex;flex-wrap:wrap;align-items:center;gap:4px 14px;}
+  .mr-head::before{content:"Sort by";font-weight:400;}
+  .mr-head .c-act{display:none;}
+  .c-date,.c-type,.c-size{padding-left:28px;}
+  .c-type{padding-left:0;}.c-size{padding-left:0;}
+  .c-type::before,.c-size::before{content:"·";margin-right:10px;opacity:0.6;}
+}
+@media (prefers-reduced-motion:reduce){.mr-spin{animation-duration:1.6s;}}
+</style>
+</helmet>
+<div style="min-height:100vh;display:flex;flex-direction:column;background:var(--bg);color:var(--ink);font-family:var(--font);">
+  <a href="miscresources/#main" style="position:absolute;left:16px;top:-120px;z-index:200;padding:14px 20px;border-radius:12px;background:var(--ink);color:var(--bg);font-size:17px;font-weight:700;text-decoration:none;" style-focus="top:16px;">Skip to main content</a>
+  <dc-import name="Site Header" active="miscresources" hint-size="100%,76px" style="position:sticky;top:0;z-index:50;display:block;"></dc-import>
+  <main id="main" tabindex="-1" style="animation:hubfade var(--fade) ease both;flex:1;width:100%;max-width:1400px;margin:0 auto;box-sizing:border-box;padding:36px clamp(16px,4vw,48px) 72px;display:flex;flex-direction:column;gap:22px;outline:none;">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:12px 24px;flex-wrap:wrap;">
+      <div style="display:flex;flex-direction:column;gap:8px;max-width:720px;">
+        <h1 style="margin:0;font-size:clamp(34px,5vw,46px);line-height:1.1;">Miscellaneous Resources</h1>
+        <p style="margin:0;font-size:19px;color:var(--muted);text-wrap:pretty;">Extra worksheets, study guides, images, videos and interactives for each class. Open one in a new tab or download it.</p>
+      </div>
+      <button onClick="{{ uploadClick }}" style="display:flex;align-items:center;gap:8px;min-height:52px;padding:0 20px;border-radius:14px;border:2px solid var(--ink);background:var(--ink);color:var(--bg);font-size:17px;font-weight:700;cursor:pointer;transition:transform var(--dur) ease,box-shadow var(--dur) ease;" style-hover="transform:translateY(var(--lift)) scale(var(--grow));box-shadow:var(--glow);" style-active="box-shadow:var(--glow);"><span class="material-symbols-rounded" aria-hidden="true">upload</span>Upload</button>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <label style="display:flex;align-items:center;gap:12px;background:var(--surface);border:2px solid var(--line);border-radius:16px;padding:0 16px;min-height:56px;">
+        <span class="material-symbols-rounded" aria-hidden="true" style="color:var(--muted);">search</span>
+        <input type="search" value="{{ search }}" onChange="{{ setSearch }}" placeholder="Search by name, keyword, class, category or file type" aria-label="Search resources" style="flex:1;min-width:0;min-height:52px;border:0;background:transparent;color:var(--ink);font-size:17px;outline:none;">
+        <sc-if value="{{ hasSearch }}"><button onClick="{{ clearSearch }}" aria-label="Clear search" style="display:grid;place-items:center;width:40px;height:40px;border-radius:10px;border:0;background:transparent;color:var(--ink);cursor:pointer;"><span class="material-symbols-rounded" aria-hidden="true">close</span></button></sc-if>
+      </label>
+      <div role="group" aria-label="Filter by course" style="display:flex;flex-wrap:wrap;gap:6px;">
+        <sc-for list="{{ chips }}" as="ch" hint-placeholder-count="7">
+          <button onClick="{{ ch.pick }}" aria-pressed="{{ ch.on }}" style="display:flex;align-items:center;gap:6px;min-height:44px;padding:0 12px 0 6px;border-radius:999px;border:2px solid {{ ch.border }};background:{{ ch.bg }};color:{{ ch.color }};font-size:14px;font-weight:700;white-space:nowrap;cursor:pointer;transition:transform var(--dur) ease,box-shadow var(--dur) ease;" style-hover="transform:translateY(var(--lift)) scale(var(--grow));box-shadow:var(--glow);" style-active="box-shadow:var(--glow);">
+            <span class="material-symbols-rounded" aria-hidden="true" style="width:28px;height:28px;border-radius:{{ ch.radius }};background:{{ ch.fill }};color:{{ ch.iconColor }};display:grid;place-items:center;font-size:17px;">{{ ch.icon }}</span>{{ ch.label }}
+          </button>
+        </sc-for>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px;">
+        <div role="group" aria-label="Filter by category" style="display:flex;flex-wrap:wrap;gap:6px;">
+          <sc-for list="{{ catChips }}" as="cc" hint-placeholder-count="4">
+            <button onClick="{{ cc.pick }}" aria-pressed="{{ cc.on }}" style="display:flex;align-items:center;gap:6px;min-height:40px;padding:0 12px 0 10px;border-radius:999px;border:2px solid {{ cc.border }};background:{{ cc.bg }};color:{{ cc.color }};font-size:14px;font-weight:700;white-space:nowrap;cursor:pointer;transition:transform var(--dur) ease,box-shadow var(--dur) ease;" style-hover="transform:translateY(var(--lift)) scale(var(--grow));box-shadow:var(--glow);" style-active="box-shadow:var(--glow);"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:18px;">{{ cc.icon }}</span>{{ cc.label }}</button>
+          </sc-for>
+        </div>
+        <label style="display:flex;align-items:center;gap:10px;font-size:15px;font-weight:700;color:var(--muted);">Type
+          <select value="{{ typeFilter }}" onChange="{{ onType }}" style="min-height:44px;padding:0 36px 0 12px;border-radius:12px;border:2px solid var(--line);background:var(--surface);color:var(--ink);font-size:15px;font-weight:700;cursor:pointer;">
+            <sc-for list="{{ typeOptions }}" as="t"><option value="{{ t.value }}">{{ t.label }}</option></sc-for>
+          </select>
+        </label>
+        <label style="display:flex;align-items:center;gap:10px;font-size:15px;font-weight:700;color:var(--muted);">Uploaded
+          <select value="{{ rangeFilter }}" onChange="{{ onRange }}" style="min-height:44px;padding:0 36px 0 12px;border-radius:12px;border:2px solid var(--line);background:var(--surface);color:var(--ink);font-size:15px;font-weight:700;cursor:pointer;">
+            <option value="all">Any time</option><option value="week">This week</option><option value="month">This month</option><option value="year">This year</option>
+          </select>
+        </label>
+        <sc-if value="{{ anyFilter }}"><button onClick="{{ clearFilters }}" style="min-height:40px;padding:0 14px;border-radius:12px;border:2px dashed var(--line);background:transparent;color:var(--ink);font-size:14px;font-weight:700;cursor:pointer;">Clear filters</button></sc-if>
+        <span role="status" style="font-size:15px;color:var(--muted);margin-left:auto;">{{ countText }}</span>
+      </div>
+    </div>
+
+    <sc-if value="{{ hasStatus }}">
+      <div role="status" style="display:flex;align-items:center;gap:12px;padding:14px 18px;background:var(--surface);border:2px solid var(--line);border-radius:16px;font-size:16px;font-weight:700;"><span class="mr-spin" aria-hidden="true"></span>{{ statusText }}</div>
+    </sc-if>
+    <sc-if value="{{ loadError }}">
+      <div role="alert" style="padding:14px 18px;border:2px solid var(--line);border-radius:16px;font-size:16px;color:var(--muted);">The resource list could not be loaded. <button onClick="{{ reload }}" style="min-height:36px;padding:0 12px;border-radius:10px;border:2px solid var(--line);background:transparent;color:var(--ink);font-weight:700;cursor:pointer;">Try again</button></div>
+    </sc-if>
+    <sc-if value="{{ empty }}">
+      <div style="padding:32px;border:2px dashed var(--line);border-radius:24px;text-align:center;font-size:19px;color:var(--muted);">{{ emptyText }}</div>
+    </sc-if>
+
+    <div style="display:flex;flex-direction:column;gap:26px;">
+      <sc-for list="{{ sections }}" as="sec" hint-placeholder-count="2">
+        <section aria-labelledby="{{ sec.hid }}" style="display:flex;flex-direction:column;gap:12px;">
+          <h2 id="{{ sec.hid }}" style="margin:0;display:flex;align-items:center;gap:10px;font-size:24px;color:{{ sec.color }};"><span class="material-symbols-rounded" aria-hidden="true" style="width:34px;height:34px;border-radius:{{ sec.radius }};background:{{ sec.fill }};color:#15151a;display:grid;place-items:center;font-size:20px;">{{ sec.icon }}</span>{{ sec.name }}<span style="font-size:15px;font-weight:400;color:var(--muted);">{{ sec.countText }}</span></h2>
+          <div class="mr-groups">
+            <sc-for list="{{ sec.groups }}" as="g" hint-placeholder-count="3">
+              <div class="mr-group" style="display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-top:4px solid {{ sec.color }};border-radius:18px;overflow:hidden;min-width:0;">
+                <h3 style="margin:0;display:flex;align-items:center;gap:8px;padding:12px 14px;font-size:16px;border-bottom:1px solid var(--line);"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:20px;color:var(--muted);">{{ g.icon }}</span>{{ g.name }}</h3>
+                <sc-if value="{{ g.hasRows }}">
+                  <div role="table" aria-label="{{ g.ariaLabel }}" style="display:flex;flex-direction:column;">
+                    <div role="row" class="mr-row mr-head" style="padding:6px 10px 6px 14px;border-bottom:1px solid var(--line);font-size:12px;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);">
+                      <sc-for list="{{ headers }}" as="h" hint-placeholder-count="4">
+                        <button role="columnheader" aria-sort="{{ h.sort }}" onClick="{{ h.pick }}" class="{{ h.cls }}" style="display:flex;align-items:center;gap:2px;min-height:32px;padding:0;border:0;background:transparent;color:inherit;font:inherit;font-weight:700;letter-spacing:inherit;text-transform:inherit;cursor:pointer;text-align:left;">{{ h.label }}<span class="material-symbols-rounded" aria-hidden="true" style="font-size:16px;opacity:{{ h.op }};">{{ h.icon }}</span></button>
+                      </sc-for>
+                      <span role="columnheader" class="c-act" style="text-align:right;"><span style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);">Actions</span></span>
+                    </div>
+                    <sc-for list="{{ g.rows }}" as="r" hint-placeholder-count="3">
+                      <div role="row" class="{{ r.cls }}" style="padding:6px 10px 6px 14px;border-bottom:1px solid var(--line);font-size:15px;">
+                        <a role="cell" class="c-name" href="{{ r.file }}" target="_blank" rel="noopener" title="{{ r.tip }}" style="display:flex;align-items:center;gap:8px;min-width:0;min-height:40px;color:var(--ink);text-decoration:none;font-weight:700;border-radius:8px;">
+                          <span class="material-symbols-rounded" aria-hidden="true" style="font-size:20px;width:20px;overflow:hidden;color:var(--muted);flex:none;">{{ r.icon }}</span>
+                          <span style="min-width:0;overflow-wrap:anywhere;">{{ r.name }}</span>
+                          <span style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);">(opens in a new tab)</span>
+                        </a>
+                        <span role="cell" class="c-date" style="color:var(--muted);font-size:14px;white-space:nowrap;">{{ r.date }}</span>
+                        <span role="cell" class="c-type" style="color:var(--muted);font-size:14px;">{{ r.type }}</span>
+                        <span role="cell" class="c-size" style="color:var(--muted);font-size:14px;white-space:nowrap;">{{ r.size }}</span>
+                        <span role="cell" class="c-act" style="display:flex;gap:4px;justify-content:flex-end;">
+                          <a href="{{ r.file }}" download="{{ r.dl }}" aria-label="Download {{ r.name }}" title="Download" style="display:grid;place-items:center;width:40px;height:40px;border-radius:10px;border:2px solid var(--line);color:var(--ink);text-decoration:none;transition:transform var(--dur) ease,box-shadow var(--dur) ease;" style-hover="transform:translateY(var(--lift));box-shadow:var(--glow);"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:20px;">download</span></a>
+                          <sc-if value="{{ teacher }}">
+                            <button onClick="{{ r.edit }}" aria-label="Edit {{ r.name }}" title="Edit" style="display:grid;place-items:center;width:40px;height:40px;border-radius:10px;border:2px dashed var(--line);background:none;color:var(--ink);cursor:pointer;"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:20px;">edit</span></button>
+                            <button onClick="{{ r.remove }}" aria-label="Delete {{ r.name }}" title="Delete" style="display:grid;place-items:center;width:40px;height:40px;border-radius:10px;border:2px dashed var(--line);background:none;color:var(--ink);cursor:pointer;"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:20px;">delete</span></button>
+                          </sc-if>
+                        </span>
+                      </div>
+                    </sc-for>
+                  </div>
+                </sc-if>
+                <sc-if value="{{ g.noRows }}">
+                  <p style="margin:0;padding:18px 14px;font-size:15px;color:var(--muted);">{{ g.emptyText }}</p>
+                </sc-if>
+              </div>
+            </sc-for>
+          </div>
+        </section>
+      </sc-for>
+    </div>
+
+  </main>
+  <dc-import name="Site Footer" hint-size="100%,110px"></dc-import>
+    <sc-if value="{{ modalOpen }}">
+    <div style="position:fixed;inset:0;z-index:80;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;padding:16px;box-sizing:border-box;" onClick="{{ overlayClick }}">
+      <div role="dialog" aria-modal="true" aria-labelledby="mr-modal-title" onClick="{{ stop }}" style="width:640px;max-width:100%;max-height:calc(100vh - 32px);overflow-y:auto;box-sizing:border-box;background:var(--surface);border:2px solid var(--line);border-radius:24px;padding:24px;display:flex;flex-direction:column;gap:18px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+          <h2 id="mr-modal-title" style="margin:0;display:flex;align-items:center;gap:10px;font-size:26px;"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:30px;">{{ modalIcon }}</span>{{ modalTitle }}</h2>
+          <button onClick="{{ closeModal }}" disabled="{{ busyAttr }}" aria-label="Close" style="display:grid;place-items:center;width:44px;height:44px;border-radius:12px;border:2px solid var(--line);background:transparent;color:var(--ink);cursor:pointer;opacity:{{ busyDim }};"><span class="material-symbols-rounded" aria-hidden="true">close</span></button>
+        </div>
+
+        <label style="display:flex;flex-direction:column;gap:6px;font-size:15px;font-weight:700;color:var(--muted);">Name
+          <input type="text" ref="{{ nameRef }}" value="{{ f.name }}" onChange="{{ setName }}" disabled="{{ busyAttr }}" placeholder="e.g. Factoring Practice Set 2" maxlength="120" style="min-height:48px;box-sizing:border-box;padding:0 14px;border-radius:12px;border:2px solid var(--line);background:var(--surface2);color:var(--ink);font-size:17px;font-weight:400;">
+        </label>
+
+        <div role="group" aria-labelledby="mr-courses-label" style="display:flex;flex-direction:column;gap:8px;">
+          <span id="mr-courses-label" style="font-size:15px;font-weight:700;color:var(--muted);">Classes it belongs under <span style="font-weight:400;">(pick one or more)</span></span>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;">
+            <sc-for list="{{ fCourses }}" as="c" hint-placeholder-count="6">
+              <button onClick="{{ c.pick }}" aria-pressed="{{ c.on }}" disabled="{{ busyAttr }}" style="display:flex;align-items:center;gap:6px;min-height:42px;padding:0 12px 0 6px;border-radius:999px;border:2px solid {{ c.border }};background:{{ c.bg }};color:{{ c.color }};font-size:14px;font-weight:700;white-space:nowrap;cursor:pointer;"><span class="material-symbols-rounded" aria-hidden="true" style="width:26px;height:26px;border-radius:{{ c.radius }};background:{{ c.fill }};color:#15151a;display:grid;place-items:center;font-size:16px;">{{ c.icon }}</span>{{ c.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+
+        <div role="group" aria-labelledby="mr-cats-label" style="display:flex;flex-direction:column;gap:8px;">
+          <span id="mr-cats-label" style="font-size:15px;font-weight:700;color:var(--muted);">Categories <span style="font-weight:400;">(pick one or more)</span></span>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;">
+            <sc-for list="{{ fCats }}" as="c" hint-placeholder-count="3">
+              <button onClick="{{ c.pick }}" aria-pressed="{{ c.on }}" disabled="{{ busyAttr }}" style="display:flex;align-items:center;gap:6px;min-height:42px;padding:0 12px 0 10px;border-radius:999px;border:2px solid {{ c.border }};background:{{ c.bg }};color:{{ c.color }};font-size:14px;font-weight:700;white-space:nowrap;cursor:pointer;"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:18px;">{{ c.icon }}</span>{{ c.label }}</button>
+            </sc-for>
+          </div>
+          <sc-if value="{{ isNew }}"><span style="font-size:14px;color:var(--muted);">The file is stored once, in the folder of the first category you pick, and listed under every category and class you choose.</span></sc-if>
+        </div>
+
+        <sc-if value="{{ isNew }}">
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <span style="font-size:15px;font-weight:700;color:var(--muted);">File</span>
+            <input type="file" ref="{{ fileRef }}" onChange="{{ onFile }}" tabindex="-1" aria-hidden="true" style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;">
+            <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;">
+              <button onClick="{{ pickFile }}" disabled="{{ busyAttr }}" style="display:flex;align-items:center;gap:8px;min-height:48px;padding:0 18px;border-radius:12px;border:2px solid var(--line);background:var(--surface2);color:var(--ink);font-size:16px;font-weight:700;cursor:pointer;"><span class="material-symbols-rounded" aria-hidden="true">attach_file</span>{{ fileBtnText }}</button>
+              <sc-if value="{{ hasFile }}"><span style="display:flex;align-items:center;gap:6px;font-size:15px;min-width:0;overflow-wrap:anywhere;"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:20px;color:var(--muted);">{{ fileIcon }}</span>{{ fileText }}</span></sc-if>
+            </div>
+            <span style="font-size:14px;color:var(--muted);">PDFs, images, video, audio, HTML, .tex, .zip and most other files. Up to 95 MB; files over 25 MB will be slow for students to open.</span>
+            <sc-if value="{{ hasFileWarn }}"><span role="alert" style="font-size:15px;font-weight:700;">{{ fileWarn }}</span></sc-if>
+          </div>
+        </sc-if>
+        <sc-if value="{{ isEdit }}">
+          <div style="display:flex;align-items:center;gap:8px;font-size:15px;color:var(--muted);"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:20px;">{{ fileIcon }}</span><span style="min-width:0;overflow-wrap:anywhere;">{{ fileText }}</span></div>
+          <span style="font-size:14px;color:var(--muted);">To replace the file itself, delete this resource and upload the new file.</span>
+        </sc-if>
+
+        <label style="display:flex;flex-direction:column;gap:6px;font-size:15px;font-weight:700;color:var(--muted);">Description <span style="font-weight:400;">(optional, one line)</span>
+          <input type="text" value="{{ f.description }}" onChange="{{ setDesc }}" disabled="{{ busyAttr }}" maxlength="200" placeholder="What is it for?" style="min-height:48px;box-sizing:border-box;padding:0 14px;border-radius:12px;border:2px solid var(--line);background:var(--surface2);color:var(--ink);font-size:16px;font-weight:400;">
+        </label>
+        <label style="display:flex;flex-direction:column;gap:6px;font-size:15px;font-weight:700;color:var(--muted);">Keywords <span style="font-weight:400;">(separate with commas; they help the search find it)</span>
+          <input type="text" value="{{ f.keywords }}" onChange="{{ setKeywords }}" disabled="{{ busyAttr }}" maxlength="300" placeholder="e.g. factoring, trinomial, unit 4" style="min-height:48px;box-sizing:border-box;padding:0 14px;border-radius:12px;border:2px solid var(--line);background:var(--surface2);color:var(--ink);font-size:16px;font-weight:400;">
+        </label>
+
+        <sc-if value="{{ hasFormErr }}"><p role="alert" style="margin:0;font-size:15px;font-weight:700;">{{ formErr }}</p></sc-if>
+
+        <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:10px;padding-top:4px;">
+          <sc-if value="{{ busy }}"><span role="status" style="display:flex;align-items:center;gap:10px;margin-right:auto;font-size:15px;color:var(--muted);"><span class="mr-spin" aria-hidden="true"></span>{{ busyText }}</span></sc-if>
+          <button onClick="{{ closeModal }}" disabled="{{ busyAttr }}" style="min-height:48px;padding:0 18px;border-radius:12px;border:2px solid var(--line);background:transparent;color:var(--ink);font-size:16px;font-weight:700;cursor:pointer;opacity:{{ busyDim }};">Cancel</button>
+          <button onClick="{{ submit }}" disabled="{{ busyAttr }}" style="display:flex;align-items:center;gap:8px;min-height:48px;padding:0 20px;border-radius:12px;border:2px solid var(--ink);background:var(--ink);color:var(--bg);font-size:16px;font-weight:700;cursor:pointer;opacity:{{ busyDim }};"><sc-if value="{{ busy }}"><span class="mr-spin" aria-hidden="true" style="width:18px;height:18px;border-width:3px;"></span></sc-if><sc-if value="{{ notBusy }}"><span class="material-symbols-rounded" aria-hidden="true">{{ submitIcon }}</span></sc-if>{{ submitText }}</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ hasToast }}">
+    <div role="status" style="position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:90;max-width:calc(100% - 32px);box-sizing:border-box;background:var(--ink);color:var(--bg);padding:14px 20px;border-radius:16px;font-size:17px;font-weight:700;">{{ toast }}</div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const POLL_MS = 15000, POLL_MAX = 20; // 15 s × 20 = 5 minutes of waiting for GitHub Pages
+const blankForm = () => ({ id: '', name: '', courses: [], categories: [], description: '', keywords: '', file: null, origFile: '', origSize: 0 });
+class Component extends DCLogic {
+  state = {
+    items: null, loadError: false, teacher: !!(window.HubState && window.HubState.get().teacher),
+    search: '', selected: [], cats: [], typeFilter: '', rangeFilter: 'all', sortKey: 'uploaded', sortDir: 'desc',
+    modal: '', f: blankForm(), formErr: '', busy: false, busyText: '', status: '', toast: '', flash: '', pendingUpload: false
+  };
+  fileRef = React.createRef();
+  nameRef = React.createRef();
+  componentDidMount(){
+    const R = window.HubResources;
+    this.onHub = () => {
+      const H = window.HubState; if (!H) return;
+      const v = H.get(), was = this.state.teacher;
+      this.setState({ teacher: !!v.teacher });
+      if (v.teacher && !was && this.state.pendingUpload) { this.setState({ pendingUpload: false }); this.openNew(); }
+      if (v.signedIn && !v.teacher && this.state.pendingUpload) { this.setState({ pendingUpload: false }); this.showToast('Only Dr. DeMars can upload here.'); }
+    };
+    this.onList = () => this.setState({ items: (R && R.items) || [], loadError: !!(R && R.error) });
+    this.onKey = e => { if (e.key === 'Escape' && this.state.modal && !this.state.busy) this.closeModal(); };
+    window.addEventListener('hubchange', this.onHub);
+    window.addEventListener('hubstate-ready', this.onHub);
+    window.addEventListener('hubresources-ready', this.onList);
+    window.addEventListener('keydown', this.onKey);
+    this.onHub();
+    if (R && R.items) this.onList();
+  }
+  componentWillUnmount(){
+    window.removeEventListener('hubchange', this.onHub);
+    window.removeEventListener('hubstate-ready', this.onHub);
+    window.removeEventListener('hubresources-ready', this.onList);
+    window.removeEventListener('keydown', this.onKey);
+    clearTimeout(this.tt); clearTimeout(this.pt); clearTimeout(this.ft);
+  }
+  componentDidUpdate(){ // the runtime passes only prevProps, so track the modal ourselves
+    if (this.state.modal && !this.wasModal && this.nameRef.current) this.nameRef.current.focus();
+    this.wasModal = this.state.modal;
+  }
+  showToast(m){ clearTimeout(this.tt); this.setState({ toast: m }); this.tt = setTimeout(() => this.setState({ toast: '' }), 3200); }
+  flashRow(id){ clearTimeout(this.ft); this.setState({ flash: id }); this.ft = setTimeout(() => this.setState({ flash: '' }), 3000); }
+
+  // ----- modal -----
+  openNew(){ this.setState({ modal: 'new', f: blankForm(), formErr: '' }); }
+  openEdit(it){
+    this.setState({ modal: 'edit', formErr: '', f: { id: it.id, name: it.name, courses: it.courses.slice(), categories: it.categories.slice(), description: it.description, keywords: it.keywords.join(', '), file: null, origFile: it.file, origSize: it.size } });
+  }
+  closeModal(){ if (this.state.busy) return; this.setState({ modal: '', formErr: '', f: blankForm() }); }
+  uploadClick(){
+    const H = window.HubState, v = H ? H.get() : {};
+    if (v.teacher) return this.openNew();
+    if (v.signedIn) return this.showToast('Only Dr. DeMars can upload here.');
+    this.setState({ pendingUpload: true });
+    if (H) H.openSignin(); else this.showToast('Sign in is not available.');
+  }
+  setF(patch){ this.setState(s => ({ f: { ...s.f, ...patch }, formErr: '' })); }
+  toggleIn(key, id){ this.setState(s => { const list = s.f[key]; return { f: { ...s.f, [key]: list.includes(id) ? list.filter(x => x !== id) : list.concat(id) }, formErr: '' }; }); }
+  onFile(e){
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    const patch = { file };
+    if (!this.state.f.name.trim()) patch.name = file.name.replace(/\.[A-Za-z0-9]+$/, '').replace(/[-_]+/g, ' ').trim().replace(/\b[a-z]/g, ch => ch.toUpperCase());
+    this.setF(patch);
+  }
+  validate(){
+    const R = window.HubResources, f = this.state.f;
+    if (!f.name.trim()) return 'Give it a name.';
+    if (!f.courses.length) return 'Pick at least one class.';
+    if (!f.categories.length) return 'Pick at least one category.';
+    if (this.state.modal === 'new') {
+      if (!f.file) return 'Choose a file to upload.';
+      if (f.file.size > R.maxBytes) return 'That file is over 95 MB. GitHub refuses files that large; try a smaller export.';
+      if (f.file.size === 0) return 'That file is empty.';
+    }
+    return '';
+  }
+  meta(){
+    const f = this.state.f;
+    return { id: f.id || undefined, name: f.name.trim(), courses: f.courses, categories: f.categories, description: f.description.trim(),
+      keywords: f.keywords.split(',').map(k => k.trim()).filter(Boolean) };
+  }
+  submit(){
+    const err = this.validate(); if (err) return this.setState({ formErr: err });
+    const R = window.HubResources, isNew = this.state.modal === 'new', m = this.meta();
+    this.setState({ busy: true, busyText: isNew ? 'Uploading to GitHub…' : 'Saving to GitHub…', formErr: '' });
+    const call = isNew ? R.upload(m, this.state.f.file) : R.update(m);
+    call.then(d => {
+      if (!d || !d.ok || !d.item) return this.setState({ busy: false, formErr: (d && d.message) || 'The server did not accept it.' });
+      const item = d.item;
+      this.setState({ busyText: 'Committed. Waiting for GitHub Pages to publish it…' });
+      const found = list => list.some(x => x.id === item.id && (isNew || x.updated === item.updated));
+      return this.waitFor(found).then(ok => {
+        this.setState({ busy: false, busyText: '' });
+        if (ok) { this.setState({ modal: '', f: blankForm() }); this.flashRow(item.id); this.showToast(isNew ? 'Uploaded.' : 'Saved.'); }
+        else this.setState({ formErr: 'It committed, but GitHub Pages has not rebuilt yet. Reload the page in a minute to see it.' });
+      });
+    }).catch(() => this.setState({ busy: false, formErr: "Can't reach the server. Check the internet connection and try again." }));
+  }
+  remove(it){
+    if (!window.confirm(`Delete "${it.name}"? This removes the file from the site.`)) return;
+    const R = window.HubResources;
+    this.setState({ status: `Deleting "${it.name}"…` });
+    R.remove(it.id).then(d => {
+      if (!d || !d.ok) { this.setState({ status: '' }); return this.showToast((d && d.message) || 'Delete failed.'); }
+      this.setState({ status: `Deleted. Waiting for GitHub Pages to update…` });
+      return this.waitFor(list => !list.some(x => x.id === it.id)).then(ok => { this.setState({ status: '' }); this.showToast(ok ? 'Deleted.' : 'Deleted on GitHub; the page will update in a minute.'); });
+    }).catch(() => { this.setState({ status: '' }); this.showToast("Can't reach the server."); });
+  }
+  // Poll the committed list until `test(items)` passes or five minutes go by. Resolves true/false.
+  waitFor(test){
+    const R = window.HubResources; let n = 0;
+    return new Promise(resolve => {
+      const tick = () => R.load(true).then(list => { if (test(list)) return resolve(true); if (++n >= POLL_MAX) return resolve(false); this.pt = setTimeout(tick, POLL_MS); });
+      this.pt = setTimeout(tick, 4000);
+    });
+  }
+
+  // ----- list -----
+  sortBy(key){ this.setState(s => ({ sortKey: key, sortDir: s.sortKey === key ? (s.sortDir === 'asc' ? 'desc' : 'asc') : (key === 'name' ? 'asc' : 'desc') })); }
+  sorted(list){
+    const { sortKey: k, sortDir: d } = this.state, m = d === 'asc' ? 1 : -1;
+    return list.slice().sort((a, b) => {
+      let x = a[k], y = b[k];
+      if (k === 'name' || k === 'type') { x = String(x).toLowerCase(); y = String(y).toLowerCase(); return x < y ? -m : x > y ? m : 0; }
+      if (k === 'size') return (x - y) * m;
+      return (String(x) < String(y) ? -1 : String(x) > String(y) ? 1 : 0) * m; // ISO dates sort as text
+    });
+  }
+  renderVals(){
+    const s = this.state, R = window.HubResources, H = window.HubState;
+    const items = s.items || [], noCourse = !s.selected.length, noCat = !s.cats.length;
+    const chipSel = on => on ? { bg: 'var(--ink)', color: 'var(--bg)', border: 'var(--ink)' } : { bg: 'var(--surface)', color: 'var(--ink)', border: 'var(--line)' };
+    const q = s.search.trim();
+    const filtered = items.filter(it => (!q || R.matches(it, q)) && (!s.typeFilter || it.type === s.typeFilter) && R.inRange(it, s.rangeFilter));
+    const activeFilter = !!(q || !noCourse || !noCat || s.typeFilter || s.rangeFilter !== 'all');
+    const sections = R.courses.filter(c => noCourse || s.selected.includes(c.id)).map(c => {
+      const mine = filtered.filter(it => it.courses.includes(c.id));
+      const groups = R.categories.filter(g => noCat || s.cats.includes(g.id)).map(g => {
+        const rows = this.sorted(mine.filter(it => it.categories.includes(g.id))).map(it => ({
+          ...it, cls: 'mr-row' + (s.flash === it.id ? ' mr-flash' : ''), icon: R.typeIcon[it.type] || 'draft', date: R.fmtDate(it.uploaded), size: R.fmtSize(it.size),
+          dl: it.file.split('/').pop(), tip: (it.description ? it.description + ' · ' : '') + 'Keywords: ' + (it.keywords.join(', ') || 'none'),
+          edit: () => this.openEdit(it), remove: () => this.remove(it)
+        }));
+        return { ...g, ariaLabel: c.name + ': ' + g.name, rows, hasRows: rows.length > 0, noRows: rows.length === 0, emptyText: activeFilter ? 'No matches here.' : 'Nothing here yet.' };
+      });
+      return { ...c, hid: 'mr-' + c.id, color: 'var(--t-' + c.id + ')', countText: mine.length ? '· ' + mine.length + (mine.length === 1 ? ' item' : ' items') : '', groups, n: mine.length };
+    }).filter(sec => !activeFilter || sec.n > 0);
+    const visible = new Set(); sections.forEach(sec => sec.groups.forEach(g => g.rows.forEach(r => visible.add(r.id))));
+    const headers = [['name', 'Name', 'c-name'], ['uploaded', 'Date', 'c-date'], ['type', 'Type', 'c-type'], ['size', 'Size', 'c-size']].map(([key, label, cls]) => {
+      const on = s.sortKey === key;
+      return { key, label, cls, pick: () => this.sortBy(key), sort: on ? (s.sortDir === 'asc' ? 'ascending' : 'descending') : 'none', op: on ? 1 : 0.35, icon: on && s.sortDir === 'asc' ? 'arrow_upward' : 'arrow_downward' };
+    });
+    const f = s.f, busyAttr = s.busy ? true : undefined;
+    const fileName = f.file ? f.file.name : f.origFile.split('/').pop(), fileSize = f.file ? f.file.size : f.origSize;
+    const warn = f.file && f.file.size > R.maxBytes ? 'Over 95 MB: GitHub will refuse it.' : f.file && f.file.size > R.warnBytes ? 'Over 25 MB: it will upload, but it will be slow for students to open.' : '';
+    return {
+      teacher: s.teacher,
+      uploadClick: () => this.uploadClick(),
+      search: s.search, hasSearch: !!s.search, setSearch: e => this.setState({ search: e.target.value }), clearSearch: () => this.setState({ search: '' }),
+      chips: [{ id: '', label: 'All classes', icon: 'apps', fill: 'var(--surface2)', iconColor: 'var(--ink)', radius: '50%', on: noCourse }]
+        .concat(R.courses.map(c => ({ id: c.id, label: c.name, icon: c.icon, fill: c.fill, iconColor: '#15151a', radius: c.radius, on: s.selected.includes(c.id) })))
+        .map(ch => ({ ...ch, ...chipSel(ch.on), pick: () => this.setState(st => ch.id === '' ? { selected: [] } : { selected: st.selected.includes(ch.id) ? st.selected.filter(x => x !== ch.id) : st.selected.concat(ch.id) }) })),
+      catChips: [{ id: '', label: 'All categories', icon: 'category', on: noCat }]
+        .concat(R.categories.map(g => ({ id: g.id, label: g.name, icon: g.icon, on: s.cats.includes(g.id) })))
+        .map(cc => ({ ...cc, ...chipSel(cc.on), pick: () => this.setState(st => cc.id === '' ? { cats: [] } : { cats: st.cats.includes(cc.id) ? st.cats.filter(x => x !== cc.id) : st.cats.concat(cc.id) }) })),
+      typeFilter: s.typeFilter, onType: e => this.setState({ typeFilter: e.target.value }),
+      typeOptions: [{ value: '', label: 'All types' }].concat(R.types.map(t => ({ value: t, label: t }))),
+      rangeFilter: s.rangeFilter, onRange: e => this.setState({ rangeFilter: e.target.value }),
+      anyFilter: activeFilter, clearFilters: () => this.setState({ search: '', selected: [], cats: [], typeFilter: '', rangeFilter: 'all' }),
+      countText: s.items === null ? 'Loading…' : activeFilter ? `${visible.size} of ${items.length} shown` : `${items.length} ${items.length === 1 ? 'resource' : 'resources'}`,
+      hasStatus: !!s.status, statusText: s.status,
+      loadError: s.loadError, reload: () => R.load(true),
+      empty: s.items !== null && !s.loadError && (items.length === 0 || (activeFilter && sections.length === 0)),
+      emptyText: items.length === 0 ? (s.teacher ? 'Nothing has been uploaded yet. Use Upload to add the first resource.' : 'Nothing has been posted here yet. Check back soon.') : 'No resources match that search or those filters.',
+      sections: s.items === null || items.length === 0 ? [] : sections, headers,
+      // modal
+      modalOpen: !!s.modal, isNew: s.modal === 'new', isEdit: s.modal === 'edit',
+      modalTitle: s.modal === 'edit' ? 'Edit resource' : 'Upload a resource', modalIcon: s.modal === 'edit' ? 'edit' : 'upload',
+      closeModal: () => this.closeModal(), overlayClick: () => this.closeModal(), stop: e => e.stopPropagation(),
+      f, nameRef: this.nameRef, fileRef: this.fileRef,
+      setName: e => this.setF({ name: e.target.value }), setDesc: e => this.setF({ description: e.target.value }), setKeywords: e => this.setF({ keywords: e.target.value }),
+      fCourses: R.courses.map(c => ({ id: c.id, label: c.name, icon: c.icon, fill: c.fill, radius: c.radius, on: f.courses.includes(c.id), ...chipSel(f.courses.includes(c.id)), pick: () => this.toggleIn('courses', c.id) })),
+      fCats: R.categories.map(g => ({ id: g.id, label: g.name, icon: g.icon, on: f.categories.includes(g.id), ...chipSel(f.categories.includes(g.id)), pick: () => this.toggleIn('categories', g.id) })),
+      pickFile: () => this.fileRef.current && this.fileRef.current.click(), onFile: e => this.onFile(e),
+      fileBtnText: f.file ? 'Choose a different file' : 'Choose a file…', hasFile: !!f.file || !!f.origFile,
+      fileIcon: R.typeIcon[R.typeOf(fileName)] || 'draft', fileText: fileName ? `${fileName} · ${R.fmtSize(fileSize)} · ${R.typeOf(fileName)}` : '',
+      hasFileWarn: !!warn, fileWarn: warn,
+      hasFormErr: !!s.formErr, formErr: s.formErr,
+      busy: s.busy, notBusy: !s.busy, busyAttr, busyDim: s.busy ? '0.6' : '1', busyText: s.busyText,
+      submit: () => this.submit(), submitIcon: s.modal === 'edit' ? 'save' : 'upload', submitText: s.busy ? (s.modal === 'edit' ? 'Saving…' : 'Uploading…') : (s.modal === 'edit' ? 'Save changes' : 'Upload'),
+      hasToast: !!s.toast, toast: s.toast
+    };
+  }
+}
+</script>
+</body>
+</html>
