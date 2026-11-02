@@ -1,3 +1,21 @@
 {
-  "items": []
+  "items": [
+    {
+      "id": "5728ceabcc1f",
+      "uploaded": "2026-11-02T02:31:23Z",
+      "updated": "2026-11-02T02:31:23Z",
+      "name": "Worksheet Percentages",
+      "courses": [
+        "g7"
+      ],
+      "categories": [
+        "ws"
+      ],
+      "description": "",
+      "keywords": [],
+      "file": "misc-resources/worksheets/worksheet-percentages.pdf",
+      "size": 28816,
+      "type": "PDF"
+    }
+  ]
 }
