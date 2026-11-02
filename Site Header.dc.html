@@ -285,7 +285,7 @@ class Component extends DCLogic {
   renderVals(){
     const s = this.state, h = s.hub, light = h.theme === 'light';
     const active = this.props.active ?? 'home';
-    const ddOn = active !== 'home'; // no Classes dropdown on the Classes & Calendar page itself
+    const ddOn = false; // Classes dropdown is switched off: Classes is a plain link. (Was: active !== 'home'.) Dropdown code is kept below.
     const t = s.tier, compact = t >= 6, tiny = s.w < 440;
     const slim = !!s.slim;
     const sel = on => on ? {bg:'var(--ink)',color:'var(--bg)',border:'var(--ink)'} : {bg:'transparent',color:'var(--ink)',border:'var(--line)'};

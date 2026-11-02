@@ -141,7 +141,8 @@ class Component extends DCLogic {
     const list = (H ? H.aids : []).filter(a => !s.removed.includes(a.file))
       .filter(a => !s.hiddenFiles.includes(a.file) || s.teacher)
       .filter(a => all || a.courses.includes('all') || a.courses.some(c => s.selected.includes(c)))
-      .filter(a => !s.topic || a.topic === s.topic);
+      .filter(a => !s.topic || a.topic === s.topic)
+      .sort((a, b) => { const k = t => String(t).trim().replace(/^the\s+/i, ''); return k(a.title).localeCompare(k(b.title), undefined, {sensitivity: 'base', numeric: true}); }); // A-Z by title, ignoring a leading "The"
     return {
       teacher: s.teacher,
       upload: () => this.showToast('Uploading opens here once the site is hosted'),

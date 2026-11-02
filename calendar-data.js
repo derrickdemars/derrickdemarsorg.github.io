@@ -58,8 +58,8 @@
     { id: 'geo', name: 'Geometry', icon: 'architecture', fill: 'oklch(0.67 0.19 300)', radius: '50%', href: 'courses/geometry/' },
     { id: 'alg1', name: 'Algebra I', icon: 'calculate', fill: 'oklch(0.76 0.16 55)', radius: '24px', href: 'courses/algebra-i/' },
     { id: 'alg3', name: 'Algebra III', icon: 'ssid_chart', fill: 'oklch(0.88 0.16 95)', radius: '50%', href: 'courses/algebra-iii/' },
-    { id: 'g7', name: '7th Math', icon: 'square_foot', fill: 'oklch(0.74 0.17 150)', radius: '24px', href: 'courses/grade-7/' },
-    { id: 'g8', name: '8th Math', icon: 'straighten', fill: 'oklch(0.69 0.15 250)', radius: '50%', href: 'courses/grade-8/' },
+    { id: 'g7', name: '7th Grade Math', icon: 'square_foot', fill: 'oklch(0.74 0.17 150)', radius: '24px', href: 'courses/grade-7/' },
+    { id: 'g8', name: '8th Grade Math', icon: 'straighten', fill: 'oklch(0.69 0.15 250)', radius: '50%', href: 'courses/grade-8/' },
     { id: 'alg2', name: 'Algebra II', icon: 'show_chart', fill: 'oklch(0.67 0.2 25)', radius: '24px', href: 'courses/algebra-ii/' }
   ];
   var BY_ID = {};
@@ -165,9 +165,21 @@
     var plain = segs.map(function (g) { return g.text; }).join('');
     return { segs: segs, text: plain, key: plain.toLowerCase().replace(/\s+/g, ' ').trim() };
   }
-  // Street addresses link to Google Maps; "Gym" or "Room 12" stay plain text.
+  // Street addresses link to the device's map app (see mapKind); "Gym" or "Room 12" stay plain text.
   var STREET_RE = /\b\d{1,6}\s+(?:[A-Za-z0-9.'-]+\s+){0,4}(?:St|Street|Ave|Avenue|Rd|Road|Dr|Drive|Blvd|Boulevard|Hwy|Highway|Ln|Lane|Pkwy|Parkway|Way|Ct|Court|Cir|Circle|Pl|Place)\b/i;
-  function mapHref(loc) { return loc && (STREET_RE.test(loc) || /\b\d{5}(?:-\d{4})?\b/.test(loc)) ? 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(loc) : ''; }
+  // Which map app a location link opens: iPhone/iPad (iPadOS can report as a Mac, so touch support is checked) -> Apple Maps;
+  // Android -> a geo: link, which opens the map app the person chose as their default; everything else (computers, Chromebooks) -> Google Maps.
+  function mapKind() {
+    var n = typeof navigator !== 'undefined' ? navigator : {}, ua = String(n.userAgent || '');
+    if (/iPhone|iPad|iPod/.test(ua) || (n.platform === 'MacIntel' && n.maxTouchPoints > 1)) return 'apple';
+    if (/Android/.test(ua)) return 'geo';
+    return 'google';
+  }
+  function mapHref(loc) {
+    if (!(loc && (STREET_RE.test(loc) || /\b\d{5}(?:-\d{4})?\b/.test(loc)))) return '';
+    var q = encodeURIComponent(loc), kind = mapKind();
+    return kind === 'apple' ? 'https://maps.apple.com/?q=' + q : kind === 'geo' ? 'geo:0,0?q=' + q : 'https://www.google.com/maps/search/?api=1&query=' + q;
+  }
 
   // ---------- events from the Worker ----------
   var QUIZ_RE = /\b(quiz|test|exam)\b/i;
@@ -752,7 +764,7 @@
           })) : null,
           h('div', { style: Object.assign({ fontSize: '17px', fontWeight: 700, lineHeight: 1.3 }, WRAP) }, ev.title),
           ev.allDay ? null : line('schedule', timeRange(ev.start, ev.end)),
-          ev.loc ? line('location_on', map ? h('a', { href: map, target: '_blank', rel: 'noopener noreferrer', className: 'hcal-link' }, ev.loc) : ev.loc) : null,
+          ev.loc ? line('location_on', map ? h('a', Object.assign({ href: map, className: 'hcal-link' }, /^https:\/\/www\.google\.com\//.test(map) ? { target: '_blank', rel: 'noopener noreferrer' } : {}), ev.loc) : ev.loc) : null,
           pText,
           pAttach,
           ev.link ? h('div', { style: { display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '4px 8px', margin: '0 -8px' } },

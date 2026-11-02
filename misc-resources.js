@@ -4,7 +4,7 @@
 //
 // Each item in misc-resources.json:
 //   { id, name, file, size, type, courses: [ids], categories: [ids], description, keywords: [], uploaded, updated }
-//   courses: g7, g8, alg1, geo, alg2, alg3.  categories: ws (Worksheets & Study Guides), media (Images & Videos), inter (Interactives).
+//   courses: geo, alg1, alg3, g7, g8, alg2 (the calendar's order; this list sets the order on the page).  categories: ws (Worksheets & Study Guides), media (Images & Videos), inter (Interactives).
 //   file: path from the site root, e.g. misc-resources/worksheets/factoring-practice.pdf
 //
 // Uploading takes two calls: the browser turns the file into base64 and sends it to /api/resources/blob
@@ -13,12 +13,12 @@
 (function () {
   if (window.HubResources) return;
   var COURSES = [
+    { id: 'geo', name: 'Geometry', icon: 'architecture', fill: 'oklch(0.67 0.19 300)', radius: '50%' },
+    { id: 'alg1', name: 'Algebra I', icon: 'calculate', fill: 'oklch(0.76 0.16 55)', radius: '24px' },
+    { id: 'alg3', name: 'Algebra III', icon: 'ssid_chart', fill: 'oklch(0.88 0.16 95)', radius: '50%' },
     { id: 'g7', name: '7th Grade Math', icon: 'square_foot', fill: 'oklch(0.74 0.17 150)', radius: '24px' },
     { id: 'g8', name: '8th Grade Math', icon: 'straighten', fill: 'oklch(0.69 0.15 250)', radius: '50%' },
-    { id: 'alg1', name: 'Algebra I', icon: 'calculate', fill: 'oklch(0.76 0.16 55)', radius: '24px' },
-    { id: 'geo', name: 'Geometry', icon: 'architecture', fill: 'oklch(0.67 0.19 300)', radius: '50%' },
-    { id: 'alg2', name: 'Algebra II', icon: 'show_chart', fill: 'oklch(0.67 0.2 25)', radius: '24px' },
-    { id: 'alg3', name: 'Algebra III', icon: 'ssid_chart', fill: 'oklch(0.88 0.16 95)', radius: '50%' }
+    { id: 'alg2', name: 'Algebra II', icon: 'show_chart', fill: 'oklch(0.67 0.2 25)', radius: '24px' }
   ];
   var CATEGORIES = [
     { id: 'ws', name: 'Worksheets & Study Guides', icon: 'description', folder: 'worksheets' },
