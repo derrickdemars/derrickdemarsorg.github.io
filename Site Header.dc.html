@@ -7,9 +7,9 @@
 </head>
 <body>
 <x-dc>
-<div style="position:relative;z-index:50;font-family:var(--font);color:var(--ink);line-height:1.4;view-transition-name:site-header;">
+<div ref="{{ rootRef }}" style="position:relative;z-index:50;font-family:var(--font);color:var(--ink);line-height:1.4;view-transition-name:site-header;">
   <header ref="{{ headerRef }}" style="display:flex;align-items:center;gap:12px;padding:{{ hPad }};overflow:hidden;background:var(--surface);border-bottom:1px solid var(--line);transition:padding var(--dur) ease;">
-    <a href="./" aria-label="Dr. DeMars Math Hub, go to Home" style="display:flex;align-items:center;gap:10px;color:var(--ink);text-decoration:none;padding:4px;flex:none;">
+    <a href="./" aria-label="Dr. DeMars Math Hub, go to Classes" style="display:flex;align-items:center;gap:10px;color:var(--ink);text-decoration:none;padding:4px;flex:none;">
       <span class="material-symbols-rounded" aria-hidden="true" style="width:{{ logoPx }};height:{{ logoPx }};border-radius:12px;background:var(--ink);color:var(--bg);display:grid;place-items:center;font-size:{{ logoIcon }};transition:width var(--dur) ease,height var(--dur) ease;">functions</span>
       <sc-if value="{{ showBrand }}" hint-placeholder-val="{{ true }}"><span style="font-weight:700;font-size:18px;line-height:1.2;white-space:nowrap;">Dr. DeMars<sc-if value="{{ showSub }}" hint-placeholder-val="{{ true }}"><br><span style="font-weight:400;font-size:14px;color:var(--muted);">Math Hub</span></sc-if></span></sc-if>
     </a>
@@ -17,12 +17,13 @@
       <nav ref="{{ navRef }}" aria-label="Main" style="display:flex;gap:{{ navGap }};flex:1;justify-content:center;align-items:center;min-width:0;overflow:hidden;">
         <sc-for list="{{ nav }}" as="n" hint-placeholder-count="6">
           <sc-if value="{{ n.isLink }}">
-            <a href="{{ n.href }}" target="{{ n.target }}" aria-current="{{ n.current }}" style="display:flex;align-items:center;gap:6px;min-height:48px;padding:{{ navPad }};border-radius:12px;background:{{ n.bg }};color:{{ n.color }};font-size:{{ navFs }};font-weight:700;text-decoration:none;white-space:nowrap;flex:none;transition:transform var(--dur) ease;box-shadow:none;" style-hover="transform:translateY(var(--lift)) scale(var(--grow));"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:22px;">{{ n.icon }}</span><span style="text-decoration:{{ n.deco }};text-decoration-thickness:3px;text-underline-offset:6px;">{{ n.text }}</span></a>
+            <a href="{{ n.href }}" target="{{ n.target }}" aria-current="{{ n.current }}" data-nav="{{ n.id }}" aria-expanded="{{ n.ddExpanded }}" aria-controls="{{ n.ddControls }}" aria-describedby="{{ n.ddHint }}" onMouseEnter="{{ n.ddEnter }}" onMouseLeave="{{ n.ddLeave }}" onKeyDown="{{ n.ddKey }}" style="display:flex;align-items:center;gap:6px;min-height:48px;padding:{{ navPad }};border-radius:12px;background:{{ n.bg }};color:{{ n.color }};font-size:{{ navFs }};font-weight:700;text-decoration:none;white-space:nowrap;flex:none;transition:transform var(--dur) ease;box-shadow:none;" style-hover="transform:translateY(var(--lift)) scale(var(--grow));"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:22px;">{{ n.icon }}</span><span style="text-decoration:{{ n.deco }};text-decoration-thickness:3px;text-underline-offset:6px;">{{ n.text }}</span></a>
           </sc-if>
           <sc-if value="{{ n.soon }}">
             <span aria-disabled="true" title="{{ n.label }}: coming soon" style="display:flex;align-items:center;gap:6px;min-height:48px;padding:{{ soonPad }};color:var(--muted);font-size:{{ navFs }};font-weight:700;white-space:nowrap;flex:none;cursor:default;"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:22px;opacity:0.7;">{{ n.icon }}</span><span style="display:flex;flex-direction:column;line-height:1.1;">{{ n.text }}<span style="font-size:12px;font-weight:700;letter-spacing:0.04em;">SOON</span></span></span>
           </sc-if>
         </sc-for>
+        <span id="hub-classes-hint" style="position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0;">Press Down arrow for the class list.</span>
       </nav>
     </sc-if>
     <sc-if value="{{ compact }}"><span style="flex:1;"></span></sc-if>
@@ -32,6 +33,14 @@
       <button onClick="{{ toggleMenu }}" aria-expanded="{{ menuOpen }}" aria-label="Menu" style="display:flex;align-items:center;justify-content:center;gap:6px;min-width:48px;min-height:48px;padding:{{ menuPad }};border-radius:12px;border:2px solid var(--ink);background:var(--ink);color:var(--bg);font-size:16px;font-weight:700;cursor:pointer;flex:none;box-sizing:border-box;"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:22px;">{{ menuIcon }}</span><sc-if value="{{ menuText }}">Menu</sc-if></button>
     </sc-if>
   </header>
+
+  <sc-if value="{{ navInline }}">
+    <div id="hub-classes-menu" ref="{{ ddRef }}" role="group" aria-label="Classes" onMouseEnter="{{ ddPanelEnter }}" onMouseLeave="{{ ddPanelLeave }}" onKeyDown="{{ ddPanelKey }}" onBlur="{{ ddPanelBlur }}" style="position:absolute;left:{{ ddLeft }};top:{{ ddTop }};z-index:60;min-width:240px;box-sizing:border-box;display:flex;flex-direction:column;gap:4px;padding:8px;background:var(--surface);border:1px solid var(--line);border-radius:20px;box-shadow:0 12px 32px rgba(0,0,0,0.28);opacity:{{ ddOpacity }};transform:translateY({{ ddShift }});visibility:{{ ddVis }};pointer-events:{{ ddPointer }};transition:{{ ddTransition }};">
+      <sc-for list="{{ classes }}" as="c" hint-placeholder-count="6">
+        <a href="{{ c.href }}" tabindex="-1" data-dd-item="1" style="--row-glow:var(--cg-{{ c.id }}, var(--glow));display:flex;align-items:center;gap:12px;min-height:48px;box-sizing:border-box;padding:8px 12px;border-radius:12px;color:{{ c.text }};text-decoration:none;font-size:16px;font-weight:700;white-space:nowrap;transition:transform var(--dur) ease,box-shadow var(--dur) ease;" style-hover="transform:translateY(var(--lift)) scale(var(--grow));box-shadow:var(--row-glow);" style-focus-visible="outline:3px solid var(--ink);outline-offset:2px;box-shadow:var(--row-glow);"><span class="material-symbols-rounded" aria-hidden="true" style="flex:none;width:32px;height:32px;border-radius:{{ c.radius }};background:{{ c.fill }};color:#15151a;display:grid;place-items:center;font-size:19px;">{{ c.icon }}</span>{{ c.name }}</a>
+      </sc-for>
+    </div>
+  </sc-if>
 
   <sc-if value="{{ drawerOpen }}">
     <nav aria-label="Menu" style="display:flex;flex-direction:column;gap:6px;max-height:calc(100vh - 140px);overflow-y:auto;padding:16px clamp(16px,3vw,32px) 20px;background:var(--surface);border-bottom:1px solid var(--line);">
@@ -104,7 +113,7 @@
 const HUB_DEFAULT = {theme:'dark',font:'standard',contrast:false,motion:true,teacher:false,teacherLeft:0,signOutSoon:false};
 const CS_MAP = {g7:'courses/grade-7/',g8:'courses/grade-8/',alg1:'courses/algebra-i/',geo:'courses/geometry/',alg2:'courses/algebra-ii/',alg3:'courses/algebra-iii/',feud:'games/family-feud/',jeopardy:'games/jeopardy/',planner:'planner/'};
 const NAV = [
-  {id:'home',label:'Home',short:'Home',icon:'home',href:'./'},
+  {id:'home',label:'Classes',short:'Classes',icon:'co_present',href:'./'},
   {id:'guardians',label:'Guardians',short:'Guardians',icon:'family_restroom',href:'guardians/',teacherOnly:true},
   {id:'subs',label:'Substitute',short:'Subs',icon:'badge',href:'subs/'},
   {id:'games',label:'Games',short:'Games',icon:'sports_esports',href:'games/',teacherOnly:'signedIn'},
@@ -114,16 +123,27 @@ const NAV = [
   {id:'about',label:'About',short:'About',icon:'info',href:'about/'},
   {id:'settings',label:'Settings',short:'Settings',icon:'settings',href:'settings/',teacherOnly:true}
 ];
+// Classes dropdown (desktop nav): same order, icons, fills and shapes as the calendar and the home tiles.
+const CLASS_MENU = [
+  {id:'geo', name:'Geometry', icon:'architecture', fill:'oklch(0.67 0.19 300)', radius:'50%', href:'courses/geometry/'},
+  {id:'alg1', name:'Algebra I', icon:'calculate', fill:'oklch(0.76 0.16 55)', radius:'10px', href:'courses/algebra-i/'},
+  {id:'alg3', name:'Algebra III', icon:'ssid_chart', fill:'oklch(0.88 0.16 95)', radius:'50%', href:'courses/algebra-iii/'},
+  {id:'g7', name:'7th Grade Math', icon:'square_foot', fill:'oklch(0.74 0.17 150)', radius:'10px', href:'courses/grade-7/'},
+  {id:'g8', name:'8th Grade Math', icon:'straighten', fill:'oklch(0.69 0.15 250)', radius:'50%', href:'courses/grade-8/'},
+  {id:'alg2', name:'Algebra II', icon:'show_chart', fill:'oklch(0.67 0.2 25)', radius:'10px', href:'courses/algebra-ii/'}
+];
 
 class Component extends DCLogic {
   headerRef = React.createRef();
   navRef = React.createRef();
+  rootRef = React.createRef();
+  ddRef = React.createRef();
   guessTier(w){ return w >= 1024 ? 0 : 6; }
   state = {
     tier: this.guessTier(window.innerWidth || 1280),
     hub: (window.HubState && window.HubState.get()) || HUB_DEFAULT,
     w: window.innerWidth || 1280, y: window.scrollY || 0,
-    menuOpen:false, readerOpen:false, signinOpen:false,
+    menuOpen:false, readerOpen:false, signinOpen:false, ddOpen:false, ddPos:null,
     pin:'', pinErr:'', checking:false
   };
   componentDidMount(){
@@ -151,17 +171,69 @@ class Component extends DCLogic {
         else if (e.key === 'Escape') this.closePin();
         return;
       }
-      if (e.key === 'Escape') this.setState({readerOpen:false, menuOpen:false});
+      if (e.key === 'Escape'){ if (this.state.ddOpen) this.ddClose(true); this.setState({readerOpen:false, menuOpen:false}); }
     };
     window.addEventListener('hubchange', this.onHub);
     window.addEventListener('hubstate-ready', this.onHub);
     window.addEventListener('resize', this.onResize);
     window.addEventListener('scroll', this.onScroll, {passive:true});
     window.addEventListener('hub-signin', this.onSignin);
+    this.onDdDown = e => { if (!this.state.ddOpen) return; const p = this.ddRef.current, l = this.ddLink(); if ((p && p.contains(e.target)) || (l && l.contains(e.target))) return; this.ddClose(false); };
+    document.addEventListener('pointerdown', this.onDdDown);
     window.addEventListener('keydown', this.onKey);
     this.onHub();
   }
-  componentDidUpdate(){ this.fit(); }
+  componentDidUpdate(){ this.fit(); this.ddPlace(); }
+  // ----- Classes dropdown -----
+  ddLink(){ return this.headerRef.current && this.headerRef.current.querySelector('[data-nav="home"]'); }
+  ddItems(){ return this.ddRef.current ? [...this.ddRef.current.querySelectorAll('[data-dd-item]')] : []; }
+  ddCalcPos(){
+    const l = this.ddLink(), r = this.rootRef.current;
+    if (!l || !r) return null;
+    const lr = l.getBoundingClientRect(), rr = r.getBoundingClientRect();
+    return {left: Math.max(8, Math.round(lr.left - rr.left)), top: Math.round(lr.bottom - rr.top + 6)};
+  }
+  ddPlace(){
+    if (!this.state.ddOpen) return;
+    const p = this.ddCalcPos(), o = this.state.ddPos;
+    if (p && (!o || p.left !== o.left || p.top !== o.top)) this.setState({ddPos: p});
+  }
+  ddOpen(focusFirst){
+    clearTimeout(this.ddOpenT); clearTimeout(this.ddCloseT);
+    this.setState({ddOpen:true, ddPos:this.ddCalcPos(), readerOpen:false}, () => {
+      if (focusFirst) requestAnimationFrame(() => { const it = this.ddItems(); if (it[0]) it[0].focus(); });
+    });
+  }
+  ddClose(refocus){
+    clearTimeout(this.ddOpenT); clearTimeout(this.ddCloseT);
+    const inside = this.ddRef.current && this.ddRef.current.contains(document.activeElement);
+    if (this.state.ddOpen) this.setState({ddOpen:false});
+    if (refocus && inside){ const l = this.ddLink(); if (l) l.focus(); }
+  }
+  ddCanHover(){ try { return window.matchMedia('(hover:hover) and (pointer:fine)').matches; } catch(e){ return true; } }
+  ddEnter(){ if (!this.ddCanHover()) return; clearTimeout(this.ddCloseT); if (!this.state.ddOpen){ clearTimeout(this.ddOpenT); this.ddOpenT = setTimeout(() => this.ddOpen(false), 150); } }
+  ddLeave(){ clearTimeout(this.ddOpenT); if (this.state.ddOpen){ clearTimeout(this.ddCloseT); this.ddCloseT = setTimeout(() => this.ddClose(false), 200); } }
+  ddLinkKey(e){ if (e.key === 'ArrowDown'){ e.preventDefault(); this.ddOpen(true); } }
+  ddPanelKey(e){
+    const it = this.ddItems(), i = it.indexOf(document.activeElement);
+    if (e.key === 'ArrowDown'){ e.preventDefault(); (it[i + 1] || it[0]).focus(); }
+    else if (e.key === 'ArrowUp'){ e.preventDefault(); if (i <= 0) this.ddClose(true); else it[i - 1].focus(); }
+    else if (e.key === 'Home'){ e.preventDefault(); it[0].focus(); }
+    else if (e.key === 'End'){ e.preventDefault(); it[it.length - 1].focus(); }
+    else if (e.key === 'Escape'){ e.preventDefault(); e.stopPropagation(); this.ddClose(true); }
+    else if (e.key === 'Tab'){
+      // Tab moves on to the nav item after Classes; Shift+Tab goes back to Classes.
+      e.preventDefault();
+      const l = this.ddLink();
+      this.ddClose(false);
+      if (!l) return;
+      if (e.shiftKey){ l.focus(); return; }
+      const all = [...this.headerRef.current.querySelectorAll('a[href],button:not([disabled])')].filter(x => x.offsetParent !== null);
+      const next = all[all.indexOf(l) + 1];
+      (next || l).focus();
+    }
+  }
+  ddPanelBlur(e){ const p = this.ddRef.current, to = e.relatedTarget; if (p && to && !p.contains(to) && to !== this.ddLink()) this.ddClose(false); }
   fit(){
     if (this.state.tier >= 6) return;
     if (document.fonts && document.fonts.status === 'loading') return;
@@ -172,6 +244,8 @@ class Component extends DCLogic {
   componentWillUnmount(){
     if (this.ro) this.ro.disconnect();
     try { document.fonts && document.fonts.removeEventListener('loadingdone', this.refit); } catch(e){}
+    document.removeEventListener('pointerdown', this.onDdDown);
+    clearTimeout(this.ddOpenT); clearTimeout(this.ddCloseT);
     window.removeEventListener('hubchange', this.onHub);
     window.removeEventListener('hubstate-ready', this.onHub);
     window.removeEventListener('resize', this.onResize);
@@ -227,7 +301,17 @@ class Component extends DCLogic {
       showSub: !slim && !tiny, showBrand: compact || t < 4,
       navFs: t >= 2 ? '14px' : t >= 1 ? '15px' : '16px', navPad: t >= 3 ? '0 7px' : '0 12px', soonPad: t >= 3 ? '0 6px' : '0 10px', navGap: t >= 3 ? '0px' : '2px',
       navInline: !compact, compact,
-      nav: NAV.filter(n => !n.teacherOnly || (n.teacherOnly === 'signedIn' ? h.signedIn : h.teacher)).map(n => { const live = !!n.liveHref && /(^|\.)derrickdemars\.org$/.test(location.hostname); return {...n, href: live ? n.liveHref : n.href, target: live ? '_blank' : undefined, isLink:!n.soon, soon:!!n.soon, text: n.label, ...navSel(n.id)}; }),
+      rootRef: this.rootRef, ddRef: this.ddRef,
+      ddLeft: ((s.ddPos && s.ddPos.left) || 0) + 'px', ddTop: ((s.ddPos && s.ddPos.top) || 0) + 'px',
+      ddOpacity: s.ddOpen && !compact ? '1' : '0', ddShift: s.ddOpen && !compact ? '0px' : '-4px',
+      ddVis: s.ddOpen && !compact ? 'visible' : 'hidden', ddPointer: s.ddOpen && !compact ? 'auto' : 'none',
+      ddTransition: s.ddOpen && !compact ? 'opacity var(--dur) ease, transform var(--dur) ease, visibility 0s linear 0s' : 'opacity var(--dur) ease, transform var(--dur) ease, visibility 0s linear var(--dur)',
+      ddPanelEnter: () => clearTimeout(this.ddCloseT), ddPanelLeave: () => this.ddLeave(),
+      ddPanelKey: e => this.ddPanelKey(e), ddPanelBlur: e => this.ddPanelBlur(e),
+      classes: CLASS_MENU.map(c => ({...c, text: 'color-mix(in oklab, var(--t-' + c.id + ') 65%, var(--ink))'})),
+      nav: NAV.filter(n => !n.teacherOnly || (n.teacherOnly === 'signedIn' ? h.signedIn : h.teacher)).map(n => { const live = !!n.liveHref && /(^|\.)derrickdemars\.org$/.test(location.hostname); return {...n, href: live ? n.liveHref : n.href, target: live ? '_blank' : undefined, isLink:!n.soon, soon:!!n.soon, text: n.label, ...navSel(n.id),
+        ...(n.id === 'home' ? {ddExpanded: s.ddOpen ? 'true' : 'false', ddControls: 'hub-classes-menu', ddHint: 'hub-classes-hint',
+          ddEnter: () => this.ddEnter(), ddLeave: () => this.ddLeave(), ddKey: e => this.ddLinkKey(e)} : {})}; }),
       teacher: !!h.teacher,
       signOutSoon: !!h.signOutSoon, countdown: (() => { const sec = Math.max(0, Math.ceil((h.teacherLeft || 0) / 1000)); return Math.floor(sec / 60) + ':' + String(sec % 60).padStart(2, '0'); })(),
       stay: () => window.HubState && window.HubState.extend(),

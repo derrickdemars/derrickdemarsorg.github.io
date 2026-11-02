@@ -32,7 +32,7 @@
     <sc-if value="{{ locked }}">
       <div style="width:520px;max-width:100%;box-sizing:border-box;margin:24px auto 0;background:var(--surface);border:2px solid var(--line);border-radius:28px;padding:32px;display:flex;flex-direction:column;gap:16px;">
         <span class="material-symbols-rounded" aria-hidden="true" style="font-size:44px;">lock</span>
-        <h1 style="margin:0;font-size:36px;line-height:1.15;">For guardians</h1>
+        <h1 style="margin:0;font-size:36px;line-height:1.15;">For Guardians</h1>
         <p style="margin:0;font-size:19px;color:var(--muted);">Sign in with your PIN to open this page.</p>
         <button onClick="{{ signIn }}" style="display:flex;align-items:center;justify-content:center;gap:8px;min-height:56px;border-radius:14px;border:2px solid var(--ink);background:var(--ink);color:var(--bg);font-size:18px;font-weight:700;cursor:pointer;transition:transform var(--dur) ease,box-shadow var(--dur) ease;" style-hover="transform:translateY(var(--lift)) scale(var(--grow));box-shadow:var(--glow);" style-active="box-shadow:var(--glow);"><span class="material-symbols-rounded" aria-hidden="true">dialpad</span>Sign in with PIN</button>
       </div>
@@ -40,7 +40,7 @@
 
     <sc-if value="{{ open }}">
     <section style="display:flex;flex-direction:column;gap:16px;">
-      <h1 style="margin:0;font-size:clamp(32px,4.5vw,44px);line-height:1.1;">For guardians</h1>
+      <h1 style="margin:0;font-size:clamp(32px,4.5vw,44px);line-height:1.1;">For Guardians</h1>
       <p style="margin:0;max-width:62ch;font-size:18px;text-wrap:pretty;">How grades work in Dr. DeMars’s math classes, and how to help with IXL and studying at home.</p>
       <nav aria-label="On this page" style="display:flex;flex-wrap:wrap;gap:10px;">
           <a href="guardians/#grades" style="display:flex;align-items:center;gap:6px;min-height:44px;padding:0 14px;border-radius:12px;border:2px solid var(--line);color:var(--ink);text-decoration:none;font-size:15px;font-weight:700;transition:transform var(--dur) ease,box-shadow var(--dur) ease;background:var(--surface);" style-hover="transform:translateY(var(--lift)) scale(var(--grow));box-shadow:var(--glow);" style-active="box-shadow:var(--glow);"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:20px;">percent</span>Grades</a>
