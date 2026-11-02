@@ -58,8 +58,8 @@
     { id: 'geo', name: 'Geometry', icon: 'architecture', fill: 'oklch(0.67 0.19 300)', radius: '50%', href: 'courses/geometry/' },
     { id: 'alg1', name: 'Algebra I', icon: 'calculate', fill: 'oklch(0.76 0.16 55)', radius: '24px', href: 'courses/algebra-i/' },
     { id: 'alg3', name: 'Algebra III', icon: 'ssid_chart', fill: 'oklch(0.88 0.16 95)', radius: '50%', href: 'courses/algebra-iii/' },
-    { id: 'g7', name: '7th Grade Math', icon: 'square_foot', fill: 'oklch(0.74 0.17 150)', radius: '24px', href: 'courses/grade-7/' },
-    { id: 'g8', name: '8th Grade Math', icon: 'straighten', fill: 'oklch(0.69 0.15 250)', radius: '50%', href: 'courses/grade-8/' },
+    { id: 'g7', name: '7th Math', icon: 'square_foot', fill: 'oklch(0.74 0.17 150)', radius: '24px', href: 'courses/grade-7/' },
+    { id: 'g8', name: '8th Math', icon: 'straighten', fill: 'oklch(0.69 0.15 250)', radius: '50%', href: 'courses/grade-8/' },
     { id: 'alg2', name: 'Algebra II', icon: 'show_chart', fill: 'oklch(0.67 0.2 25)', radius: '24px', href: 'courses/algebra-ii/' }
   ];
   var BY_ID = {};
