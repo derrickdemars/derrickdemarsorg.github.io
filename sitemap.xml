@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- Public pages only. Teacher/sub-only pages (games, planner, settings, subs, guardians) are left out on purpose. -->
+  <url><loc>https://derrickdemars.org/</loc></url>
+  <url><loc>https://derrickdemars.org/about/</loc></url>
+  <url><loc>https://derrickdemars.org/learn/</loc></url>
+  <url><loc>https://derrickdemars.org/aids/</loc></url>
+  <url><loc>https://derrickdemars.org/miscresources/</loc></url>
+  <url><loc>https://derrickdemars.org/courses/grade-7/</loc></url>
+  <url><loc>https://derrickdemars.org/courses/grade-8/</loc></url>
+  <url><loc>https://derrickdemars.org/courses/algebra-i/</loc></url>
+  <url><loc>https://derrickdemars.org/courses/geometry/</loc></url>
+  <url><loc>https://derrickdemars.org/courses/algebra-ii/</loc></url>
+  <url><loc>https://derrickdemars.org/courses/algebra-iii/</loc></url>
+  <!-- Memory aids (PDF) -->
+  <url><loc>https://derrickdemars.org/memory-aids/angle-relationships.pdf</loc></url>
+  <url><loc>https://derrickdemars.org/memory-aids/central-tendency.pdf</loc></url>
+  <url><loc>https://derrickdemars.org/memory-aids/circles.pdf</loc></url>
+  <url><loc>https://derrickdemars.org/memory-aids/divisibility-rules.pdf</loc></url>
+  <url><loc>https://derrickdemars.org/memory-aids/factoring-quadratics-by-grouping.pdf</loc></url>
+  <url><loc>https://derrickdemars.org/memory-aids/geometric-solids.pdf</loc></url>
+  <url><loc>https://derrickdemars.org/memory-aids/inequalities.pdf</loc></url>
+  <url><loc>https://derrickdemars.org/memory-aids/keywords-in-word-problems.pdf</loc></url>
+  <url><loc>https://derrickdemars.org/memory-aids/parent-functions-and-transformations-of-functions.pdf</loc></url>
+  <url><loc>https://derrickdemars.org/memory-aids/percentiles-range-quartiles-iqr.pdf</loc></url>
+  <url><loc>https://derrickdemars.org/memory-aids/perfect-squares.pdf</loc></url>
+  <url><loc>https://derrickdemars.org/memory-aids/place-value.pdf</loc></url>
+  <url><loc>https://derrickdemars.org/memory-aids/polar-coordinates.pdf</loc></url>
+  <url><loc>https://derrickdemars.org/memory-aids/pythagorean-theorem-and-triangle-area.pdf</loc></url>
+  <url><loc>https://derrickdemars.org/memory-aids/quadrilaterals.pdf</loc></url>
+  <url><loc>https://derrickdemars.org/memory-aids/reflections.pdf</loc></url>
+  <url><loc>https://derrickdemars.org/memory-aids/right-triangle-trigonometry.pdf</loc></url>
+  <url><loc>https://derrickdemars.org/memory-aids/rounding-rules.pdf</loc></url>
+  <url><loc>https://derrickdemars.org/memory-aids/sequences-and-series.pdf</loc></url>
+  <url><loc>https://derrickdemars.org/memory-aids/statistical-terms.pdf</loc></url>
+  <url><loc>https://derrickdemars.org/memory-aids/venn-diagrams.pdf</loc></url>
+  <!-- Miscellaneous resources (PDF) -->
+  <url><loc>https://derrickdemars.org/misc-resources/worksheets/worksheet-percentages.pdf</loc></url>
+</urlset>
