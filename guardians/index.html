@@ -64,7 +64,7 @@
           <div style="background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:20px;display:flex;flex-direction:column;gap:10px;">
             <div style="display:flex;align-items:center;gap:10px;"><span aria-hidden="true" style="flex:none;width:14px;height:14px;border-radius:4px;background:var(--muted);border:1px solid var(--line);"></span><h3 style="margin:0;font-size:19px;">Major grades</h3></div>
             <div style="font-size:40px;font-weight:700;line-height:1;">45%</div>
-            <p style="margin:0;font-size:16px;text-wrap:pretty;">Quizzes, presentations, and projects.</p>
+            <p style="margin:0;font-size:16px;text-wrap:pretty;">Quizzes, tests, presentations, and projects.</p>
           </div>
           <div style="background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:20px;display:flex;flex-direction:column;gap:10px;">
             <div style="display:flex;align-items:center;gap:10px;"><span aria-hidden="true" style="flex:none;width:14px;height:14px;border-radius:4px;background:var(--muted);border:1px solid var(--line);"></span><h3 style="margin:0;font-size:19px;">Term exam</h3></div>
@@ -213,9 +213,10 @@
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script>
-// While this is false, only teacher view can open this page (it shows the PIN sign-in to everyone else).
-// To make the page public, set it to true here, in each course page, and remove teacherOnly from the Guardians nav item in Site Header.dc.html.
-const GUARDIANS_PUBLIC = false;
+// The page is public: anyone can open it. To lock it to teacher view again (it would show the PIN sign-in to
+// everyone else), set this to false here and in each course page, add teacherOnly:true back to the Guardians
+// nav item in Site Header.dc.html, and remove the guardians line from sitemap.xml.
+const GUARDIANS_PUBLIC = true;
 class Component extends DCLogic {
   state = { teacher: !!(window.HubState && window.HubState.get().teacher) };
   componentDidMount(){

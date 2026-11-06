@@ -188,8 +188,8 @@ button,textarea,input{font:inherit;letter-spacing:inherit;}
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script>
-// While this is false, the For guardians section shows only in teacher view (see guardians/index.html).
-const GUARDIANS_PUBLIC = false;
+// While this is true, the For guardians section shows for everyone. Set it to false to show it only in teacher view (see guardians/index.html).
+const GUARDIANS_PUBLIC = true;
 const COURSE_PLAN = ['Study guides','Extra worksheets','Memory aids','Links and videos','Upcoming tests','All organized by topic'];
 const PAGES = {
   geo:{course:true,title:'Geometry',level:'High school',icon:'architecture',fill:'oklch(0.67 0.19 300)',radius:'50%'},

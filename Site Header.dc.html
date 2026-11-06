@@ -102,7 +102,7 @@
           </sc-for>
         </div>
         <button onClick="{{ closeSignin }}" style="min-height:56px;border-radius:14px;border:2px solid var(--line);background:none;color:var(--ink);font-size:18px;font-weight:700;cursor:pointer;">Cancel</button>
-        <p style="margin:0;font-size:15px;color:var(--muted);text-align:center;">Students and guardians will sign in a different way later.</p>
+        <p style="margin:0;font-size:15px;color:var(--muted);text-align:center;">Students will sign in a different way later.</p>
       </div>
     </div>
   </sc-if>
@@ -114,7 +114,7 @@ const HUB_DEFAULT = {theme:'dark',font:'standard',contrast:false,motion:true,tea
 const CS_MAP = {g7:'courses/grade-7/',g8:'courses/grade-8/',alg1:'courses/algebra-i/',geo:'courses/geometry/',alg2:'courses/algebra-ii/',alg3:'courses/algebra-iii/',feud:'games/family-feud/',jeopardy:'games/jeopardy/',planner:'planner/'};
 const NAV = [
   {id:'home',label:'Classes & Calendar',short:'Classes',icon:'co_present',href:'./'},
-  {id:'guardians',label:'Guardians',short:'Guardians',icon:'family_restroom',href:'guardians/',teacherOnly:true},
+  {id:'guardians',label:'Guardians',short:'Guardians',icon:'family_restroom',href:'guardians/'},
   {id:'subs',label:'Substitutes',short:'Subs',icon:'badge',href:'subs/'},
   {id:'games',label:'Games',short:'Games',icon:'sports_esports',href:'games/',teacherOnly:'signedIn'},
   {id:'planner',label:'Lesson Planner',short:'Planner',icon:'edit_calendar',href:'planner/',liveHref:'/planner/',teacherOnly:true},

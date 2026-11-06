@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <!-- Public pages only. Teacher/sub-only pages (games, planner, settings, subs, guardians) are left out on purpose. -->
+  <!-- Public pages only. Teacher/sub-only pages (games, planner, settings, subs) are left out on purpose. -->
   <url><loc>https://derrickdemars.org/</loc></url>
   <url><loc>https://derrickdemars.org/about/</loc></url>
   <url><loc>https://derrickdemars.org/learn/</loc></url>
@@ -12,6 +12,7 @@
   <url><loc>https://derrickdemars.org/courses/geometry/</loc></url>
   <url><loc>https://derrickdemars.org/courses/algebra-ii/</loc></url>
   <url><loc>https://derrickdemars.org/courses/algebra-iii/</loc></url>
+  <url><loc>https://derrickdemars.org/guardians/</loc></url>
   <!-- Memory aids (PDF) -->
   <url><loc>https://derrickdemars.org/memory-aids/angle-relationships.pdf</loc></url>
   <url><loc>https://derrickdemars.org/memory-aids/central-tendency.pdf</loc></url>
