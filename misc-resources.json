@@ -16,6 +16,32 @@
       "file": "misc-resources/worksheets/worksheet-percentages.pdf",
       "size": 28816,
       "type": "PDF"
+    },
+    {
+      "id": "c0f5a71e9b3d",
+      "uploaded": "2026-11-11T23:39:35Z",
+      "updated": "2026-11-11T23:39:35Z",
+      "name": "Cofunction Lab: Sine and Cosine in Right Triangles",
+      "courses": [
+        "geo",
+        "alg2",
+        "alg3"
+      ],
+      "categories": [
+        "inter"
+      ],
+      "description": "Six-stage lab on why sin θ = cos(90° − θ): Warm-up, Explore, Explain, Prove, Practice, and Exit ticket.",
+      "keywords": [
+        "cofunction",
+        "sine",
+        "cosine",
+        "complementary angles",
+        "right triangle",
+        "trigonometry"
+      ],
+      "file": "misc-resources/interactives/cofunction-lab.html",
+      "size": 74664,
+      "type": "HTML"
     }
   ]
 }
