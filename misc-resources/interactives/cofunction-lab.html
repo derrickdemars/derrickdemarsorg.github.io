@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<base href="/">
+<script>window.HUB_LAUNCH=true;</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>@view-transition{navigation:auto;}</style>
+<script src="hub-state.js"></script>
+<script type="text/javascript">(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window, document, "clarity", "script", "za02jiv9ma");</script>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<title>Cofunction Lab | Dr. DeMars | Math Hub</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,500,1,0">
+<link rel="stylesheet" href="https://fonts.cdnfonts.com/css/opendyslexic">
+<script src="hub-state.js"></script>
+<style>
+:root{--bg:#131317;--surface:#1c1c22;--surface2:#27272f;--line:#33333c;--ink:#f3f2ee;--muted:#b6b5bf;--font:"Helvetica Neue",Helvetica,Arial,sans-serif;--lh:1.5;--ls:0;--lift:-3px;--dur:160ms;--tileborder:0px solid transparent;--grow:1.02;--fade:300ms;--shape-hover:0.34;--glow:0 0 0 1px rgba(255,255,255,0.12),0 0 20px rgba(255,255,255,0.12);--cg-geo:var(--glow);--cg-alg1:var(--glow);--cg-alg2:var(--glow);--cg-alg3:var(--glow);--cg-g7:var(--glow);--cg-g8:var(--glow);--t-g7:oklch(0.86 0.12 150);--t-g8:oklch(0.84 0.09 250);--t-alg1:oklch(0.86 0.11 60);--t-geo:oklch(0.83 0.1 300);--t-alg2:oklch(0.83 0.1 25);--t-alg3:oklch(0.92 0.12 95);color-scheme:dark;}
+/* Cofunction Lab colors that carry meaning: sine, cosine, correct, try again, and text on a filled color. The script swaps in darker ones for the light theme. */
+:root{--cf-sin:#b594f0;--cf-cos:#f0a35e;--cf-ok:#6fd6a0;--cf-bad:#ff8a8a;--cf-on:#15151a;}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);line-height:var(--lh);letter-spacing:var(--ls);}
+a{color:var(--ink);}
+a:hover{color:var(--ink);}
+:focus-visible{outline:3px solid var(--ink);outline-offset:3px;}
+a:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible{box-shadow:var(--glow);}
+@keyframes hubfade{from{opacity:0}to{opacity:1}}
+::view-transition-old(root),::view-transition-new(root){animation-duration:var(--vt,280ms);animation-timing-function:cubic-bezier(0.45,0,0.55,1);}
+::view-transition-group(site-header){animation-duration:0s;}
+button,textarea,input,select{font:inherit;letter-spacing:inherit;}
+@keyframes cfBurst{from{transform:translate(0,0) rotate(0deg);opacity:1}to{transform:translate(var(--x),var(--y)) rotate(var(--r));opacity:0}}
+</style>
+</helmet>
+<div style="min-height:100vh;display:flex;flex-direction:column;background:var(--bg);color:var(--ink);font-family:var(--font);">
+  <dc-import name="Site Header" active="miscresources" hint-size="100%,76px" style="position:sticky;top:0;z-index:50;display:block;"></dc-import>
+  <main id="main" tabindex="-1" style="animation:hubfade var(--fade) ease both;flex:1;width:100%;max-width:1400px;margin:0 auto;box-sizing:border-box;padding:28px clamp(16px,4vw,48px) 72px;outline:none;">
+<div ref="{{ labRef }}" style="font-size:16px">
+{{ burstEl }}
+<div style="display:flex;flex-wrap:wrap;align-items:center;gap:14px;padding:0 0 18px;border-bottom:2px solid var(--line)">
+  <div style="flex:1 1 240px">
+    <div style="font:700 28px/1.1 var(--font)">Cofunction Lab</div>
+    <div style="font-size:14px;color:var(--muted)">Sine and cosine in right triangles</div>
+  </div>
+  <div style="display:flex;gap:4px;padding:4px;background:var(--surface);border:2px solid var(--line);border-radius:14px">
+    <button onClick="{{ setDeg }}" style="font:700 14px var(--font);border:none;border-radius:10px;padding:8px 14px;cursor:pointer;background:{{ degBg }};color:{{ degFg }}">Degrees</button>
+    <button onClick="{{ setRad }}" style="font:700 14px var(--font);border:none;border-radius:10px;padding:8px 14px;cursor:pointer;background:{{ radBg }};color:{{ radFg }}">Radians</button>
+  </div>
+  <button onClick="{{ toggleTeacher }}" aria-pressed="{{ teacherPressed }}" title="{{ teacherTip }}" style="display:flex;align-items:center;gap:6px;font:600 14px var(--font);border:2px solid {{ teacherBorder }};border-radius:12px;padding:8px 14px;cursor:pointer;background:{{ teacherBg }};color:{{ teacherFg }}"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:18px">{{ teacherIcon }}</span>{{ teacherLabel }}</button>
+  <button onClick="{{ reset }}" style="font:600 14px var(--font);border:2px solid var(--line);border-radius:12px;padding:8px 14px;cursor:pointer;background:transparent;color:var(--muted)">{{ resetLabel }}</button>
+</div>
+
+<div style="display:flex;flex-wrap:wrap;gap:24px;padding:24px 0 0;align-items:flex-start">
+  <aside style="flex:0 0 230px;background:var(--surface);border:2px solid var(--line);border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:6px">
+    <sc-for list="{{ nav }}" as="n" hint-placeholder-count="5">
+      <button onClick="{{ n.onClick }}" style="display:flex;align-items:center;gap:10px;text-align:left;font:600 16px var(--font);border:none;border-radius:12px;padding:10px;cursor:{{ n.cursor }};background:{{ n.bg }};color:{{ n.fg }};transition:background .2s">
+        <span style="flex:0 0 28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;background:{{ n.numBg }};color:{{ n.numFg }}">{{ n.num }}</span>
+        <span style="flex:1">{{ n.label }}</span>
+        <span style="font-size:12px;font-weight:500">{{ n.tag }}</span>
+      </button>
+    </sc-for>
+    <div style="margin-top:12px;padding:0 4px">
+      <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--muted);margin-bottom:6px"><span>Progress</span><span>{{ progressLabel }}</span></div>
+      <div style="height:12px;background:var(--bg);border-radius:6px;overflow:hidden"><div style="height:100%;background:var(--cf-ok);border-radius:6px;width:{{ pct }};transition:width .5s"></div></div>
+    </div>
+  </aside>
+
+  <div style="flex:1 1 {{ mainBasis }};min-width:0;max-width:1040px;zoom:{{ zoom }};display:flex;flex-direction:column;gap:20px">
+
+  <sc-if value="{{ isWarmup }}" hint-placeholder-val="{{ true }}">
+    <div>
+      <h1 style="font:700 34px/1.15 var(--font);margin:0 0 6px">Warm-up</h1>
+      <p style="margin:0;color:var(--muted);max-width:640px">A quick review of complementary angles before you start.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));gap:20px">
+      <section style="background:var(--surface);border:2px solid var(--ink);border-radius:20px;padding:24px;display:flex;flex-direction:column;justify-content:center;gap:10px">
+        <div style="font-size:14px;font-weight:700;color:var(--muted)">Definition</div>
+        <div style="font:700 26px/1.25 var(--font)">Two angles are complementary when their measures add to {{ uRight }}.</div>
+        <p style="margin:0;color:var(--muted)">Each angle is called the complement of the other.</p>
+      </section>
+      <section style="background:var(--surface);border:2px solid var(--line);border-radius:20px;padding:20px">
+        <h2 style="font:700 20px var(--font);margin:0 0 4px">Drag the ray</h2>
+        <p style="margin:0 0 8px;font-size:14px;color:var(--muted)">Move the point at the end of the ray. Watch the two angles.</p>
+        <div style="position:relative;max-width:360px;margin:0 auto">
+          <svg ref="{{ wsvgRef }}" viewBox="0 0 320 290" style="width:100%;height:auto;display:block;touch-action:none;user-select:none">
+            <line x1="40" y1="250" x2="300" y2="250" style="stroke:var(--ink);stroke-width:3;stroke-linecap:round"></line>
+            <line x1="40" y1="250" x2="40" y2="14" style="stroke:var(--ink);stroke-width:3;stroke-linecap:round"></line>
+            <polyline points="58,250 58,232 40,232" style="fill:none;stroke:var(--muted);stroke-width:2"></polyline>
+            <line x1="40" y1="250" x2="{{ ray.x }}" y2="{{ ray.y }}" style="stroke:var(--ink);stroke-width:4;stroke-linecap:round"></line>
+            <circle cx="{{ ray.x }}" cy="{{ ray.y }}" r="14" onPointerDown="{{ onGrabRay }}" style="fill:var(--ink);stroke:var(--bg);stroke-width:3;cursor:grab"></circle>
+          </svg>
+          <div style="position:absolute;left:{{ ray.aL }};top:{{ ray.aT }};transform:translate(-50%,-50%);font-weight:700;font-size:16px;color:var(--cf-ok);white-space:nowrap;pointer-events:none">{{ wA }}</div>
+          <div style="position:absolute;left:{{ ray.bL }};top:{{ ray.bT }};transform:translate(-50%,-50%);font-weight:700;font-size:16px;color:var(--cf-cos);white-space:nowrap;pointer-events:none">{{ wB }}</div>
+        </div>
+        <div style="margin-top:10px;text-align:center;font:700 22px var(--font);font-variant-numeric:tabular-nums"><span style="color:var(--cf-ok)">{{ wA }}</span> + <span style="color:var(--cf-cos)">{{ wB }}</span> = {{ uRight }}</div>
+      </section>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(340px,100%),1fr));gap:16px">
+      <sc-for list="{{ wprobs }}" as="p" hint-placeholder-count="4">
+        <section style="background:var(--surface);border:2px solid {{ p.border }};border-radius:20px;padding:18px;display:flex;flex-direction:column;gap:12px;transition:border-color .3s">
+          <div style="display:flex;gap:12px;align-items:flex-start">
+            <span style="flex:0 0 30px;height:30px;border-radius:50%;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px">{{ p.num }}</span>
+            <div style="font-weight:600;font-size:17px;flex:1">{{ p.q }}</div>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px">
+            <sc-if value="{{ p.isSingle }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;align-items:center;gap:6px">
+                <input value="{{ p.v }}" onChange="{{ p.onV }}" inputMode="decimal" style="width:90px;font:600 16px var(--font);color:var(--ink);background:var(--bg);border:2px solid var(--line);border-radius:10px;padding:8px 10px;outline:none">
+                <span style="font-weight:700">°</span>
+              </div>
+            </sc-if>
+            <sc-if value="{{ p.isND }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;align-items:center;gap:6px">
+                <input value="{{ p.n }}" onChange="{{ p.onN }}" inputMode="numeric" aria-label="numerator" style="width:56px;text-align:center;font:600 16px var(--font);color:var(--ink);background:var(--bg);border:2px solid var(--line);border-radius:10px;padding:8px 6px;outline:none">
+                <span style="font-weight:700">π /</span>
+                <input value="{{ p.d }}" onChange="{{ p.onD }}" inputMode="numeric" aria-label="denominator" style="width:56px;text-align:center;font:600 16px var(--font);color:var(--ink);background:var(--bg);border:2px solid var(--line);border-radius:10px;padding:8px 6px;outline:none">
+              </div>
+            </sc-if>
+            <sc-if value="{{ p.isChoice }}" hint-placeholder-val="{{ false }}">
+              <sc-for list="{{ p.opts }}" as="o" hint-placeholder-count="2">
+                <button onClick="{{ o.onClick }}" style="font:600 15px var(--font);color:var(--ink);background:{{ o.bg }};border:2px solid {{ o.border }};border-radius:12px;padding:8px 14px;cursor:pointer">{{ o.label }}</button>
+              </sc-for>
+            </sc-if>
+            <sc-if value="{{ p.needsCheck }}" hint-placeholder-val="{{ false }}">
+              <button onClick="{{ p.onCheck }}" style="font:700 14px var(--font);color:var(--bg);background:var(--ink);border:none;border-radius:12px;padding:9px 16px;cursor:pointer;box-shadow:0 3px 0 color-mix(in oklab,var(--ink) 55%,var(--bg))" style-active="transform:translateY(2px);box-shadow:0 1px 0 color-mix(in oklab,var(--ink) 55%,var(--bg))">Check</button>
+            </sc-if>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px">
+            <span style="font-weight:600;color:{{ p.fbColor }}">{{ p.fb }}</span>
+            <button onClick="{{ p.onSol }}" style="font:600 13px var(--font);color:var(--muted);background:transparent;border:none;text-decoration:underline;cursor:pointer;padding:4px 0">{{ p.solLabel }}</button>
+          </div>
+          <sc-if value="{{ p.solShown }}" hint-placeholder-val="{{ false }}">
+            <div style="background:var(--surface2);border-radius:12px;padding:12px 14px;font-size:15px">{{ p.sol }}</div>
+          </sc-if>
+        </section>
+      </sc-for>
+    </div>
+    <sc-if value="{{ warmAll }}" hint-placeholder-val="{{ false }}">
+      <section style="background:var(--surface2);border-radius:20px;padding:18px 22px;font:700 20px/1.3 var(--font)">Keep this in mind. The two acute angles of a right triangle are about to matter.</section>
+    </sc-if>
+    <div style="display:flex;flex-wrap:wrap;align-items:center;gap:14px">
+      <button onClick="{{ finishWarmup }}" disabled="{{ warmOff }}" style="font:700 16px var(--font);color:var(--bg);background:var(--ink);border:none;border-radius:14px;padding:12px 22px;cursor:pointer;box-shadow:0 4px 0 color-mix(in oklab,var(--ink) 55%,var(--bg));opacity:{{ warmOp }}" style-active="transform:translateY(3px);box-shadow:0 1px 0 color-mix(in oklab,var(--ink) 55%,var(--bg))">Continue to Explore</button>
+      <span style="font-size:14px;color:var(--muted)">{{ warmHint }}</span>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ isExplore }}" hint-placeholder-val="{{ false }}">
+    <div>
+      <h1 style="font:700 34px/1.15 var(--font);margin:0 0 6px">Explore</h1>
+      <p style="margin:0;color:var(--muted);max-width:640px">Play with the triangle and the slider. Watch what sine and cosine do for the two acute angles.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr));gap:20px">
+      <section style="background:var(--surface);border:2px solid var(--line);border-radius:20px;padding:20px">
+        <h2 style="font:700 20px var(--font);margin:0 0 4px">Drag the triangle</h2>
+        <p style="margin:0 0 8px;font-size:14px;color:var(--muted)">Grab point B to change the shape and size.</p>
+        <div style="position:relative"><svg ref="{{ svgRef }}" viewBox="0 100 460 300" style="width:100%;height:auto;display:block;touch-action:none;user-select:none">
+          <polygon points="{{ tri.pts }}" style="fill:var(--surface2);stroke:var(--ink);stroke-width:3;stroke-linejoin:round"></polygon>
+          <polyline points="{{ tri.sq }}" style="fill:none;stroke:var(--muted);stroke-width:2"></polyline>
+          <text x="32" y="382" style="font:700 18px var(--font);fill:var(--ink)">A</text>
+          <text x="{{ tri.cx }}" y="382" style="font:700 18px var(--font);fill:var(--ink)">C</text>
+          <text x="{{ tri.blx }}" y="{{ tri.bly }}" style="font:700 18px var(--font);fill:var(--ink)">B</text>
+          <circle cx="{{ tri.bx }}" cy="{{ tri.by }}" r="14" onPointerDown="{{ onGrab }}" style="fill:var(--ink);stroke:var(--bg);stroke-width:3;cursor:grab"></circle>
+        </svg>
+          <div style="position:absolute;left:{{ tri.aaL }};top:{{ tri.aaT }};transform:translate(-50%,-50%);font-weight:600;font-size:15px;color:var(--cf-ok);white-space:nowrap;pointer-events:none">{{ angA }}</div>
+          <div style="position:absolute;left:{{ tri.baL }};top:{{ tri.baT }};transform:translate(-50%,-50%);font-weight:600;font-size:15px;color:var(--cf-ok);white-space:nowrap;pointer-events:none">{{ angB }}</div>
+          <div style="position:absolute;left:{{ tri.saL }};top:{{ tri.saT }};transform:translate(0,-50%);font-weight:600;font-size:15px;white-space:nowrap;pointer-events:none">a = {{ sideA }}</div>
+          <div style="position:absolute;left:{{ tri.sbL }};top:{{ tri.sbT }};transform:translate(-50%,-50%);font-weight:600;font-size:15px;white-space:nowrap;pointer-events:none">b = {{ sideB }}</div>
+          <div style="position:absolute;left:{{ tri.scL }};top:{{ tri.scT }};transform:translate(-100%,-100%);font-weight:600;font-size:15px;white-space:nowrap;pointer-events:none">c = {{ sideC }}</div>
+        </div>
+      </section>
+      <section style="background:var(--surface);border:2px solid var(--line);border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:14px">
+        <h2 style="font:700 20px var(--font);margin:0">Live ratios</h2>
+        <div style="display:flex;align-items:center;gap:10px">
+          <div style="flex:1;min-width:0;background:var(--bg);border:2px solid var(--cf-sin);border-radius:16px;padding:12px 14px">
+            <div style="font-weight:700;color:var(--cf-sin)">sin({{ angA }})</div>
+            <div style="font-size:14px;color:var(--muted)">a / c = {{ sideA }} / {{ sideC }}</div>
+            <div style="font:700 28px var(--font);font-variant-numeric:tabular-nums">{{ decA }}</div>
+          </div>
+          <div style="font:700 26px var(--font)">=</div>
+          <div style="flex:1;min-width:0;background:var(--bg);border:2px solid var(--cf-cos);border-radius:16px;padding:12px 14px">
+            <div style="font-weight:700;color:var(--cf-cos)">cos({{ angB }})</div>
+            <div style="font-size:14px;color:var(--muted)">a / c = {{ sideA }} / {{ sideC }}</div>
+            <div style="font:700 28px var(--font);font-variant-numeric:tabular-nums">{{ decA }}</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <div style="flex:1;min-width:0;background:var(--bg);border:2px solid var(--cf-cos);border-radius:16px;padding:12px 14px">
+            <div style="font-weight:700;color:var(--cf-cos)">cos({{ angA }})</div>
+            <div style="font-size:14px;color:var(--muted)">b / c = {{ sideB }} / {{ sideC }}</div>
+            <div style="font:700 28px var(--font);font-variant-numeric:tabular-nums">{{ decB }}</div>
+          </div>
+          <div style="font:700 26px var(--font)">=</div>
+          <div style="flex:1;min-width:0;background:var(--bg);border:2px solid var(--cf-sin);border-radius:16px;padding:12px 14px">
+            <div style="font-weight:700;color:var(--cf-sin)">sin({{ angB }})</div>
+            <div style="font-size:14px;color:var(--muted)">b / c = {{ sideB }} / {{ sideC }}</div>
+            <div style="font:700 28px var(--font);font-variant-numeric:tabular-nums">{{ decB }}</div>
+          </div>
+        </div>
+        <p style="margin:0;font-size:14px;color:var(--muted)">The two acute angles always add to {{ uRight }}.</p>
+      </section>
+    </div>
+
+    <section style="background:var(--surface);border:2px solid var(--line);border-radius:20px;padding:20px">
+      <h2 style="font:700 20px var(--font);margin:0 0 12px">Angle slider</h2>
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px">
+        <span style="font-weight:700;min-width:96px">θ = {{ slAng }}</span>
+        <input type="range" min="1" max="89" step="1" value="{{ sl }}" onChange="{{ onSlider }}" style="flex:1;accent-color:var(--ink);height:28px">
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),1fr));gap:16px">
+        <div>
+          <div style="display:flex;justify-content:space-between;gap:8px;font-weight:700;color:var(--cf-sin)"><span>sin({{ slAng }})</span><span style="font-variant-numeric:tabular-nums">{{ slVal }}</span></div>
+          <div style="height:18px;background:var(--bg);border-radius:9px;margin-top:6px;overflow:hidden"><div style="height:100%;background:var(--cf-sin);border-radius:9px;width:{{ slBar }}"></div></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;gap:8px;font-weight:700;color:var(--cf-cos)"><span>cos({{ uRight }} − {{ slAng }}) = cos({{ slComp }})</span><span style="font-variant-numeric:tabular-nums">{{ slVal }}</span></div>
+          <div style="height:18px;background:var(--bg);border-radius:9px;margin-top:6px;overflow:hidden"><div style="height:100%;background:var(--cf-cos);border-radius:9px;width:{{ slBar }}"></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section style="background:var(--surface);border:2px solid var(--line);border-radius:20px;padding:20px">
+      <h2 style="font:700 20px var(--font);margin:0 0 4px">Fill in the table</h2>
+      <p style="margin:0 0 14px;font-size:14px;color:var(--muted)">Use the slider to find each value. Round to three decimal places.</p>
+      <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;align-items:center;max-width:620px">
+        <div style="font-weight:700;color:var(--muted);font-size:14px">θ</div>
+        <div style="font-weight:700;color:var(--cf-sin);font-size:14px">sin θ</div>
+        <div style="font-weight:700;color:var(--muted);font-size:14px">{{ uRight }} − θ</div>
+        <div style="font-weight:700;color:var(--cf-cos);font-size:14px">cos({{ uRight }} − θ)</div>
+        <sc-for list="{{ rows }}" as="row" hint-placeholder-count="5">
+          <div style="font-weight:600">{{ row.ang }}</div>
+          <input value="{{ row.s }}" onChange="{{ row.onS }}" placeholder="0.000" inputMode="decimal" style="min-width:0;font:600 16px var(--font);color:var(--ink);background:var(--bg);border:2px solid {{ row.sBorder }};border-radius:10px;padding:8px 10px;outline:none">
+          <div style="font-weight:600">{{ row.comp }}</div>
+          <input value="{{ row.c }}" onChange="{{ row.onC }}" placeholder="0.000" inputMode="decimal" style="min-width:0;font:600 16px var(--font);color:var(--ink);background:var(--bg);border:2px solid {{ row.cBorder }};border-radius:10px;padding:8px 10px;outline:none">
+        </sc-for>
+      </div>
+      <label style="display:block;margin-top:18px;font-weight:700">What do you notice?</label>
+      <textarea value="{{ notice }}" onChange="{{ onNotice }}" rows="2" placeholder="Describe the pattern in your own words." style="display:block;box-sizing:border-box;width:100%;max-width:620px;margin-top:6px;font:400 16px/1.4 var(--font);color:var(--ink);background:var(--bg);border:2px solid var(--line);border-radius:12px;padding:10px 12px;resize:vertical;outline:none"></textarea>
+    </section>
+    <div style="display:flex;flex-wrap:wrap;align-items:center;gap:14px">
+      <button onClick="{{ finishExplore }}" disabled="{{ exploreOff }}" style="font:700 16px var(--font);color:var(--bg);background:var(--ink);border:none;border-radius:14px;padding:12px 22px;cursor:pointer;box-shadow:0 4px 0 color-mix(in oklab,var(--ink) 55%,var(--bg));opacity:{{ exploreOp }}" style-active="transform:translateY(3px);box-shadow:0 1px 0 color-mix(in oklab,var(--ink) 55%,var(--bg))">Continue to Explain</button>
+      <span style="font-size:14px;color:var(--muted)">{{ exploreHint }}</span>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ isExplain }}" hint-placeholder-val="{{ false }}">
+    <div>
+      <h1 style="font:700 34px/1.15 var(--font);margin:0 0 6px">Explain</h1>
+      <p style="margin:0;color:var(--muted);max-width:640px">Here is why the values in your table matched.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));gap:20px">
+      <section style="background:var(--surface);border:2px solid var(--line);border-radius:20px;padding:20px">
+        <div style="position:relative"><div style="position:absolute;left:81%;top:42%;transform:translate(-100%,-50%);font-weight:700;font-size:15px;white-space:nowrap;pointer-events:none">{{ uRight }} − θ</div>
+        <svg viewBox="0 0 360 270" style="width:100%;height:auto;display:block">
+          <polygon points="40,230 300,230 300,50" style="fill:var(--surface2);stroke:var(--ink);stroke-width:3;stroke-linejoin:round"></polygon>
+          <polyline points="284,230 284,214 300,214" style="fill:none;stroke:var(--muted);stroke-width:2"></polyline>
+          <line x1="300" y1="230" x2="300" y2="50" style="stroke:var(--cf-ok);stroke-width:6;stroke-linecap:round"></line>
+          <text x="96" y="222" style="font:700 17px var(--font);fill:var(--ink)">θ</text>
+          <text x="312" y="146" style="font:700 16px var(--font);fill:var(--cf-ok)">a</text>
+          <text x="150" y="126" style="font:700 16px var(--font);fill:var(--ink)">c</text>
+          <text x="164" y="254" style="font:700 16px var(--font);fill:var(--ink)">b</text>
+        </svg></div>
+        <p style="margin:8px 0 0;font-size:14px;color:var(--muted)">Side a is opposite θ and adjacent to {{ uRight }} − θ.</p>
+      </section>
+      <section style="background:var(--surface);border:2px solid var(--line);border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:12px">
+        <p style="margin:0">In a right triangle, the two acute angles add to {{ uRight }}. If one is θ, the other is {{ uRight }} − θ.</p>
+        <p style="margin:0">The side opposite θ is the same side that is adjacent to {{ uRight }} − θ. Both angles share the hypotenuse.</p>
+        <p style="margin:0">So <span style="color:var(--cf-sin);font-weight:700">opposite / hypotenuse</span> for θ and <span style="color:var(--cf-cos);font-weight:700">adjacent / hypotenuse</span> for {{ uRight }} − θ are the same fraction, a / c.</p>
+      </section>
+    </div>
+    <section style="background:var(--surface);border:2px solid var(--ink);border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:8px;align-items:center;text-align:center">
+      <div style="font-size:14px;font-weight:700;color:var(--muted)">The cofunction relationship</div>
+      <div style="font:700 32px/1.2 var(--font)"><span style="color:var(--cf-sin)">sin θ</span> = <span style="color:var(--cf-cos)">cos({{ uRight }} − θ)</span></div>
+      <div style="font:700 32px/1.2 var(--font)"><span style="color:var(--cf-cos)">cos θ</span> = <span style="color:var(--cf-sin)">sin({{ uRight }} − θ)</span></div>
+    </section>
+    <section style="background:var(--surface2);border-radius:20px;padding:20px">
+      <h2 style="font:700 20px var(--font);margin:0 0 6px">Where the name comes from</h2>
+      <p style="margin:0;max-width:680px">Cosine is short for the Latin <em>complementi sinus</em>, "sine of the complement." The cosine of an angle is the sine of its complementary angle.</p>
+    </section>
+    <div><button onClick="{{ finishExplain }}" style="font:700 16px var(--font);color:var(--bg);background:var(--ink);border:none;border-radius:14px;padding:12px 22px;cursor:pointer;box-shadow:0 4px 0 color-mix(in oklab,var(--ink) 55%,var(--bg))" style-active="transform:translateY(3px);box-shadow:0 1px 0 color-mix(in oklab,var(--ink) 55%,var(--bg))">Got it. Continue to Prove</button></div>
+  </sc-if>
+
+  <sc-if value="{{ isProve }}" hint-placeholder-val="{{ false }}">
+    <div>
+      <h1 style="font:700 34px/1.15 var(--font);margin:0 0 6px">Prove</h1>
+      <p style="margin:0;color:var(--muted);max-width:640px">Four steps: watch the proof, fill in the blanks, put it in order, then explain it yourself.</p>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px">
+      <sc-for list="{{ parts }}" as="pt" hint-placeholder-count="4">
+        <button onClick="{{ pt.onClick }}" style="font:700 14px var(--font);border:2px solid {{ pt.border }};border-radius:12px;padding:8px 14px;cursor:{{ pt.cursor }};background:{{ pt.bg }};color:{{ pt.fg }}">{{ pt.label }}</button>
+      </sc-for>
+    </div>
+
+    <sc-if value="{{ isPartA }}" hint-placeholder-val="{{ false }}">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));gap:20px">
+        <section style="background:var(--surface);border:2px solid var(--line);border-radius:20px;padding:20px">
+          <svg viewBox="0 0 360 270" style="width:100%;height:auto;display:block">
+            <polygon points="40,230 300,230 300,50" style="fill:var(--surface2);stroke:var(--ink);stroke-width:3;stroke-linejoin:round"></polygon>
+            <polyline points="284,230 284,214 300,214" style="fill:none;stroke:{{ walk.sq }};stroke-width:3;transition:stroke .3s"></polyline>
+            <line x1="300" y1="230" x2="300" y2="50" style="stroke:{{ walk.side }};stroke-width:6;stroke-linecap:round;transition:stroke .3s"></line>
+            <text x="22" y="250" style="font:700 18px var(--font);fill:{{ walk.a }};transition:fill .3s">A</text>
+            <text x="308" y="46" style="font:700 18px var(--font);fill:{{ walk.b }};transition:fill .3s">B</text>
+            <text x="308" y="250" style="font:700 18px var(--font);fill:var(--ink)">C</text>
+            <text x="312" y="146" style="font:700 16px var(--font);fill:var(--ink)">a</text>
+            <text x="150" y="126" style="font:700 16px var(--font);fill:var(--ink)">c</text>
+            <text x="164" y="254" style="font:700 16px var(--font);fill:var(--ink)">b</text>
+          </svg>
+          <p style="margin:10px 0 0;min-height:48px">{{ walk.note }}</p>
+        </section>
+        <section style="background:var(--surface);border:2px solid var(--line);border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:8px">
+          <div style="display:grid;grid-template-columns:28px minmax(0,1fr) minmax(0,1fr);gap:10px;font-size:13px;font-weight:700;color:var(--muted)"><span></span><span>Statement</span><span>Reason</span></div>
+          <sc-for list="{{ walkSteps }}" as="st" hint-placeholder-count="3">
+            <div style="display:grid;grid-template-columns:28px minmax(0,1fr) minmax(0,1fr);gap:10px;padding:8px;border-radius:10px;background:{{ st.bg }}">
+              <span style="font-weight:700;color:var(--muted)">{{ st.n }}</span><span style="font-weight:600">{{ st.s }}</span><span style="color:var(--muted)">{{ st.r }}</span>
+            </div>
+          </sc-for>
+          <div style="display:flex;gap:10px;margin-top:auto;padding-top:10px">
+            <button onClick="{{ walkBack }}" style="font:600 14px var(--font);color:var(--ink);background:transparent;border:2px solid var(--line);border-radius:12px;padding:8px 14px;cursor:pointer">Back</button>
+            <button onClick="{{ walkNext }}" style="font:700 15px var(--font);color:var(--bg);background:var(--ink);border:none;border-radius:12px;padding:10px 18px;cursor:pointer;box-shadow:0 4px 0 color-mix(in oklab,var(--ink) 55%,var(--bg))" style-active="transform:translateY(3px);box-shadow:0 1px 0 color-mix(in oklab,var(--ink) 55%,var(--bg))">{{ walkNextLabel }}</button>
+          </div>
+        </section>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isPartB }}" hint-placeholder-val="{{ false }}">
+      <section style="background:var(--surface);border:2px solid var(--line);border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:8px">
+        <p style="margin:0 0 6px;color:var(--muted)">Given: △ABC with right angle C. Sides a, b, c are opposite angles A, B, C. Choose what belongs in each blank.</p>
+        <div style="display:grid;grid-template-columns:28px minmax(0,1fr) minmax(0,1fr);gap:10px;font-size:13px;font-weight:700;color:var(--muted)"><span></span><span>Statement</span><span>Reason</span></div>
+        <sc-for list="{{ blankRows }}" as="br" hint-placeholder-count="7">
+          <div style="display:grid;grid-template-columns:28px minmax(0,1fr) minmax(0,1fr);gap:10px;align-items:center;padding:8px;border-radius:10px;background:var(--bg)">
+            <span style="font-weight:700;color:var(--muted)">{{ br.n }}</span>
+            <span style="font-weight:600;display:flex;flex-wrap:wrap;align-items:center;gap:6px"><span>{{ br.sPre }}</span>{{ br.sSel }}<span>{{ br.sPost }}</span></span>
+            <span style="color:var(--muted);display:flex;flex-wrap:wrap;align-items:center;gap:6px"><span>{{ br.rText }}</span>{{ br.rSel }}</span>
+          </div>
+        </sc-for>
+        <div style="display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin-top:10px">
+          <button onClick="{{ checkBlanks }}" style="font:700 15px var(--font);color:var(--bg);background:var(--ink);border:none;border-radius:12px;padding:10px 18px;cursor:pointer;box-shadow:0 4px 0 color-mix(in oklab,var(--ink) 55%,var(--bg))" style-active="transform:translateY(3px);box-shadow:0 1px 0 color-mix(in oklab,var(--ink) 55%,var(--bg))">Check my proof</button>
+          <span style="font-weight:600;color:{{ blanksColor }}">{{ blanksMsg }}</span>
+        </div>
+      </section>
+    </sc-if>
+
+    <sc-if value="{{ isPartC }}" hint-placeholder-val="{{ false }}">
+      <section style="background:var(--surface);border:2px solid var(--line);border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:8px">
+        <p style="margin:0 0 6px;color:var(--muted)">Drag the steps into a logical order, or use the arrows.</p>
+        <sc-for list="{{ cards }}" as="cd" hint-placeholder-count="7">
+          <div draggable="true" onDragStart="{{ cd.onDragStart }}" onDragOver="{{ cd.onDragOver }}" style="display:grid;grid-template-columns:28px minmax(0,1fr) minmax(0,1fr) auto;gap:10px;align-items:center;padding:10px;border-radius:12px;background:var(--bg);border:2px solid var(--line);cursor:grab">
+            <span style="font-weight:700;color:var(--muted)">{{ cd.pos }}</span>
+            <span style="font-weight:600">{{ cd.s }}</span>
+            <span style="color:var(--muted)">{{ cd.r }}</span>
+            <span style="display:flex;gap:4px">
+              <button onClick="{{ cd.up }}" aria-label="Move up" style="font:700 14px var(--font);width:32px;height:32px;border-radius:8px;border:2px solid var(--line);background:transparent;color:var(--ink);cursor:pointer">↑</button>
+              <button onClick="{{ cd.down }}" aria-label="Move down" style="font:700 14px var(--font);width:32px;height:32px;border-radius:8px;border:2px solid var(--line);background:transparent;color:var(--ink);cursor:pointer">↓</button>
+            </span>
+          </div>
+        </sc-for>
+        <div style="display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin-top:10px">
+          <button onClick="{{ checkOrder }}" style="font:700 15px var(--font);color:var(--bg);background:var(--ink);border:none;border-radius:12px;padding:10px 18px;cursor:pointer;box-shadow:0 4px 0 color-mix(in oklab,var(--ink) 55%,var(--bg))" style-active="transform:translateY(3px);box-shadow:0 1px 0 color-mix(in oklab,var(--ink) 55%,var(--bg))">Check the order</button>
+          <span style="font-weight:600;color:{{ orderColor }}">{{ orderMsg }}</span>
+        </div>
+      </section>
+    </sc-if>
+
+    <sc-if value="{{ isPartD }}" hint-placeholder-val="{{ false }}">
+      <section style="background:var(--surface);border:2px solid var(--line);border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:12px">
+        <label style="font-weight:700">Explain to a classmate why sin θ = cos({{ uRight }} − θ) in any right triangle.</label>
+        <textarea value="{{ explainTxt }}" onChange="{{ onExplain }}" rows="4" placeholder="Write a few sentences." style="box-sizing:border-box;width:100%;font:400 16px/1.4 var(--font);color:var(--ink);background:var(--bg);border:2px solid var(--line);border-radius:12px;padding:10px 12px;resize:vertical;outline:none"></textarea>
+        <div><button onClick="{{ showModel }}" disabled="{{ modelOff }}" style="font:600 14px var(--font);color:var(--ink);background:transparent;border:2px solid var(--ink);border-radius:12px;padding:8px 14px;cursor:pointer;opacity:{{ modelOp }}">Compare with a model explanation</button></div>
+        <sc-if value="{{ modelShown }}" hint-placeholder-val="{{ false }}">
+          <div style="background:var(--surface2);border-radius:14px;padding:16px">
+            <div style="font-size:13px;font-weight:700;color:var(--muted);margin-bottom:4px">Model explanation</div>
+            <p style="margin:0 0 10px">In a right triangle the two acute angles are complementary, so if one is θ the other is {{ uRight }} − θ. The side opposite θ is the side adjacent to {{ uRight }} − θ, and both angles share the hypotenuse. That makes sin θ (opposite over hypotenuse) and cos({{ uRight }} − θ) (adjacent over hypotenuse) the same ratio.</p>
+            <div style="font-size:14px;color:var(--muted)">Check yours: did you mention complementary angles, the shared side, and the shared hypotenuse?</div>
+          </div>
+        </sc-if>
+      </section>
+      <div style="display:flex;flex-wrap:wrap;align-items:center;gap:14px">
+        <button onClick="{{ finishProve }}" disabled="{{ proveOff }}" style="font:700 16px var(--font);color:var(--bg);background:var(--ink);border:none;border-radius:14px;padding:12px 22px;cursor:pointer;box-shadow:0 4px 0 color-mix(in oklab,var(--ink) 55%,var(--bg));opacity:{{ proveOp }}" style-active="transform:translateY(3px);box-shadow:0 1px 0 color-mix(in oklab,var(--ink) 55%,var(--bg))">Continue to Practice</button>
+        <span style="font-size:14px;color:var(--muted)">{{ proveHint }}</span>
+      </div>
+    </sc-if>
+  </sc-if>
+
+  <sc-if value="{{ isPractice }}" hint-placeholder-val="{{ false }}">
+    <div>
+      <h1 style="font:700 34px/1.15 var(--font);margin:0 0 6px">Practice</h1>
+      <p style="margin:0;color:var(--muted);max-width:640px">Ten problems. Check each answer as you go. {{ practiceScore }}</p>
+      <div style="display:inline-block;margin-top:12px;background:var(--surface2);border-radius:12px;padding:8px 14px;font-weight:600;font-size:15px">Reminder: complement = {{ uRight }} − angle</div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(340px,100%),1fr));gap:16px">
+      <sc-for list="{{ probs }}" as="p" hint-placeholder-count="4">
+        <section style="background:var(--surface);border:2px solid {{ p.border }};border-radius:20px;padding:18px;display:flex;flex-direction:column;gap:12px;transition:border-color .3s">
+          <div style="display:flex;gap:12px;align-items:flex-start">
+            <span style="flex:0 0 30px;height:30px;border-radius:50%;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px">{{ p.num }}</span>
+            <div style="font-weight:600;font-size:17px;flex:1">{{ p.q }}</div>
+          </div>
+          <sc-if value="{{ p.hasTri }}" hint-placeholder-val="{{ false }}">
+            <svg viewBox="0 0 220 150" style="width:200px;max-width:100%;height:auto">
+              <polygon points="20,130 180,130 180,10" style="fill:var(--surface2);stroke:var(--ink);stroke-width:2.5;stroke-linejoin:round"></polygon>
+              <polyline points="168,130 168,118 180,118" style="fill:none;stroke:var(--muted);stroke-width:2"></polyline>
+              <text x="6" y="144" style="font:700 14px var(--font);fill:var(--ink)">A</text>
+              <text x="186" y="14" style="font:700 14px var(--font);fill:var(--ink)">B</text>
+              <text x="186" y="144" style="font:700 14px var(--font);fill:var(--ink)">C</text>
+              <text x="188" y="76" style="font:600 14px var(--font);fill:var(--muted)">3</text>
+              <text x="96" y="146" style="font:600 14px var(--font);fill:var(--muted)">4</text>
+              <text x="86" y="62" style="font:600 14px var(--font);fill:var(--muted)">5</text>
+            </svg>
+          </sc-if>
+          <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px">
+            <sc-if value="{{ p.isSingle }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;align-items:center;gap:6px">
+                <input value="{{ p.v }}" onChange="{{ p.onV }}" inputMode="decimal" style="width:90px;font:600 16px var(--font);color:var(--ink);background:var(--bg);border:2px solid var(--line);border-radius:10px;padding:8px 10px;outline:none">
+                <span style="font-weight:700">{{ p.suffix }}</span>
+              </div>
+            </sc-if>
+            <sc-if value="{{ p.isND }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;align-items:center;gap:6px">
+                <input value="{{ p.n }}" onChange="{{ p.onN }}" inputMode="numeric" aria-label="numerator" style="width:56px;text-align:center;font:600 16px var(--font);color:var(--ink);background:var(--bg);border:2px solid var(--line);border-radius:10px;padding:8px 6px;outline:none">
+                <span style="font-weight:700">{{ p.mid }}</span>
+                <input value="{{ p.d }}" onChange="{{ p.onD }}" inputMode="numeric" aria-label="denominator" style="width:56px;text-align:center;font:600 16px var(--font);color:var(--ink);background:var(--bg);border:2px solid var(--line);border-radius:10px;padding:8px 6px;outline:none">
+              </div>
+            </sc-if>
+            <sc-if value="{{ p.isChoice }}" hint-placeholder-val="{{ false }}">
+              <sc-for list="{{ p.opts }}" as="o" hint-placeholder-count="2">
+                <button onClick="{{ o.onClick }}" style="font:600 15px var(--font);color:var(--ink);background:{{ o.bg }};border:2px solid {{ o.border }};border-radius:12px;padding:8px 14px;cursor:pointer">{{ o.label }}</button>
+              </sc-for>
+            </sc-if>
+            <sc-if value="{{ p.needsCheck }}" hint-placeholder-val="{{ false }}">
+              <button onClick="{{ p.onCheck }}" style="font:700 14px var(--font);color:var(--bg);background:var(--ink);border:none;border-radius:12px;padding:9px 16px;cursor:pointer;box-shadow:0 3px 0 color-mix(in oklab,var(--ink) 55%,var(--bg))" style-active="transform:translateY(2px);box-shadow:0 1px 0 color-mix(in oklab,var(--ink) 55%,var(--bg))">Check</button>
+            </sc-if>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px">
+            <span style="font-weight:600;color:{{ p.fbColor }}">{{ p.fb }}</span>
+            <button onClick="{{ p.onSol }}" style="font:600 13px var(--font);color:var(--muted);background:transparent;border:none;text-decoration:underline;cursor:pointer;padding:4px 0">{{ p.solLabel }}</button>
+          </div>
+          <sc-if value="{{ p.solShown }}" hint-placeholder-val="{{ false }}">
+            <div style="background:var(--surface2);border-radius:12px;padding:12px 14px;font-size:15px">{{ p.sol }}</div>
+          </sc-if>
+        </section>
+      </sc-for>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;align-items:center;gap:14px">
+      <button onClick="{{ finishPractice }}" disabled="{{ practiceOff }}" style="font:700 16px var(--font);color:var(--bg);background:var(--ink);border:none;border-radius:14px;padding:12px 22px;cursor:pointer;box-shadow:0 4px 0 color-mix(in oklab,var(--ink) 55%,var(--bg));opacity:{{ practiceOp }}" style-active="transform:translateY(3px);box-shadow:0 1px 0 color-mix(in oklab,var(--ink) 55%,var(--bg))">Continue to Exit ticket</button>
+      <span style="font-size:14px;color:var(--muted)">{{ practiceHint }}</span>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ isExit }}" hint-placeholder-val="{{ false }}">
+    <div>
+      <h1 style="font:700 34px/1.15 var(--font);margin:0 0 6px">Exit ticket</h1>
+      <p style="margin:0;color:var(--muted);max-width:640px">One last question before you go.</p>
+    </div>
+    <sc-if value="{{ allDone }}" hint-placeholder-val="{{ false }}">
+      <section style="background:var(--cf-ok);color:var(--cf-on);border-radius:20px;padding:18px 22px">
+        <div style="font:700 22px var(--font)">All six stages complete.</div>
+        <div>Every tool is open now. Use the menu to jump back to any stage.</div>
+      </section>
+    </sc-if>
+    <section style="background:var(--surface);border:2px solid var(--line);border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:12px">
+      <label style="font-weight:700">In your own words, why does sin θ = cos({{ uRight }} − θ)?</label>
+      <textarea value="{{ exitTxt }}" onChange="{{ onExit }}" rows="4" placeholder="Write your answer here." style="box-sizing:border-box;width:100%;font:400 16px/1.4 var(--font);color:var(--ink);background:var(--bg);border:2px solid var(--line);border-radius:12px;padding:10px 12px;resize:vertical;outline:none"></textarea>
+      <div><button onClick="{{ showExit }}" disabled="{{ exitModelOff }}" style="font:600 14px var(--font);color:var(--ink);background:transparent;border:2px solid var(--ink);border-radius:12px;padding:8px 14px;cursor:pointer;opacity:{{ exitModelOp }}">Compare with a model answer</button></div>
+      <sc-if value="{{ exitShown }}" hint-placeholder-val="{{ false }}">
+        <div style="background:var(--surface2);border-radius:14px;padding:16px">
+          <div style="font-size:13px;font-weight:700;color:var(--muted);margin-bottom:4px">Model answer</div>
+          <p style="margin:0">θ and {{ uRight }} − θ are the two acute angles of the same right triangle. The side opposite one is adjacent to the other, and the hypotenuse is the same for both, so sine of one and cosine of the other are the same ratio of sides.</p>
+        </div>
+      </sc-if>
+    </section>
+    <div style="display:flex;flex-wrap:wrap;align-items:center;gap:14px">
+      <button onClick="{{ finishExit }}" disabled="{{ exitOff }}" style="font:700 16px var(--font);color:var(--bg);background:var(--ink);border:none;border-radius:14px;padding:12px 22px;cursor:pointer;box-shadow:0 4px 0 color-mix(in oklab,var(--ink) 55%,var(--bg));opacity:{{ exitOp }}" style-active="transform:translateY(3px);box-shadow:0 1px 0 color-mix(in oklab,var(--ink) 55%,var(--bg))">Finish</button>
+      <span style="font-size:14px;color:var(--muted)">{{ exitHint }}</span>
+    </div>
+  </sc-if>
+
+  </div>
+</div>
+</div>
+  </main>
+  <dc-import name="Site Footer" hint-size="100%,110px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;defaultUnit&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;degrees&quot;,&quot;radians&quot;],&quot;default&quot;:&quot;degrees&quot;,&quot;tsType&quot;:&quot;'degrees'|'radians'&quot;,&quot;section&quot;:&quot;Behavior&quot;},&quot;lockStages&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Behavior&quot;},&quot;celebrations&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Behavior&quot;}}">
+class Component extends DCLogic {
+  svgRef = React.createRef();
+  wsvgRef = React.createRef();
+  ids = ['warmup', 'explore', 'explain', 'prove', 'practice', 'exit'];
+  tblAngles = [10, 25, 40, 60, 75];
+  storeKey() { return 'cofunction-dash-v1'; }
+  fresh() {
+    return { view: 'warmup', wth: 40, wans: {}, wchecked: {}, wsol: {}, done: {}, unit: (this.props && this.props.defaultUnit) === 'radians' ? 'rad' : 'deg', teacher: false,
+      th: 35, r: 320, sl: 30, tbl: {}, notice: '', pPart: 0, pDone: {}, pStep: 0, blanks: {}, blanksChecked: false,
+      order: [4, 1, 6, 0, 3, 5, 2], orderMsg: '', explainTxt: '', modelShown: false, ans: {}, checked: {}, sol: {},
+      exitTxt: '', exitShown: false, confirmReset: false, burst: 0, burstOn: false };
+  }
+  state = (() => {
+    const s = this.fresh();
+    try { Object.assign(s, JSON.parse(localStorage.getItem(this.storeKey()) || '{}')); } catch (e) {}
+    s.burstOn = false; s.confirmReset = false; s.view = 'warmup'; s.teacher = false; s.signedIn = false;
+    return s;
+  })();
+  labRef = React.createRef();
+  // Teacher mode follows the Math Hub sign-in (hub-state.js): any signed-in role may turn it on,
+  // and it turns off when the sign-in ends. It is never saved on the device.
+  componentDidMount() {
+    this.onHub = () => {
+      const H = window.HubState; if (!H) return;
+      const v = H.get(), on = !!v.signedIn;
+      this.paint(v.theme === 'light');
+      if (!on) { this.setState({ signedIn: false, teacher: false }); return; }
+      const wants = this.pendingTeacher; this.pendingTeacher = false;
+      this.setState(x => ({ signedIn: true, teacher: x.teacher || !!wants }));
+    };
+    // If the sign-in dialog was cancelled, the next tap or key press in the lab drops the request.
+    this.onUse = e => { const el = this.labRef.current; if (el && el.contains(e.target)) this.pendingTeacher = false; };
+    window.addEventListener('hubchange', this.onHub);
+    window.addEventListener('hubstate-ready', this.onHub);
+    window.addEventListener('pointerdown', this.onUse, true);
+    window.addEventListener('keydown', this.onUse, true);
+    this.onHub();
+  }
+  componentWillUnmount() {
+    window.removeEventListener('hubchange', this.onHub);
+    window.removeEventListener('hubstate-ready', this.onHub);
+    window.removeEventListener('pointerdown', this.onUse, true);
+    window.removeEventListener('keydown', this.onUse, true);
+    clearTimeout(this._bt);
+  }
+  // Colors that carry meaning, readable on the hub's dark and light themes.
+  paint(light) {
+    const c = light ? { sin: '#6b3fc0', cos: '#a8520a', ok: '#1b7a47', bad: '#c22727', on: '#ffffff' }
+                    : { sin: '#b594f0', cos: '#f0a35e', ok: '#6fd6a0', bad: '#ff8a8a', on: '#15151a' };
+    const r = document.documentElement; for (const k in c) r.style.setProperty('--cf-' + k, c[k]);
+  }
+  toggleTeacher() {
+    const H = window.HubState, s = this.state;
+    if (s.teacher) return this.setState({ teacher: false });
+    if (H && H.get().signedIn) return this.setState({ teacher: true, signedIn: true });
+    if (!H) return;
+    this.pendingTeacher = true;
+    H.openSignin();
+  }
+  componentDidUpdate() {
+    try { const s = Object.assign({}, this.state); delete s.burstOn; delete s.confirmReset; delete s.teacher; delete s.signedIn; localStorage.setItem(this.storeKey(), JSON.stringify(s)); } catch (e) {}
+  }
+  gcd(a, b) { return b ? this.gcd(b, a % b) : a; }
+  ang(d, unit) {
+    if ((unit || this.state.unit) === 'deg') return d + '°';
+    const g = this.gcd(d, 180), n = d / g, m = 180 / g;
+    return (n === 1 ? '' : n) + 'π' + (m === 1 ? '' : '/' + m);
+  }
+  rad(d) { return d * Math.PI / 180; }
+  steps() {
+    const R = this.state.unit === 'deg' ? '90°' : 'π/2', S = this.state.unit === 'deg' ? '180°' : 'π';
+    return [
+      { s: '△ABC is a right triangle with right angle C', r: 'Given' },
+      { s: 'm∠A + m∠B + ' + R + ' = ' + S, r: 'Triangle Angle Sum Theorem' },
+      { s: 'm∠B = ' + R + ' − m∠A', r: 'Subtraction Property of Equality' },
+      { s: 'sin A = a/c', r: 'Definition of sine (opposite / hypotenuse)' },
+      { s: 'cos B = a/c', r: 'Definition of cosine (adjacent / hypotenuse)' },
+      { s: 'sin A = cos B', r: 'Substitution (both equal a/c)' },
+      { s: 'sin A = cos(' + R + ' − A)', r: 'Substitution (step 3)' }
+    ];
+  }
+  blankDefs() {
+    const R = this.state.unit === 'deg' ? '90°' : 'π/2', S = this.state.unit === 'deg' ? '180°' : 'π';
+    return {
+      1: { in: 'r', opts: ['Triangle Angle Sum Theorem', 'Pythagorean Theorem', 'Definition of sine', 'Given'], ok: 0 },
+      2: { in: 's', pre: 'm∠B =', post: '', opts: [R + ' − m∠A', S + ' − m∠A', 'm∠A', R + ' + m∠A'], ok: 0 },
+      3: { in: 's', pre: 'sin A =', post: '', opts: ['a/c', 'b/c', 'a/b'], ok: 0 },
+      4: { in: 's', pre: 'cos B =', post: '', opts: ['b/c', 'a/c', 'a/b'], ok: 1 },
+      5: { in: 'r', opts: ['Given', 'Substitution (both equal a/c)', 'Pythagorean Theorem'], ok: 1 },
+      6: { in: 's', pre: 'sin A = cos(', post: ')', opts: ['A', S + ' − A', R + ' − A'], ok: 2 }
+    };
+  }
+  problems() {
+    const A = d => this.ang(d), R = this.state.unit === 'deg' ? '90°' : 'π/2', S = this.state.unit === 'deg' ? '180°' : 'π';
+    const co = (f, g, d) => ({ t: 'angle', q: f + '(' + A(d) + ') = ' + g + '( ? )', a: 90 - d,
+      sol: 'Cofunctions of complementary angles are equal. ' + R + ' − ' + A(d) + ' = ' + A(90 - d) + ', so ' + f + '(' + A(d) + ') = ' + g + '(' + A(90 - d) + ').' });
+    return [
+      co('sin', 'cos', 25),
+      co('cos', 'sin', 40),
+      { t: 'choice', q: 'True or false: sin(' + A(25) + ') = cos(' + A(25) + ')', opts: ['True', 'False'], a: 1,
+        sol: 'False. sin(' + A(25) + ') equals the cosine of the complement, cos(' + A(65) + '). Sine and cosine of the same angle are equal only at ' + A(45) + '.' },
+      { t: 'frac', tri: true, q: 'In △ABC, BC = 3, AC = 4 and AB = 5. Write cos B as a fraction.', a: [3, 5],
+        sol: 'cos B = adjacent / hypotenuse = BC / AB = 3/5. That is the same ratio as sin A.' },
+      co('sin', 'cos', 70),
+      { t: 'choice', q: 'Which expression equals sin(' + A(40) + ')?', opts: ['cos(' + A(40) + ')', 'cos(' + A(50) + ')', 'cos(' + A(140) + ')', 'sin(' + A(50) + ')'], a: 1,
+        sol: 'Subtract from ' + R + ', not ' + S + '. ' + R + ' − ' + A(40) + ' = ' + A(50) + ', so sin(' + A(40) + ') = cos(' + A(50) + ').' },
+      { t: 'frac', q: 'A and B are the acute angles of a right triangle. If sin A = 5/13, what is cos B?', a: [5, 13],
+        sol: 'A and B are complementary, so cos B = sin A = 5/13.' },
+      co('cos', 'sin', 15),
+      { t: 'choice', q: 'True or false: sin(' + A(45) + ') = cos(' + A(45) + ')', opts: ['True', 'False'], a: 0,
+        sol: 'True. ' + R + ' − ' + A(45) + ' = ' + A(45) + ', so this angle is its own complement.' },
+      { t: 'dec', q: 'cos(' + A(20) + ') ≈ 0.940. What is sin(' + A(70) + '), to three decimal places?', a: 0.94,
+        sol: A(20) + ' and ' + A(70) + ' are complementary, so sin(' + A(70) + ') = cos(' + A(20) + ') ≈ 0.940.' }
+    ];
+  }
+  isRight(p, a) {
+    a = a || {};
+    const n = parseFloat(a.n), d = parseFloat(a.d);
+    if (p.t === 'angle') return this.state.unit === 'deg' ? parseFloat(a.v) === p.a : d > 0 && Math.abs(n / d * 180 - p.a) < 1e-6;
+    if (p.t === 'frac') return d > 0 && Math.abs(n / d - p.a[0] / p.a[1]) < 1e-9;
+    if (p.t === 'dec') return Math.abs(parseFloat(a.v) - p.a) < 0.0006;
+    return a.v === p.a;
+  }
+  setUnit(unit) {
+    if (unit === this.state.unit) return;
+    const ans = {};
+    this.problems().forEach((p, i) => {
+      const a = Object.assign({}, this.state.ans[i] || {});
+      if (p.t === 'angle') {
+        if (unit === 'rad' && a.v && !isNaN(+a.v) && +a.v > 0 && Number.isInteger(+a.v)) { const g = this.gcd(+a.v, 180); a.n = String(+a.v / g); a.d = String(180 / g); }
+        if (unit === 'deg' && +a.d > 0 && !isNaN(+a.n)) a.v = String(Math.round(+a.n / +a.d * 180 * 1000) / 1000);
+      }
+      ans[i] = a;
+    });
+    const wans = {};
+    this.wproblems().forEach((p, i) => {
+      const a = Object.assign({}, this.state.wans[i] || {});
+      if (p.t === 'angle') {
+        if (unit === 'rad' && a.v && !isNaN(+a.v) && +a.v > 0 && Number.isInteger(+a.v)) { const g = this.gcd(+a.v, 180); a.n = String(+a.v / g); a.d = String(180 / g); }
+        if (unit === 'deg' && +a.d > 0 && !isNaN(+a.n)) a.v = String(Math.round(+a.n / +a.d * 180 * 1000) / 1000);
+      }
+      wans[i] = a;
+    });
+    this.setState({ unit, ans, wans });
+  }
+  onGrab = (e) => {
+    e.preventDefault();
+    const mv = (ev) => {
+      const svg = this.svgRef.current; if (!svg) return;
+      const b = svg.getBoundingClientRect();
+      const x = Math.max(1, (ev.clientX - b.left) / b.width * 460 - 50), y = Math.max(1, 260 - (ev.clientY - b.top) / b.height * 300);
+      const th = Math.max(5, Math.min(85, Math.round(Math.atan2(y, x) * 180 / Math.PI)));
+      const r = Math.round(Math.max(140, Math.min(320, Math.hypot(x, y))) / 20) * 20;
+      this.setState({ th, r });
+    };
+    const up = () => { window.removeEventListener('pointermove', mv); window.removeEventListener('pointerup', up); };
+    window.addEventListener('pointermove', mv); window.addEventListener('pointerup', up);
+  };
+  celebrate() {
+    if ((this.props.celebrations ?? true) === false) return;
+    this.setState(s => ({ burst: s.burst + 1, burstOn: true }));
+    clearTimeout(this._bt); this._bt = setTimeout(() => this.setState({ burstOn: false }), 1400);
+  }
+  finish(id) {
+    const i = this.ids.indexOf(id), was = this.state.done[id];
+    this.setState(s => ({ done: Object.assign({}, s.done, { [id]: true }), view: this.ids[i + 1] || 'exit' }));
+    if (!was) this.celebrate();
+    window.scrollTo(0, 0);
+  }
+  partDone(i) {
+    if (this.state.pDone[i]) return;
+    this.setState(s => ({ pDone: Object.assign({}, s.pDone, { [i]: true }) }));
+  }
+  move(from, to) {
+    if (to < 0 || to > 6 || from === to) return;
+    this.setState(s => { const o = s.order.slice(); const [x] = o.splice(from, 1); o.splice(to, 0, x); return { order: o, orderMsg: '' }; });
+  }
+  wproblems() {
+    const A = d => this.ang(d), R = this.state.unit === 'deg' ? '90°' : 'π/2', S = this.state.unit === 'deg' ? '180°' : 'π';
+    return [
+      { t: 'angle', q: 'Find the complement of ' + A(35) + '.', a: 55, sol: 'Complementary angles add to ' + R + '. ' + R + ' − ' + A(35) + ' = ' + A(55) + '.' },
+      { t: 'angle', q: 'Find the complement of ' + A(72) + '.', a: 18, sol: 'Complementary angles add to ' + R + '. ' + R + ' − ' + A(72) + ' = ' + A(18) + '.' },
+      { t: 'choice', q: 'Are ' + A(110) + ' and ' + A(70) + ' complementary?', opts: ['Yes', 'No'], a: 1,
+        sol: 'No. They add to ' + S + ', which makes them supplementary. Complementary angles add to ' + R + '.' },
+      { t: 'angle', q: 'A right triangle has one acute angle of ' + A(28) + '. Find the other acute angle.', a: 62,
+        sol: 'The three angles add to ' + S + '. The right angle uses ' + R + ', so the two acute angles add to ' + R + '. ' + R + ' − ' + A(28) + ' = ' + A(62) + '.' }
+    ];
+  }
+  wcards() {
+    const s = this.state, deg = s.unit === 'deg', P = 'var(--ink)', G = 'var(--cf-ok)', BAD = 'var(--cf-bad)', L = 'var(--line)', pl = this.wproblems();
+    let right = 0;
+    const list = pl.map((p, i) => {
+      const a = s.wans[i] || {}, st = s.wchecked[i];
+      if (st === 'ok') right++;
+      const set = k => e => { const v = e.target.value; this.setState(x => { const c = Object.assign({}, x.wchecked); delete c[i]; return { wans: Object.assign({}, x.wans, { [i]: Object.assign({}, x.wans[i], { [k]: v }) }), wchecked: c }; }); };
+      const check = an => { const good = this.isRight(p, an); this.setState(x => ({ wchecked: Object.assign({}, x.wchecked, { [i]: good ? 'ok' : 'bad' }) })); };
+      return { num: i + 1, q: p.q, isSingle: p.t === 'angle' && deg, isND: p.t === 'angle' && !deg, isChoice: p.t === 'choice', needsCheck: p.t !== 'choice',
+        v: a.v ?? '', n: a.n ?? '', d: a.d ?? '', onV: set('v'), onN: set('n'), onD: set('d'), onCheck: () => check(a),
+        opts: (p.opts || []).map((label, k) => ({ label, bg: a.v === k ? 'var(--surface2)' : 'transparent', border: a.v === k ? (st === 'ok' ? G : st === 'bad' ? BAD : P) : L,
+          onClick: () => { const na = { v: k }; this.setState(x => ({ wans: Object.assign({}, x.wans, { [i]: na }) })); check(na); } })),
+        border: st === 'ok' ? G : st === 'bad' ? BAD : L, fb: st === 'ok' ? 'Correct. Nice work.' : st === 'bad' ? 'Not yet. Try again.' : '', fbColor: st === 'ok' ? G : BAD,
+        solShown: !!s.wsol[i], solLabel: s.wsol[i] ? 'Hide worked solution' : 'Show worked solution', sol: p.sol,
+        onSol: () => this.setState(x => ({ wsol: Object.assign({}, x.wsol, { [i]: !x.wsol[i] }) })) };
+    });
+    return { list, right, total: pl.length };
+  }
+  onGrabRay = (e) => {
+    e.preventDefault();
+    const mv = (ev) => {
+      const svg = this.wsvgRef.current; if (!svg) return;
+      const b = svg.getBoundingClientRect();
+      const x = Math.max(1, (ev.clientX - b.left) / b.width * 320 - 40), y = Math.max(1, 250 - (ev.clientY - b.top) / b.height * 290);
+      this.setState({ wth: Math.max(5, Math.min(85, Math.round(Math.atan2(y, x) * 180 / Math.PI))) });
+    };
+    const up = () => { window.removeEventListener('pointermove', mv); window.removeEventListener('pointerup', up); };
+    window.addEventListener('pointermove', mv); window.addEventListener('pointerup', up);
+  };
+  renderVals() {
+    const s = this.state, P = 'var(--cf-sin)', O = 'var(--cf-cos)', G = 'var(--cf-ok)', BAD = 'var(--cf-bad)', L = 'var(--line)', MUT = 'var(--muted)', ACC = 'var(--ink)', ON = 'var(--cf-on)';
+    const deg = s.unit === 'deg', uRight = deg ? '90°' : 'π/2', uStraight = deg ? '180°' : 'π';
+    const lock = (this.props.lockStages ?? true) !== false && !s.teacher;
+    const names = ['Warm-up', 'Explore', 'Explain', 'Prove', 'Practice', 'Exit ticket'];
+    const nav = this.ids.map((id, i) => {
+      const open = !lock || i === 0 || s.done[this.ids[i - 1]] || s.done[id], active = s.view === id;
+      return { num: i + 1, label: names[i], tag: s.done[id] ? 'Done' : (open ? '' : 'Locked'), bg: active ? ACC : 'transparent',
+        fg: active ? 'var(--bg)' : (open ? 'var(--ink)' : MUT), numBg: s.done[id] ? G : (active ? 'var(--bg)' : 'var(--surface2)'), numFg: s.done[id] ? ON : (active ? 'var(--ink)' : MUT),
+        cursor: open ? 'pointer' : 'not-allowed', onClick: () => open && this.setState({ view: id }) };
+    });
+    const doneCount = this.ids.filter(id => s.done[id]).length;
+
+    // explore
+    const t = this.rad(s.th), rr = Math.max(140, Math.min(s.r, Math.floor(240 / Math.sin(t) / 20) * 20)), h = rr / 20, bx = 50 + rr * Math.cos(t), by = 360 - rr * Math.sin(t);
+    const X = v => v / 460 * 100 + '%', Y = v => (v - 100) / 300 * 100 + '%';
+    const ux = -Math.cos(t), uy = Math.sin(t) + 1, ul = Math.hypot(ux, uy) || 1, bd = Math.min(64, 30 + 300 / (90 - s.th));
+    const tri = { pts: '50,360 ' + bx + ',360 ' + bx + ',' + by, sq: (bx - 16) + ',360 ' + (bx - 16) + ',344 ' + bx + ',344',
+      bx, by, cx: bx + 8, blx: bx + 16, bly: by - 12, aax: 50 + 78 * Math.cos(t / 2), aay: 360 - 78 * Math.sin(t / 2) + 5,
+      bax: bx + bd * ux / ul - 4, bay: by + bd * uy / ul + 5, sax: bx + 10, say: (by + 360) / 2, sbx: (50 + bx) / 2,
+      scx: (50 + bx) / 2 - 12, scy: (360 + by) / 2 - 10 };
+    Object.assign(tri, { aaL: X(tri.aax), aaT: Y(tri.aay - 5), baL: X(tri.bax), baT: Y(tri.bay - 5), saL: X(tri.sax), saT: Y(tri.say), sbL: X(tri.sbx), sbT: Y(377), scL: X(tri.scx), scT: Y(tri.scy) });
+    const ok3 = (v, d, f) => Math.abs(parseFloat(v) - f(this.rad(d))) < 0.0015;
+    const bcol = (v, good) => v === '' ? L : good ? G : (v.length >= 5 ? BAD : L);
+    let tblOk = true;
+    const rows = this.tblAngles.map(d => {
+      const sv = s.tbl['s' + d] || '', cv = s.tbl['c' + d] || '';
+      const sg = ok3(sv, d, Math.sin), cg = ok3(cv, d, Math.sin);
+      if (!sg || !cg) tblOk = false;
+      const on = k => e => { const v = e.target.value; this.setState(st => ({ tbl: Object.assign({}, st.tbl, { [k + d]: v }) })); };
+      return { ang: this.ang(d), comp: this.ang(90 - d), s: sv, c: cv, onS: on('s'), onC: on('c'), sBorder: bcol(sv, sg), cBorder: bcol(cv, cg) };
+    });
+    const exploreReady = tblOk && s.notice.trim().length >= 10;
+
+    // prove
+    const steps = this.steps(), defs = this.blankDefs();
+    const partNames = ['1  Watch', '2  Fill in the blanks', '3  Put in order', '4  Explain'];
+    const parts = partNames.map((label, i) => {
+      const open = !lock || i === 0 || s.pDone[i - 1] || s.done.prove, active = s.pPart === i;
+      return { label: label + (s.pDone[i] ? '  ✓' : ''), bg: active ? ACC : 'transparent', border: active ? ACC : L, fg: active ? 'var(--bg)' : (open ? 'var(--ink)' : MUT),
+        cursor: open ? 'pointer' : 'not-allowed', onClick: () => open && this.setState({ pPart: i }) };
+    });
+    const notes = ['Start with any right triangle. Call the acute angles A and B.',
+      'The three angles of a triangle add to ' + uStraight + '.',
+      'Subtract ' + uRight + ' and m∠A from both sides. Angles A and B are complementary.',
+      'Standing at A, side a is the opposite side.',
+      'Standing at B, the same side a is the adjacent side.',
+      'Both ratios are a/c, so they are equal.',
+      'Replace B with ' + uRight + ' − A. That is the cofunction relationship.'];
+    const ps = s.pStep;
+    const walk = { note: notes[ps], sq: ps === 0 ? G : MUT, side: ps >= 3 ? G : 'var(--ink)',
+      a: ps === 1 || ps === 2 ? G : (ps === 3 || ps >= 5 ? P : 'var(--ink)'), b: ps === 1 || ps === 2 ? G : (ps >= 4 ? O : 'var(--ink)') };
+    const walkSteps = steps.slice(0, ps + 1).map((st, i) => ({ n: i + 1, s: st.s, r: st.r, bg: i === ps ? 'var(--surface2)' : 'transparent' }));
+    let blanksAll = true;
+    const blankRows = steps.map((st, i) => {
+      const d = defs[i];
+      if (!d) return { n: i + 1, sPre: st.s, sPost: '', sSel: null, rText: st.r, rSel: null };
+      const val = s.blanks[i] ?? '', good = val !== '' && +val === d.ok;
+      if (!good) blanksAll = false;
+      const sel = React.createElement('select', { value: val, onChange: e => { const v = e.target.value; this.setState(x => ({ blanks: Object.assign({}, x.blanks, { [i]: v }), blanksChecked: false })); },
+        style: { font: '600 15px var(--font)', color: 'var(--ink)', background: 'var(--surface)', border: '2px solid ' + (s.blanksChecked ? (good ? G : BAD) : ACC), borderRadius: 10, padding: '6px 8px', maxWidth: '100%' } },
+        [React.createElement('option', { key: 'x', value: '' }, 'Choose…')].concat(d.opts.map((o, k) => React.createElement('option', { key: k, value: String(k) }, o))));
+      return d.in === 's' ? { n: i + 1, sPre: d.pre, sPost: d.post, sSel: sel, rText: st.r, rSel: null } : { n: i + 1, sPre: st.s, sPost: '', sSel: null, rText: '', rSel: sel };
+    });
+    const cards = s.order.map((idx, pos) => ({ pos: pos + 1, s: steps[idx].s, r: steps[idx].r,
+      onDragStart: e => { this._drag = pos; e.dataTransfer.effectAllowed = 'move'; try { e.dataTransfer.setData('text/plain', ''); } catch (err) {} },
+      onDragOver: e => { e.preventDefault(); if (this._drag != null && this._drag !== pos) { this.move(this._drag, pos); this._drag = pos; } },
+      up: () => this.move(pos, pos - 1), down: () => this.move(pos, pos + 1) }));
+    const explainOk = s.explainTxt.trim().length >= 20;
+    const proveReady = s.pDone[0] && s.pDone[1] && s.pDone[2] && explainOk && s.modelShown;
+
+    // practice
+    const plist = this.problems();
+    let right = 0;
+    const probs = plist.map((p, i) => {
+      const a = s.ans[i] || {}, st = s.checked[i];
+      if (st === 'ok') right++;
+      const set = k => e => { const v = e.target.value; this.setState(x => { const c = Object.assign({}, x.checked); delete c[i]; return { ans: Object.assign({}, x.ans, { [i]: Object.assign({}, x.ans[i], { [k]: v }) }), checked: c }; }); };
+      const check = (ansNow) => { const good = this.isRight(p, ansNow); this.setState(x => ({ checked: Object.assign({}, x.checked, { [i]: good ? 'ok' : 'bad' }) })); };
+      const single = (p.t === 'angle' && deg) || p.t === 'dec', nd = (p.t === 'angle' && !deg) || p.t === 'frac';
+      return { num: i + 1, q: p.q, hasTri: !!p.tri, isSingle: single, isND: nd, isChoice: p.t === 'choice', needsCheck: p.t !== 'choice',
+        suffix: p.t === 'angle' ? '°' : '', mid: p.t === 'angle' ? 'π /' : '/', v: a.v ?? '', n: a.n ?? '', d: a.d ?? '',
+        onV: set('v'), onN: set('n'), onD: set('d'), onCheck: () => check(a),
+        opts: (p.opts || []).map((label, k) => ({ label, bg: a.v === k ? 'var(--surface2)' : 'transparent', border: a.v === k ? (st === 'ok' ? G : st === 'bad' ? BAD : ACC) : L,
+          onClick: () => { const na = { v: k }; this.setState(x => ({ ans: Object.assign({}, x.ans, { [i]: na }) })); check(na); } })),
+        border: st === 'ok' ? G : st === 'bad' ? BAD : L, fb: st === 'ok' ? 'Correct. Nice work.' : st === 'bad' ? 'Not yet. Try again.' : '', fbColor: st === 'ok' ? G : BAD,
+        solShown: !!s.sol[i], solLabel: s.sol[i] ? 'Hide worked solution' : 'Show worked solution', sol: p.sol,
+        onSol: () => this.setState(x => ({ sol: Object.assign({}, x.sol, { [i]: !x.sol[i] }) })) };
+    });
+    const practiceReady = right === plist.length;
+    const exitOk = s.exitTxt.trim().length >= 20, exitReady = exitOk && s.exitShown;
+
+    let burstEl = null;
+    if (s.burstOn) {
+      const cols = [P, O, G, 'var(--ink)'];
+      burstEl = React.createElement('div', { key: s.burst, style: { position: 'fixed', left: '50%', top: '40%', width: 0, height: 0, zIndex: 50, pointerEvents: 'none' } },
+        Array.from({ length: 32 }, (_, i) => { const a = i / 32 * Math.PI * 2 + s.burst, dist = 140 + (i * 53) % 200;
+          return React.createElement('div', { key: i, style: { position: 'absolute', width: 12, height: 12, borderRadius: i % 3 ? 2 : 6, background: cols[i % 4],
+            '--x': Math.cos(a) * dist + 'px', '--y': Math.sin(a) * dist + 'px', '--r': (i % 2 ? 1 : -1) * 320 + 'deg', animation: 'cfBurst 1200ms cubic-bezier(.15,.7,.3,1) forwards' } }); }));
+    }
+    const off = ready => ({ off: lock && !ready, op: lock && !ready ? 0.45 : 1 });
+    const w = this.wcards(), wReady = w.right === w.total, wo = off(wReady), wt = this.rad(s.wth), wm = this.rad(s.wth / 2), wn = this.rad((s.wth + 90) / 2);
+    const WX = v => v / 320 * 100 + '%', WY = v => v / 290 * 100 + '%';
+    const eo = off(exploreReady), po = off(proveReady), pro = off(practiceReady), xo = off(exitReady);
+    return {
+      burstEl, nav, pct: doneCount / 6 * 100 + '%', progressLabel: doneCount + ' of 6', zoom: s.teacher ? 1.2 : 1, mainBasis: s.teacher ? '340px' : '520px', uRight,
+      degBg: deg ? ACC : 'transparent', degFg: deg ? 'var(--bg)' : MUT, radBg: deg ? 'transparent' : ACC, radFg: deg ? MUT : 'var(--bg)',
+      setDeg: () => this.setUnit('deg'), setRad: () => this.setUnit('rad'),
+      teacherLabel: s.teacher ? 'Teacher mode: on' : 'Teacher mode', teacherBg: s.teacher ? ACC : 'transparent', teacherFg: s.teacher ? 'var(--bg)' : 'var(--ink)', teacherBorder: s.teacher ? ACC : L,
+      teacherIcon: s.teacher ? 'lock_open' : (s.signedIn ? 'school' : 'lock'), teacherPressed: s.teacher ? 'true' : 'false',
+      teacherTip: s.teacher ? 'Turn Teacher mode off' : (s.signedIn ? 'Turn Teacher mode on' : 'Sign in with a PIN to turn on Teacher mode'),
+      toggleTeacher: () => this.toggleTeacher(), labRef: this.labRef,
+      resetLabel: s.confirmReset ? 'Click again to erase progress' : 'Reset progress',
+      reset: () => { if (!s.confirmReset) { this.setState({ confirmReset: true }); setTimeout(() => this.setState({ confirmReset: false }), 4000); return; }
+        try { localStorage.removeItem(this.storeKey()); } catch (e) {} this.setState(Object.assign(this.fresh(), { teacher: s.teacher })); },
+      isExplore: s.view === 'explore', isExplain: s.view === 'explain', isProve: s.view === 'prove', isPractice: s.view === 'practice', isExit: s.view === 'exit',
+      svgRef: this.svgRef, onGrab: this.onGrab, tri, angA: this.ang(s.th), angB: this.ang(90 - s.th),
+      sideA: (h * Math.sin(t)).toFixed(2), sideB: (h * Math.cos(t)).toFixed(2), sideC: h, decA: Math.sin(t).toFixed(3), decB: Math.cos(t).toFixed(3),
+      sl: s.sl, onSlider: e => this.setState({ sl: +e.target.value }), slAng: this.ang(s.sl), slComp: this.ang(90 - s.sl),
+      slVal: Math.sin(this.rad(s.sl)).toFixed(3), slBar: Math.sin(this.rad(s.sl)) * 100 + '%',
+      rows, notice: s.notice, onNotice: e => this.setState({ notice: e.target.value }),
+      exploreOff: eo.off, exploreOp: eo.op, exploreHint: exploreReady ? 'Ready when you are.' : 'Fill in every table cell correctly and write what you notice to continue.',
+      finishExplore: () => this.finish('explore'), finishExplain: () => this.finish('explain'),
+      parts, isPartA: s.pPart === 0, isPartB: s.pPart === 1, isPartC: s.pPart === 2, isPartD: s.pPart === 3,
+      walk, walkSteps, walkNextLabel: ps < 6 ? 'Next step' : 'On to the blanks',
+      walkBack: () => this.setState(x => ({ pStep: Math.max(0, x.pStep - 1) })),
+      walkNext: () => { if (ps < 6) { this.setState({ pStep: ps + 1 }); if (ps === 5) this.partDone(0); } else { this.partDone(0); this.setState({ pPart: 1 }); } },
+      blankRows, blanksMsg: !s.blanksChecked ? '' : blanksAll ? 'Every blank is correct.' : 'Some blanks need another look. They are outlined in red.', blanksColor: blanksAll ? G : BAD,
+      checkBlanks: () => { this.setState({ blanksChecked: true }); if (blanksAll) { this.partDone(1); setTimeout(() => this.setState({ pPart: 2 }), 900); } },
+      cards, orderMsg: s.orderMsg, orderColor: s.pDone[2] && s.orderMsg.indexOf('works') > -1 ? G : BAD,
+      checkOrder: () => { const pos = k => s.order.indexOf(k);
+        const good = pos(0) === 0 && pos(6) === 6 && pos(1) < pos(2) && pos(3) < pos(5) && pos(4) < pos(5);
+        this.setState({ orderMsg: good ? 'That order works. Each step follows from the ones before it.' : 'Not quite. Check that each step only uses facts from earlier steps.' });
+        if (good) { this.partDone(2); setTimeout(() => this.setState({ pPart: 3 }), 1100); } },
+      explainTxt: s.explainTxt, onExplain: e => this.setState({ explainTxt: e.target.value }), modelShown: s.modelShown,
+      modelOff: !explainOk && !s.teacher, modelOp: explainOk || s.teacher ? 1 : 0.45, showModel: () => { this.setState({ modelShown: true }); this.partDone(3); },
+      proveOff: po.off, proveOp: po.op, proveHint: proveReady ? 'Ready when you are.' : 'Finish all four parts to continue.', finishProve: () => this.finish('prove'),
+      probs, practiceScore: right + ' of ' + plist.length + ' correct so far.',
+      practiceOff: pro.off, practiceOp: pro.op, practiceHint: practiceReady ? 'All ten correct.' : 'Get all ten correct to continue.', finishPractice: () => this.finish('practice'),
+      exitTxt: s.exitTxt, onExit: e => this.setState({ exitTxt: e.target.value }), exitShown: s.exitShown,
+      exitModelOff: !exitOk && !s.teacher, exitModelOp: exitOk || s.teacher ? 1 : 0.45, showExit: () => this.setState({ exitShown: true }),
+      exitOff: xo.off, exitOp: xo.op, exitHint: exitReady ? '' : 'Write your answer, then compare it with the model.', finishExit: () => this.finish('exit'),
+      isWarmup: s.view === 'warmup', wsvgRef: this.wsvgRef, onGrabRay: this.onGrabRay, wprobs: w.list, wA: this.ang(s.wth), wB: this.ang(90 - s.wth),
+      ray: { x: 40 + 220 * Math.cos(wt), y: 250 - 220 * Math.sin(wt), aL: WX(40 + 120 * Math.cos(wm)), aT: WY(250 - 120 * Math.sin(wm)), bL: WX(40 + 120 * Math.cos(wn)), bT: WY(250 - 120 * Math.sin(wn)) },
+      warmAll: wReady, warmOff: wo.off, warmOp: wo.op, warmHint: wReady ? '' : 'Get all four correct to continue. ' + w.right + ' of ' + w.total + ' so far.', finishWarmup: () => this.finish('warmup'),
+      allDone: doneCount === 6
+    };
+  }
+}
+</script>
+</body>
+</html>
