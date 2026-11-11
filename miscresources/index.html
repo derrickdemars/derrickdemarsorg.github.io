@@ -136,7 +136,12 @@ button,textarea,input,select{font:inherit;letter-spacing:inherit;}
                         <span role="cell" class="c-type" style="color:var(--muted);font-size:14px;">{{ r.type }}</span>
                         <span role="cell" class="c-size" style="color:var(--muted);font-size:14px;white-space:nowrap;">{{ r.size }}</span>
                         <span role="cell" class="c-act" style="display:flex;gap:4px;justify-content:flex-end;">
-                          <a href="{{ r.file }}" download="{{ r.dl }}" aria-label="Download {{ r.name }}" title="Download" style="display:grid;place-items:center;width:40px;height:40px;border-radius:10px;border:2px solid var(--line);color:var(--ink);text-decoration:none;transition:transform var(--dur) ease,box-shadow var(--dur) ease;" style-hover="transform:translateY(var(--lift));box-shadow:var(--glow);"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:20px;">download</span></a>
+                          <sc-if value="{{ r.isPage }}">
+                            <a href="{{ r.file }}" target="_blank" rel="noopener" aria-label="Open {{ r.name }} (opens in a new tab)" title="Open" style="display:grid;place-items:center;width:40px;height:40px;border-radius:10px;border:2px solid var(--line);color:var(--ink);text-decoration:none;transition:transform var(--dur) ease,box-shadow var(--dur) ease;" style-hover="transform:translateY(var(--lift));box-shadow:var(--glow);"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:20px;">open_in_new</span></a>
+                          </sc-if>
+                          <sc-if value="{{ r.isFile }}">
+                            <a href="{{ r.file }}" download="{{ r.dl }}" aria-label="Download {{ r.name }}" title="Download" style="display:grid;place-items:center;width:40px;height:40px;border-radius:10px;border:2px solid var(--line);color:var(--ink);text-decoration:none;transition:transform var(--dur) ease,box-shadow var(--dur) ease;" style-hover="transform:translateY(var(--lift));box-shadow:var(--glow);"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:20px;">download</span></a>
+                          </sc-if>
                           <sc-if value="{{ teacher }}">
                             <button onClick="{{ r.edit }}" aria-label="Edit {{ r.name }}" title="Edit" style="display:grid;place-items:center;width:40px;height:40px;border-radius:10px;border:2px dashed var(--line);background:none;color:var(--ink);cursor:pointer;"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:20px;">edit</span></button>
                             <button onClick="{{ r.remove }}" aria-label="Delete {{ r.name }}" title="Delete" style="display:grid;place-items:center;width:40px;height:40px;border-radius:10px;border:2px dashed var(--line);background:none;color:var(--ink);cursor:pointer;"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:20px;">delete</span></button>
@@ -370,7 +375,7 @@ class Component extends DCLogic {
       const groups = R.categories.filter(g => noCat || s.cats.includes(g.id)).map(g => {
         const rows = this.sorted(mine.filter(it => it.categories.includes(g.id))).map(it => ({
           ...it, cls: 'mr-row' + (s.flash === it.id ? ' mr-flash' : ''), icon: R.typeIcon[it.type] || 'draft', date: R.fmtDate(it.uploaded), size: R.fmtSize(it.size),
-          dl: it.file.split('/').pop(), tip: (it.description ? it.description + ' · ' : '') + 'Keywords: ' + (it.keywords.join(', ') || 'none'),
+          dl: it.file.split('/').pop(), isPage: it.type === 'HTML', isFile: it.type !== 'HTML', tip: (it.description ? it.description + ' · ' : '') + 'Keywords: ' + (it.keywords.join(', ') || 'none'),
           edit: () => this.openEdit(it), remove: () => this.remove(it)
         }));
         return { ...g, ariaLabel: c.name + ': ' + g.name, rows, hasRows: rows.length > 0, noRows: rows.length === 0, emptyText: activeFilter ? 'No matches here.' : 'Nothing here yet.' };
