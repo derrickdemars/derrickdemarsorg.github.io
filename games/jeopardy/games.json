@@ -60,6 +60,23 @@
       "offline": "games/offline/Geometry - Intro to Trigonometry.html"
     },
     {
+      "id": "trig-applications",
+      "classes": [
+        "Geometry"
+      ],
+      "title": "Applications of Trigonometry",
+      "subtitle": "Missing angles, missing sides, solving triangles, and two-triangle problems",
+      "categories": [
+        "Find the Angle",
+        "Find the Side",
+        "Solve the Triangle",
+        "Two-Triangle Problems",
+        "Concepts & Strategy"
+      ],
+      "live": "games/Play.dc.html?bank=trig-applications",
+      "offline": "games/offline/Geometry - Applications of Trigonometry.html"
+    },
+    {
       "id": "quadratics",
       "classes": [
         "Algebra II"
