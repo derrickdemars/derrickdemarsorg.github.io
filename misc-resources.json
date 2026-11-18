@@ -42,6 +42,33 @@
       "file": "misc-resources/interactives/cofunction-lab.html",
       "size": 74664,
       "type": "HTML"
+    },
+    {
+      "id": "58c79c6e2d70",
+      "uploaded": "2026-11-18T13:30:00Z",
+      "updated": "2026-11-18T13:30:00Z",
+      "name": "Tile Lab: Distributive Property and Factoring",
+      "courses": [
+        "g7",
+        "g8"
+      ],
+      "categories": [
+        "inter"
+      ],
+      "description": "Algebra tiles and area models for the distributive property: expand, find factors and the GCF, factor, spot the mistake, work with negatives, and build freely in the sandbox.",
+      "keywords": [
+        "distributive property",
+        "algebra tiles",
+        "area model",
+        "factoring",
+        "GCF",
+        "factors",
+        "zero pairs",
+        "negatives"
+      ],
+      "file": "misc-resources/interactives/tile-lab.html",
+      "size": 109330,
+      "type": "HTML"
     }
   ]
 }
