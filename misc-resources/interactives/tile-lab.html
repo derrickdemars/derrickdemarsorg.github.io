@@ -23,7 +23,7 @@
 <style>
 :root{--bg:#131317;--surface:#1c1c22;--surface2:#27272f;--line:#33333c;--ink:#f3f2ee;--muted:#b6b5bf;--font:"Helvetica Neue",Helvetica,Arial,sans-serif;--lh:1.5;--ls:0;--lift:-3px;--dur:160ms;--tileborder:0px solid transparent;--grow:1.02;--fade:300ms;--shape-hover:0.34;--glow:0 0 0 1px rgba(255,255,255,0.12),0 0 20px rgba(255,255,255,0.12);--cg-geo:var(--glow);--cg-alg1:var(--glow);--cg-alg2:var(--glow);--cg-alg3:var(--glow);--cg-g7:var(--glow);--cg-g8:var(--glow);--t-g7:oklch(0.86 0.12 150);--t-g8:oklch(0.84 0.09 250);--t-alg1:oklch(0.86 0.11 60);--t-geo:oklch(0.83 0.1 300);--t-alg2:oklch(0.83 0.1 25);--t-alg3:oklch(0.92 0.12 95);color-scheme:dark;}
 /* Tile Lab colors: borders, the purple accent, area-model pastels, and right / try-again feedback. The pastels (area model, equation box, feedback) always carry dark text. The script swaps in the light-theme set. The tiles themselves (green x, yellow 1, red negative) are the same in both themes. */
-:root{--tl-edge:#6a6a7a;--tl-shadow:#000000;--tl-acc:#b9a6ff;--tl-on-acc:#15151a;--tl-acc-soft:#2a2540;--tl-acc-ring:#5a4a9a;--tl-line2:#55556a;--tl-xs:#BFE8C9;--tl-us:#FFE99A;--tl-ns:#F7C4C2;--tl-xh:#e4f5e8;--tl-uh:#fff6d1;--tl-nh:#FBDCDB;--tl-eq:#FFD23F;--tl-ok:#6fd6a0;--tl-okbg:#DDF5E3;--tl-bad:#ff8a8a;--tl-badbg:#FDE3E2;--tl-star:#8A6700;--tl-p1:oklch(0.75 0.16 25);--tl-p2:oklch(0.75 0.13 160);--tl-p3:oklch(0.75 0.13 240);}
+:root{--tl-grid:#ffffff;--tl-edge:#6a6a7a;--tl-shadow:#000000;--tl-acc:#b9a6ff;--tl-on-acc:#15151a;--tl-acc-soft:#2a2540;--tl-acc-ring:#5a4a9a;--tl-line2:#55556a;--tl-xs:#BFE8C9;--tl-us:#FFE99A;--tl-ns:#F7C4C2;--tl-xh:#e4f5e8;--tl-uh:#fff6d1;--tl-nh:#FBDCDB;--tl-eq:#FFD23F;--tl-ok:#6fd6a0;--tl-okbg:#DDF5E3;--tl-bad:#ff8a8a;--tl-badbg:#FDE3E2;--tl-star:#8A6700;--tl-p1:oklch(0.75 0.16 25);--tl-p2:oklch(0.75 0.13 160);--tl-p3:oklch(0.75 0.13 240);}
 html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);line-height:var(--lh);letter-spacing:var(--ls);}
 a{color:var(--ink);}
 a:hover{color:var(--ink);}
@@ -209,7 +209,7 @@ button,textarea,input,select{font:inherit;letter-spacing:inherit;}
     </sc-if>
 
     <sc-if value="{{ show.eq }}" hint-placeholder-val="{{ false }}">
-      <div style="align-self:flex-start;font-weight:800;font-size:clamp(26px,4vw,38px);line-height:1.15;background:var(--tl-eq);color:#2B2140;border:3px solid var(--tl-edge);border-radius:16px;padding:8px 22px">{{ eq }}</div>
+      <div style="align-self:flex-start;font-weight:800;font-size:clamp(26px,4vw,38px);line-height:1.15;background:var(--tl-eq);color:#2B2140;border:3px solid var(--tl-grid);border-radius:16px;padding:8px 22px">{{ eq }}</div>
     </sc-if>
 
     <sc-if value="{{ show.answer }}" hint-placeholder-val="{{ false }}">
@@ -447,8 +447,8 @@ class Component extends DCLogic {
   // Colors that change with the hub's dark and light themes. Tile colors stay the same in both.
   paint(light) {
     if (this._light === light) return; this._light = light;
-    const c = light ? { edge: '#2B2140', shadow: '#2B2140', acc: '#6B4EE6', 'on-acc': '#ffffff', 'acc-soft': '#F4F0FF', 'acc-ring': '#D9D0FF', line2: '#C9C0E0', xs: '#BFE8C9', us: '#FFE99A', ns: '#F7C4C2', xh: '#e4f5e8', uh: '#fff6d1', nh: '#FBDCDB', eq: '#FFF3C4', ok: '#1F7A38', okbg: '#DDF5E3', bad: '#B02A28', badbg: '#FDE3E2', star: '#8A6700', p1: 'oklch(0.62 0.19 25)', p2: 'oklch(0.58 0.14 160)', p3: 'oklch(0.6 0.15 240)' }
-                    : { edge: '#6a6a7a', shadow: '#000000', acc: '#b9a6ff', 'on-acc': '#15151a', 'acc-soft': '#2a2540', 'acc-ring': '#5a4a9a', line2: '#55556a', xs: '#BFE8C9', us: '#FFE99A', ns: '#F7C4C2', xh: '#e4f5e8', uh: '#fff6d1', nh: '#FBDCDB', eq: '#FFD23F', ok: '#6fd6a0', okbg: '#DDF5E3', bad: '#ff8a8a', badbg: '#FDE3E2', star: '#8A6700', p1: 'oklch(0.75 0.16 25)', p2: 'oklch(0.75 0.13 160)', p3: 'oklch(0.75 0.13 240)' };
+    const c = light ? { grid: '#2B2140', edge: '#2B2140', shadow: '#2B2140', acc: '#6B4EE6', 'on-acc': '#ffffff', 'acc-soft': '#F4F0FF', 'acc-ring': '#D9D0FF', line2: '#C9C0E0', xs: '#BFE8C9', us: '#FFE99A', ns: '#F7C4C2', xh: '#e4f5e8', uh: '#fff6d1', nh: '#FBDCDB', eq: '#FFF3C4', ok: '#1F7A38', okbg: '#DDF5E3', bad: '#B02A28', badbg: '#FDE3E2', star: '#8A6700', p1: 'oklch(0.62 0.19 25)', p2: 'oklch(0.58 0.14 160)', p3: 'oklch(0.6 0.15 240)' }
+                    : { grid: '#ffffff', edge: '#6a6a7a', shadow: '#000000', acc: '#b9a6ff', 'on-acc': '#15151a', 'acc-soft': '#2a2540', 'acc-ring': '#5a4a9a', line2: '#55556a', xs: '#BFE8C9', us: '#FFE99A', ns: '#F7C4C2', xh: '#e4f5e8', uh: '#fff6d1', nh: '#FBDCDB', eq: '#FFD23F', ok: '#6fd6a0', okbg: '#DDF5E3', bad: '#ff8a8a', badbg: '#FDE3E2', star: '#8A6700', p1: 'oklch(0.75 0.16 25)', p2: 'oklch(0.75 0.13 160)', p3: 'oklch(0.75 0.13 240)' };
     const r = document.documentElement; for (const k in c) r.style.setProperty('--tl-' + k, c[k]);
   }
   toggleTeacher() {
@@ -636,10 +636,10 @@ class Component extends DCLogic {
     return rows;
   }
   area(o) {
-    const cell = (w, neg, first) => ({ minWidth: w, whiteSpace: 'nowrap', height: o.h, display: 'flex', alignItems: 'center', justifyContent: 'center', border: '3px solid #2B2140', color: '#2B2140', boxSizing: 'border-box', background: neg ? 'var(--tl-ns)' : first && !o.plain1 ? 'var(--tl-xs)' : 'var(--tl-us)', boxShadow: (first ? o.ring1 : o.ring2) ? 'inset 0 0 0 4px ' + (first ? o.ring1 : o.ring2) : 'none', borderRadius: 0, marginLeft: first ? 0 : -3, fontSize: 20, padding: '0 6px', transition: 'background .4s' });
-    const hd = (v, bg, ex) => Object.assign({ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 44, padding: '0 12px', boxSizing: 'border-box', color: v === '?' ? 'var(--ink)' : '#2B2140', background: v === '?' ? 'var(--surface2)' : /^[−-]/.test(String(v)) ? 'var(--tl-nh)' : bg, transition: 'background .4s' }, ex);
+    const cell = (w, neg, first) => ({ minWidth: w, whiteSpace: 'nowrap', minHeight: o.h, display: 'flex', alignItems: 'center', justifyContent: 'center', border: '3px solid var(--tl-grid)', color: '#2B2140', boxSizing: 'border-box', background: neg ? 'var(--tl-ns)' : first && !o.plain1 ? 'var(--tl-xs)' : 'var(--tl-us)', boxShadow: (first ? o.ring1 : o.ring2) ? 'inset 0 0 0 4px ' + (first ? o.ring1 : o.ring2) : 'none', borderRadius: 0, marginLeft: -3, marginTop: -3, fontSize: 20, padding: '0 6px', transition: 'background .4s' });
+    const hd = (v, bg, ex) => Object.assign({ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 44, padding: '0 12px', border: '3px solid var(--tl-grid)', marginLeft: -3, boxSizing: 'border-box', color: v === '?' ? 'var(--ink)' : '#2B2140', background: v === '?' ? 'var(--surface2)' : /^[−-]/.test(String(v)) ? 'var(--tl-nh)' : bg, transition: 'background .4s' }, ex);
     const three = o.t3 != null, none = { display: 'none' };
-    return { grid: { display: 'grid', gridTemplateColumns: three ? 'auto auto auto auto' : 'auto auto auto', justifyContent: 'start', fontFamily: 'var(--font)', fontWeight: 800, fontSize: 22 }, t3: three ? o.t3 : '', c3: three ? o.c3 : '', h3: three ? hd(o.t3, 'var(--tl-uh)', { marginRight: 3 }) : none, s3: three ? cell(o.w3, false, false) : none, side: o.side, t1: o.t1, t2: o.t2, c1: o.c1, c2: o.c2, h1: hd(o.t1, o.plain1 ? 'var(--tl-uh)' : 'var(--tl-xh)', { borderLeft: '3px solid var(--tl-edge)' }), h2: hd(o.t2, 'var(--tl-uh)', { marginRight: three ? 0 : 3 }), hs: hd(o.side, 'var(--tl-uh)', { borderTop: '3px solid var(--tl-edge)', minWidth: 52 }), s1: cell(o.w1, o.neg1, true), s2: cell(o.w2, o.neg2, false), wrap: { display: 'flex', flexDirection: 'column', gap: 8, opacity: o.hidden ? 0 : 1, transition: 'opacity .5s' } };
+    return { grid: { display: 'grid', gridTemplateColumns: three ? 'auto auto auto auto' : 'auto auto auto', justifyContent: 'start', fontFamily: 'var(--font)', fontWeight: 800, fontSize: 22 }, t3: three ? o.t3 : '', c3: three ? o.c3 : '', h3: three ? hd(o.t3, 'var(--tl-uh)', {}) : none, s3: three ? cell(o.w3, false, false) : none, side: o.side, t1: o.t1, t2: o.t2, c1: o.c1, c2: o.c2, h1: hd(o.t1, o.plain1 ? 'var(--tl-uh)' : 'var(--tl-xh)', {}), h2: hd(o.t2, 'var(--tl-uh)', {}), hs: hd(o.side, 'var(--tl-uh)', { marginLeft: 0, marginTop: -3, minWidth: 52, minHeight: o.h }), s1: cell(o.w1, o.neg1, true), s2: cell(o.w2, o.neg2, false), wrap: { display: 'flex', flexDirection: 'column', gap: 8, opacity: o.hidden ? 0 : 1, transition: 'opacity .5s' } };
   }
   tree(n, step) {
     const ps = this.primes(n), nodes = [], lines = [];
