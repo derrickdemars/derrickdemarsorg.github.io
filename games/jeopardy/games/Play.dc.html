@@ -241,7 +241,7 @@ button,input{font-family:inherit}
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;pointStep&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:100,&quot;tsType&quot;:&quot;number&quot;,&quot;options&quot;:[50,100,200],&quot;section&quot;:&quot;Game&quot;}}">
 const GREEK = ['Gamma', 'Lambda', 'Omega', 'Delta', 'Sigma', 'Theta'];
-const MAX_TEAMS = 6, DEDUCT = 100, M = '\u2212';
+const MAX_TEAMS = 6, PENALTY = 0.5, M = '\u2212';
 const fmt = n => n < 0 ? M + Math.abs(n) : String(n);
 const seedsFrom = (base, n) => Array.from({ length: n }, (_, i) => (base * 31 + i * 7919) >>> 0);
 const plainName = s => String(s || '').replace(/\\\([^)]*\\\)\s*/g, '').trim();
@@ -399,6 +399,8 @@ class Component extends DCLogic {
   closePatch(st, c) { return { used: st.used.includes(c.ci * 5 + c.ri) ? st.used : [...st.used, c.ci * 5 + c.ri], turn: (st.turn + 1) % st.teams.length }; }
   toSteal(c, next) { const cur = { ...c, team: next, tried: [...c.tried, next], isSteal: true }; this.setState({ cur, timeLeft: Math.ceil(this.fullTime(cur) / 2) }); this.startTimer(); }
   pointsFor(c) { const val = this.state.bank.values[c.ri]; return c.wager != null ? c.wager : (c.isSteal ? val / 2 : val); }
+  // A wrong answer costs PENALTY (50%) of the tile's full value, on a first try or a steal. A Daily Double costs the whole wager.
+  lossFor(c) { return c.wager != null ? c.wager : Math.round(this.state.bank.values[c.ri] * PENALTY); }
   correct() {
     const c = this.state.cur; if (!c || c.pendingWager) return; const pts = this.pointsFor(c);
     this.sfxAward(); this.stopTimer();
@@ -407,7 +409,7 @@ class Component extends DCLogic {
   }
   wrong() {
     const c = this.state.cur; if (!c || c.pendingWager) return; this.sfxBuzz(); this.stopTimer();
-    const next = this.nextStealer(c), closing = c.wager != null || next < 0, loss = c.wager != null ? c.wager : DEDUCT;
+    const next = this.nextStealer(c), closing = c.wager != null || next < 0, loss = this.lossFor(c);
     this.mutate(st => ({ teams: st.teams.map((t, i) => i === c.team ? { ...t, score: Math.max(0, t.score - loss) } : t), ...(closing ? this.closePatch(st, c) : {}) }));
     this.flashTeam(c.team, M + '$' + loss);
     if (closing) this.setState({ cur: null, stage: 0 }); else this.toSteal(c, next);
@@ -486,7 +488,7 @@ class Component extends DCLogic {
       refD30: tex(T('30^\\circ')), refD45: tex(T('45^\\circ')), refD60: tex(T('60^\\circ')), refHalf: tex(T('\\tfrac{1}{2}')), refR2: tex(T('\\tfrac{\\sqrt{2}}{2}')), refR3: tex(T('\\tfrac{\\sqrt{3}}{2}')), refT30: tex(T('\\tfrac{\\sqrt{3}}{3}')), refT60: tex(T('\\sqrt{3}')),
       showAnswer: s.stage >= 1, showSteps: s.stage >= 2, showRevealBtn: s.stage < 2,
       revealLabel: s.stage === 0 ? 'Reveal Answer' : 'Show Steps', reveal: () => this.reveal(),
-      correctLabel: `Correct (+$${pts})`, wrongLabel: `Wrong (${M}$${c && c.wager != null ? c.wager : DEDUCT})`,
+      correctLabel: `Correct (+$${pts})`, wrongLabel: `Wrong (${M}$${c ? this.lossFor(c) : 0})`,
       correct: () => this.correct(), wrong: () => this.wrong(), decline: () => this.decline(), pass: () => this.pass(), back: () => this.back(),
       timeText: this.timerSecs() === 0 ? '' : `${mm}:${ss < 10 ? '0' : ''}${ss}`, timerColor: s.timeLeft <= 10 ? '#f87171' : 'var(--jp-text)',
       timerBtnLabel: this.timerSecs() === 0 ? 'No timer' : s.timeLeft === 0 ? 'Restart' : s.running ? 'Pause' : 'Resume',
