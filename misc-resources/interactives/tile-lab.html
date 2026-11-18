@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<base href="/">
+<script>window.HUB_LAUNCH=true;</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>@view-transition{navigation:auto;}</style>
+<script src="hub-state.js"></script>
+<script type="text/javascript">(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window, document, "clarity", "script", "za02jiv9ma");</script>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<title>Tile Lab | Dr. DeMars | Math Hub</title>
+<meta name="description" content="Tile Lab: algebra tiles and area models for the distributive property and factoring.">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,500,1,0">
+<link rel="stylesheet" href="https://fonts.cdnfonts.com/css/opendyslexic">
+<script src="hub-state.js"></script>
+<style>
+:root{--bg:#131317;--surface:#1c1c22;--surface2:#27272f;--line:#33333c;--ink:#f3f2ee;--muted:#b6b5bf;--font:"Helvetica Neue",Helvetica,Arial,sans-serif;--lh:1.5;--ls:0;--lift:-3px;--dur:160ms;--tileborder:0px solid transparent;--grow:1.02;--fade:300ms;--shape-hover:0.34;--glow:0 0 0 1px rgba(255,255,255,0.12),0 0 20px rgba(255,255,255,0.12);--cg-geo:var(--glow);--cg-alg1:var(--glow);--cg-alg2:var(--glow);--cg-alg3:var(--glow);--cg-g7:var(--glow);--cg-g8:var(--glow);--t-g7:oklch(0.86 0.12 150);--t-g8:oklch(0.84 0.09 250);--t-alg1:oklch(0.86 0.11 60);--t-geo:oklch(0.83 0.1 300);--t-alg2:oklch(0.83 0.1 25);--t-alg3:oklch(0.92 0.12 95);color-scheme:dark;}
+/* Tile Lab colors: borders, the purple accent, area-model tints, and right / try-again feedback. The script swaps in the light-theme set. The tiles themselves (green x, yellow 1, red negative) are the same in both themes. */
+:root{--tl-edge:#6a6a7a;--tl-shadow:#000000;--tl-acc:#b9a6ff;--tl-on-acc:#15151a;--tl-acc-soft:#2a2540;--tl-acc-ring:#5a4a9a;--tl-line2:#55556a;--tl-xs:#1f4a2b;--tl-us:#4d4010;--tl-ns:#5a2423;--tl-xh:#183a22;--tl-uh:#3b3210;--tl-nh:#47201f;--tl-eq:#3b3210;--tl-ok:#6fd6a0;--tl-okbg:#173524;--tl-bad:#ff8a8a;--tl-badbg:#432020;--tl-star:#FFD23F;--tl-p1:oklch(0.75 0.16 25);--tl-p2:oklch(0.75 0.13 160);--tl-p3:oklch(0.75 0.13 240);}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);line-height:var(--lh);letter-spacing:var(--ls);}
+a{color:var(--ink);}
+a:hover{color:var(--ink);}
+:focus-visible{outline:3px solid var(--ink);outline-offset:3px;}
+a:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible{box-shadow:var(--glow);}
+@keyframes hubfade{from{opacity:0}to{opacity:1}}
+::view-transition-old(root),::view-transition-new(root){animation-duration:var(--vt,280ms);animation-timing-function:cubic-bezier(0.45,0,0.55,1);}
+::view-transition-group(site-header){animation-duration:0s;}
+button,textarea,input,select{font:inherit;letter-spacing:inherit;}
+@keyframes tl-fall{to{transform:translateY(105vh) rotate(540deg)}}
+@keyframes tl-pop{from{transform:scale(.6);opacity:0}}
+</style>
+</helmet>
+<div style="min-height:100vh;display:flex;flex-direction:column;background:var(--bg);color:var(--ink);font-family:var(--font);">
+  <a href="misc-resources/interactives/tile-lab.html#main" style="position:absolute;left:16px;top:-120px;z-index:200;padding:14px 20px;border-radius:12px;background:var(--ink);color:var(--bg);font-size:17px;font-weight:700;text-decoration:none;" style-focus="top:16px;">Skip to main content</a>
+  <dc-import name="Site Header" active="miscresources" hint-size="100%,76px" style="position:sticky;top:0;z-index:50;display:block;"></dc-import>
+  <main id="main" tabindex="-1" style="animation:hubfade var(--fade) ease both;flex:1;width:100%;max-width:1400px;margin:0 auto;box-sizing:border-box;padding:28px clamp(12px,3vw,48px) 72px;outline:none;">
+<div ref="{{ labRef }}" style="font-size:18px;font-weight:500;line-height:var(--lh)">
+<div style="display:contents">{{ cele }}</div>
+<div style="max-width:1120px;margin:0 auto;zoom:{{ zoom }};display:flex;flex-direction:column;gap:18px">
+  <div style="display:flex;flex-wrap:wrap;align-items:center;gap:12px 14px;padding:0 0 16px;border-bottom:2px solid var(--line)">
+    <div style="display:flex;align-items:center;gap:12px;flex:1 1 250px;min-width:0">
+      <div aria-hidden="true" style="display:flex;gap:3px;align-items:flex-end;flex:none">
+        <div style="width:30px;height:16px;background:#3DB55B;border:2px solid #1F7A38;border-radius:5px;box-sizing:border-box"></div>
+        <div style="width:16px;height:16px;background:#FFD23F;border:2px solid #B88A00;border-radius:5px;box-sizing:border-box"></div>
+        <div style="width:16px;height:16px;background:#D23532;border:2px solid #8F1F1D;border-radius:5px;box-sizing:border-box"></div>
+      </div>
+      <div style="min-width:0">
+        <div style="font-weight:700;font-size:28px;line-height:1.1">Tile Lab</div>
+        <div style="font-size:14px;font-weight:400;color:var(--muted)">Distributive property and factoring</div>
+      </div>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:10px;font-weight:800;font-size:18px;align-items:center">
+      <div style="background:#FFD23F;color:#2B2140;border:3px solid var(--tl-edge);border-radius:14px;padding:4px 14px;box-shadow:0 4px 0 var(--tl-shadow);white-space:nowrap;flex-shrink:0"><span aria-hidden="true">★</span> <span style="position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)">Stars: </span>{{ stars }}</div>
+      <div style="background:var(--surface2);border:3px solid var(--tl-edge);border-radius:14px;padding:4px 14px;box-shadow:0 4px 0 var(--tl-shadow);white-space:nowrap;flex-shrink:0">Streak {{ streak }}</div>
+      <button onClick="{{ goProgress }}" style="font:inherit;background:var(--tl-acc);color:var(--tl-on-acc);border:3px solid var(--tl-edge);border-radius:14px;padding:4px 14px;box-shadow:0 4px 0 var(--tl-shadow);cursor:pointer;white-space:nowrap;flex-shrink:0" style-active="transform:translateY(3px);box-shadow:0 1px 0 var(--tl-shadow)">Progress</button>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center">
+      <button onClick="{{ toggleTeacher }}" aria-pressed="{{ teacherPressed }}" title="{{ teacherTip }}" style="display:flex;align-items:center;gap:6px;min-height:40px;font:600 14px var(--font);border:2px solid {{ teacherBorder }};border-radius:12px;padding:8px 14px;cursor:pointer;background:{{ teacherBg }};color:{{ teacherFg }}"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:18px">{{ teacherIcon }}</span>{{ teacherLabel }}</button>
+      <sc-if value="{{ teacher }}" hint-placeholder-val="{{ false }}">
+        <button onClick="{{ resetAll }}" style="min-height:40px;font:600 14px var(--font);border:2px solid var(--line);border-radius:12px;padding:8px 14px;cursor:pointer;background:transparent;color:var(--muted)">{{ resetLabel }}</button>
+      </sc-if>
+    </div>
+  </div>
+
+  <nav aria-label="Tile Lab levels" style="display:flex;flex-wrap:wrap;gap:10px">
+    <sc-for list="{{ nav }}" as="n" hint-placeholder-count="9">
+      <button onClick="{{ n.go }}" aria-current="{{ n.cur }}" style="{{ n.style }}">
+        <span style="font-weight:800;font-size:19px;line-height:1.1">{{ n.label }}</span>
+        <span style="font-size:14px;font-weight:700">{{ n.sub }}</span>
+      </button>
+    </sc-for>
+  </nav>
+
+  <section aria-label="Tile Lab activity" style="background:var(--surface);border:3px solid var(--tl-edge);border-radius:26px;box-shadow:0 7px 0 var(--tl-shadow);padding:clamp(18px,3vw,34px);display:flex;flex-direction:column;gap:20px">
+    <div>
+      <h1 style="font-weight:800;font-size:clamp(28px,4vw,40px);line-height:1.1;margin:0 0 6px">{{ title }}</h1>
+      <p style="margin:0;max-width:760px;text-wrap:pretty">{{ blurb }}</p>
+    </div>
+
+    <sc-if value="{{ show.tabs }}" hint-placeholder-val="{{ true }}">
+      <div style="display:flex;flex-wrap:wrap;gap:8px">
+        <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="4">
+          <button onClick="{{ t.go }}" style="{{ t.style }}">{{ t.label }}</button>
+        </sc-for>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ show.picker }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px">
+        <span style="font-weight:800">Examples (teacher only)</span>
+        <sc-for list="{{ picker }}" as="t" hint-placeholder-count="4">
+          <button onClick="{{ t.go }}" style="{{ t.style }}">{{ t.label }}</button>
+        </sc-for>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ show.steppers }}" hint-placeholder-val="{{ true }}">
+      <div style="display:flex;flex-wrap:wrap;gap:12px 22px">
+        <sc-for list="{{ steppers }}" as="s" hint-placeholder-count="2">
+          <div style="display:flex;align-items:center;gap:8px">
+            <span style="font-weight:800">{{ s.label }}</span>
+            <button onClick="{{ s.dec }}" style="width:44px;height:44px;border-radius:12px;border:3px solid var(--tl-edge);background:var(--surface2);color:var(--ink);font-size:24px;font-weight:800;cursor:pointer;line-height:1" style-active="transform:translateY(2px)">−</button>
+            <span style="min-width:38px;text-align:center;font-weight:800;font-size:26px">{{ s.val }}</span>
+            <button onClick="{{ s.inc }}" style="width:44px;height:44px;border-radius:12px;border:3px solid var(--tl-edge);background:var(--surface2);color:var(--ink);font-size:24px;font-weight:800;cursor:pointer;line-height:1" style-active="transform:translateY(2px)">+</button>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ show.prompt }}" hint-placeholder-val="{{ true }}">
+      <div style="font-weight:700;font-size:clamp(22px,3vw,28px);line-height:1.25;text-wrap:pretty">{{ prompt }}</div>
+    </sc-if>
+
+    <sc-if value="{{ show.lists }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <sc-for list="{{ lists }}" as="L" hint-placeholder-count="2">
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div style="font-weight:800">{{ L.title }}</div>
+            <div style="overflow-x:auto;padding-bottom:6px">
+              <div style="{{ L.wrap }}">
+                <svg width="{{ L.w }}" height="{{ L.h }}" style="display:block;overflow:visible">
+                  <sc-for list="{{ L.arcs }}" as="p" hint-placeholder-count="3">
+                    <path d="{{ p.d }}" style="stroke:{{ p.color }}" stroke-width="3" stroke-linecap="round" fill="none"></path>
+                  </sc-for>
+                </svg>
+                <div style="{{ L.row }}">
+                  <sc-for list="{{ L.chips }}" as="c" hint-placeholder-count="6">
+                    <button onClick="{{ c.pick }}" style="{{ c.style }}">{{ c.n }}</button>
+                  </sc-for>
+                </div>
+              </div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ show.trees }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-wrap:wrap;gap:24px 56px">
+        <sc-for list="{{ trees }}" as="T" hint-placeholder-count="2">
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="{{ T.style }}">
+              <sc-for list="{{ T.lines }}" as="l" hint-placeholder-count="0"><div style="{{ l.style }}"></div></sc-for>
+              <sc-for list="{{ T.nodes }}" as="n" hint-placeholder-count="1"><div style="{{ n.style }}">{{ n.v }}</div></sc-for>
+            </div>
+            <div style="font-weight:800;font-size:22px;min-height:30px">{{ T.caption }}</div>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ show.palette }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-wrap:wrap;align-items:center;gap:12px;background:var(--tl-acc-soft);border:3px solid var(--tl-edge);border-radius:16px;padding:12px 16px">
+        <span style="font-weight:800">Tiles</span>
+        <sc-for list="{{ palette }}" as="p" hint-placeholder-count="2">
+          <div draggable="true" role="button" tabindex="0" aria-label="{{ p.aria }}" onDragStart="{{ p.start }}" onClick="{{ p.add }}" onKeyDown="{{ p.key }}" style="{{ p.style }}">{{ p.label }}</div>
+        </sc-for>
+        <span style="font-size:15px">Drag into a row, or tap a row and then tap a tile. Tap a placed tile to remove it.</span>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ show.irows }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <sc-for list="{{ irows }}" as="r" hint-placeholder-count="1">
+          <div role="group" tabindex="0" aria-label="{{ r.aria }}" onClick="{{ r.pick }}" onKeyDown="{{ r.key }}" onDragOver="{{ r.over }}" onDrop="{{ r.drop }}" style="{{ r.style }}">
+            <sc-for list="{{ r.tiles }}" as="t" hint-placeholder-count="0"><div role="button" tabindex="0" aria-label="{{ t.aria }}" onClick="{{ t.remove }}" onKeyDown="{{ t.key }}" style="{{ t.style }}">{{ t.label }}</div></sc-for>
+            <span style="font-size:15px;color:var(--muted)">{{ r.hint }}</span>
+            <span style="flex:1"></span>
+            <button onClick="{{ r.del }}" style="background:none;border:none;color:var(--muted);font-size:14px;font-weight:800;cursor:pointer;padding:10px 6px;text-decoration:underline">Remove row</button>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ show.stage }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-wrap:wrap;gap:24px 48px;align-items:flex-start">
+        <sc-for list="{{ boards }}" as="B" hint-placeholder-count="1">
+          <div style="display:flex;flex-direction:column;gap:8px;max-width:100%">
+            <div style="font-size:14px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)">{{ B.label }}</div>
+            <div data-board="1" style="display:flex;flex-direction:column;gap:4px;overflow-x:auto;padding-bottom:6px">
+              <sc-for list="{{ B.rows }}" as="r" hint-placeholder-count="1">
+                <div style="display:flex;gap:4px;min-height:14px">
+                  <sc-for list="{{ r.tiles }}" as="t" hint-placeholder-count="0"><div data-tile="{{ t.kind }}" style="{{ t.style }}">{{ t.label }}</div></sc-for>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </sc-for>
+        <sc-if value="{{ show.am }}" hint-placeholder-val="{{ false }}">
+          <div style="{{ am.wrap }}">
+            <div style="font-size:14px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)">Area model</div>
+            <div style="{{ am.grid }}">
+              <div></div><div style="{{ am.h1 }}">{{ am.t1 }}</div><div style="{{ am.h2 }}">{{ am.t2 }}</div><div style="{{ am.h3 }}">{{ am.t3 }}</div>
+              <div style="{{ am.hs }}">{{ am.side }}</div>
+              <div style="{{ am.s1 }}">{{ am.c1 }}</div>
+              <div style="{{ am.s2 }}">{{ am.c2 }}</div>
+              <div style="{{ am.s3 }}">{{ am.c3 }}</div>
+            </div>
+          </div>
+        </sc-if>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ show.eq }}" hint-placeholder-val="{{ false }}">
+      <div style="align-self:flex-start;font-weight:800;font-size:clamp(26px,4vw,38px);line-height:1.15;background:var(--tl-eq);border:3px solid var(--tl-edge);border-radius:16px;padding:8px 22px">{{ eq }}</div>
+    </sc-if>
+
+    <sc-if value="{{ show.answer }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px;font-weight:800;font-size:28px">
+        <sc-for list="{{ answer }}" as="a" hint-placeholder-count="2">
+          <sc-if value="{{ a.isText }}" hint-placeholder-val="{{ true }}"><span>{{ a.text }}</span></sc-if>
+          <sc-if value="{{ a.isInput }}" hint-placeholder-val="{{ false }}"><input type="text" autocomplete="off" value="{{ a.value }}" onChange="{{ a.change }}" onKeyDown="{{ a.key }}" disabled="{{ a.disabled }}" style="width:70px;height:52px;text-align:center;font-weight:800;font-size:26px;border:3px solid var(--tl-edge);border-radius:12px;background:var(--surface2);color:var(--ink);box-sizing:border-box;outline:none" style-focus="border-color:var(--tl-acc);box-shadow:0 0 0 4px var(--tl-acc-ring)"></sc-if>
+        </sc-for>
+        <sc-if value="{{ show.check }}" hint-placeholder-val="{{ false }}">
+          <button onClick="{{ check }}" style="background:var(--tl-acc);color:var(--tl-on-acc);border:3px solid var(--tl-edge);border-radius:14px;padding:9px 24px;font-size:18px;font-weight:800;box-shadow:0 4px 0 var(--tl-shadow);cursor:pointer;margin-left:6px" style-active="transform:translateY(3px);box-shadow:0 1px 0 var(--tl-shadow)">Check</button>
+        </sc-if>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ gfb.show }}" hint-placeholder-val="{{ false }}">
+      <div style="{{ gfb.style }}">{{ gfb.text }}</div>
+    </sc-if>
+
+    <sc-if value="{{ show.actions }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-wrap:wrap;gap:12px">
+        <sc-for list="{{ actions }}" as="b" hint-placeholder-count="1">
+          <button onClick="{{ b.go }}" disabled="{{ b.disabled }}" style="{{ b.style }}">{{ b.label }}</button>
+        </sc-for>
+        <sc-if value="{{ hasStep }}" hint-placeholder-val="{{ false }}"><span style="align-self:center;font-size:16px;font-weight:800;color:var(--ink)">{{ stepLabel }}</span></sc-if>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ show.note }}" hint-placeholder-val="{{ false }}">
+      <div style="max-width:820px;text-wrap:pretty">{{ note }}</div>
+    </sc-if>
+
+    <sc-if value="{{ pf.show }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-direction:column;gap:12px;align-items:flex-start">
+        <sc-if value="{{ pf.fbShow }}" hint-placeholder-val="{{ false }}">
+          <div style="{{ pf.fbStyle }}"><span>{{ pf.fbText }}</span><span style="font-size:24px;letter-spacing:2px;color:var(--tl-star)">{{ pf.starText }}</span></div>
+        </sc-if>
+        <sc-if value="{{ pf.keyShow }}" hint-placeholder-val="{{ false }}">
+          <div style="background:var(--ink);color:var(--bg);border-radius:14px;padding:10px 16px;max-width:820px"><strong>Answer key:</strong> {{ pf.key }}</div>
+        </sc-if>
+        <sc-if value="{{ pf.hintShow }}" hint-placeholder-val="{{ false }}">
+          <div style="background:var(--tl-acc-soft);border:3px dashed var(--tl-acc);border-radius:14px;padding:10px 16px;max-width:820px"><strong>Hint:</strong> {{ pf.hint }}</div>
+        </sc-if>
+        <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center">
+          <button onClick="{{ pf.back }}" disabled="{{ pf.backOff }}" style="{{ pf.backStyle }}">Previous problem</button>
+          <sc-if value="{{ pf.hintBtn }}" hint-placeholder-val="{{ false }}">
+            <button onClick="{{ pf.askHint }}" style="background:var(--surface2);color:var(--ink);border:3px solid var(--tl-edge);border-radius:14px;padding:9px 24px;font-size:18px;font-weight:800;box-shadow:0 4px 0 var(--tl-shadow);cursor:pointer" style-active="transform:translateY(3px);box-shadow:0 1px 0 var(--tl-shadow)">Hint</button>
+          </sc-if>
+          <sc-if value="{{ pf.chkShow }}" hint-placeholder-val="{{ false }}">
+            <button onClick="{{ pf.chk }}" style="background:var(--surface2);color:var(--ink);border:3px solid var(--tl-edge);border-radius:14px;padding:9px 24px;font-size:18px;font-weight:800;box-shadow:0 4px 0 var(--tl-shadow);cursor:pointer" style-active="transform:translateY(3px);box-shadow:0 1px 0 var(--tl-shadow)">{{ pf.chkText }}</button>
+          </sc-if>
+          <sc-if value="{{ pf.done }}" hint-placeholder-val="{{ false }}">
+            <button onClick="{{ pf.next }}" style="background:var(--tl-acc);color:var(--tl-on-acc);border:3px solid var(--tl-edge);border-radius:14px;padding:9px 24px;font-size:18px;font-weight:800;box-shadow:0 4px 0 var(--tl-shadow);cursor:pointer" style-active="transform:translateY(3px);box-shadow:0 1px 0 var(--tl-shadow)">Next problem</button>
+          </sc-if>
+          <sc-if value="{{ pf.lvlDone }}" hint-placeholder-val="{{ false }}">
+            <button onClick="{{ pf.goNext }}" style="background:#3DB55B;color:#0B3316;border:3px solid var(--tl-edge);border-radius:14px;padding:9px 24px;font-size:18px;font-weight:800;box-shadow:0 4px 0 var(--tl-shadow);cursor:pointer" style-active="transform:translateY(3px);box-shadow:0 1px 0 var(--tl-shadow)">{{ pf.lvlText }}</button>
+          </sc-if>
+          <span style="font-size:16px;font-weight:800;color:var(--ink)">{{ pf.count }}</span>
+          <span style="font-size:16px;font-weight:800;color:var(--muted)">{{ pf.progress }}</span>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ show.badges }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="font-weight:800">{{ badgeTitle }}</div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px">
+          <sc-for list="{{ badges }}" as="b" hint-placeholder-count="9"><div title="{{ b.title }}" style="{{ b.style }}">{{ b.label }}</div></sc-for>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ show.finish }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-direction:column;gap:20px;align-items:flex-start">
+        <label style="display:flex;flex-wrap:wrap;align-items:center;gap:12px;font-weight:800">Name
+          <input type="text" value="{{ name }}" onChange="{{ setName }}" style="height:50px;width:min(320px,70vw);padding:0 14px;font-size:20px;font-weight:800;border:3px solid var(--tl-edge);border-radius:12px;background:var(--surface2);color:var(--ink);box-sizing:border-box;outline:none" style-focus="border-color:var(--tl-acc);box-shadow:0 0 0 4px var(--tl-acc-ring)">
+        </label>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;width:100%">
+          <sc-for list="{{ stats }}" as="x" hint-placeholder-count="6">
+            <div style="border:3px solid var(--tl-edge);border-radius:18px;padding:14px 18px;background:var(--surface2)">
+              <div style="font-weight:800;font-size:38px;line-height:1.1">{{ x.val }}</div>
+              <div style="font-weight:800;font-size:16px">{{ x.label }}</div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="font-weight:800;color:var(--muted)">{{ finishDate }}</div>
+      </div>
+    </sc-if>
+  </section>
+
+  <sc-if value="{{ disc.show }}" hint-placeholder-val="{{ false }}">
+    <section aria-label="Discussion prompt" style="background:var(--surface);color:var(--ink);border:3px solid var(--tl-acc);border-radius:26px;padding:clamp(18px,3vw,30px);display:flex;flex-direction:column;gap:12px">
+      <div style="font-size:14px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--tl-acc)">Discussion prompt (teacher only)</div>
+      <div style="font-weight:700;font-size:clamp(26px,3.6vw,38px);line-height:1.2;text-wrap:pretty">{{ disc.text }}</div>
+      <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center">
+        <button onClick="{{ disc.next }}" style="background:var(--ink);color:var(--bg);border:3px solid var(--ink);border-radius:14px;padding:7px 20px;font-size:17px;font-weight:800;cursor:pointer">Next prompt</button>
+        <span style="font-size:16px;font-weight:800">{{ disc.count }}</span>
+      </div>
+    </section>
+  </sc-if>
+</div>
+  <sc-if value="{{ vocab.show }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;left:50%;bottom:20px;transform:translateX(-50%);width:min(560px,calc(100vw - 32px));box-sizing:border-box;background:var(--surface2);color:var(--ink);border:3px solid var(--tl-edge);border-radius:18px;box-shadow:0 6px 0 var(--tl-shadow);padding:14px 18px;display:flex;gap:14px;align-items:flex-start;z-index:40" role="status">
+      <div style="flex:1;min-width:0">
+        <div style="font-weight:800;font-size:24px;line-height:1.2">{{ vocab.word }}</div>
+        <div style="text-wrap:pretty">{{ vocab.def }}</div>
+      </div>
+      <button onClick="{{ vocab.close }}" style="background:var(--surface);color:var(--ink);border:3px solid var(--tl-edge);border-radius:12px;min-height:44px;padding:6px 16px;font-size:16px;font-weight:800;cursor:pointer">Close</button>
+    </div>
+  </sc-if>
+
+</div>
+  </main>
+  <dc-import name="Site Footer" hint-size="100%,110px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;unlockTarget&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:3,&quot;min&quot;:1,&quot;max&quot;:10,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Lesson&quot;},&quot;tileLabels&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Tiles&quot;},&quot;animations&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Tiles&quot;}}">
+class Component extends DCLogic {
+  labRef = React.createRef();
+  state = {
+    sec: -1, iTab: 0, iStep: [0, 0, 0, 0], iMax: [0, 0, 0, 0], iX: 2, iU: 3, iR: 3, iC: 4, iA: 2, iB: 3, sub: [0, 0, 0, 0, 0, 0, 0, 0], unlocked: 0, correct: [0, 0, 0, 0, 0, 0], stars: 0, streak: 0, best: 0, teacher: false, signedIn: false, confirmReset: false, name: '', vocab: null, dIdx: 0,
+    wN: 12, wR: 1, wStep: 0, wf: this.newWf(), gStep: 0, bG: 3, bStep: 0, mN: 0, mk: this.newMk(0),
+    gA: 12, gB: 18, gPick: null, gShow: false, tStep: 0, gp: this.newGcf(),
+    eA: 3, eB: 2, eStep: 0, eb: this.newEb(),
+    fC: 6, fD: 9, fRows: 1, fDir: 0, fNeg: false, fPos: 1, fNi: 0, fN: 0, fRot: 1, fMk: 0, cele: null, badges: [false, false, false, false, false, false, false, false, false], fEx: [0, 0], ex: { id: -1, k: 0 }, gx: null, exDone: [false, false, false, false, false, false, false, false], eNeg: false, fNegSeen: false, fp: this.newFp(0),
+    zP: 5, zN: 3, zCancel: false, nA: 2, nB: -4, nFlip: false, nN: 0, np: this.newNp(0),
+    sb: { rows: [{ x: 0, u: 0, nx: 0, nu: 0 }], active: 0, ch: null },
+    hist: this.newHist()
+  };
+  EX = [{ c: 6, d: 9 }, { c: 8, d: 12 }, { c: 4, d: 8 }, { c: 4, d: -8 }, { c: -3, d: -9, negG: true }, { c: 6, d: 10, xy: true }, { c: 12, d: 18, xy: true }, { c: 4, d: 8, e: 12, tri: true }];
+  newGx(id) {
+    const o = { id, k: 0, g: '', p: '', q: '', r: '', g2: '', p2: '', q2: '', r2: '', fb: null, done: false }, W = this.EX[id]; let g, p, q, r;
+    if (id === 7) { do { g = this.ri(2, 6); p = this.ri(1, 4); q = this.ri(1, 4); r = this.ri(1, 4); } while (this.gcd(this.gcd(p, q), r) !== 1 || (g * p === W.c && g * q === W.d && g * r === W.e)); return Object.assign(o, { tri: true, c: g * p, d: g * q, e: g * r }); }
+    const xy = id > 4;
+    do { g = this.ri(2, xy ? 6 : 5); p = id === 2 ? 1 : this.ri(id < 2 ? 2 : 1, xy ? 5 : 3); q = this.ri(id === 2 ? 2 : 1, xy ? 5 : 4); } while (this.gcd(p, q) !== 1 || (!xy && (g * p > 8 || g * q > 12)) || (g * p === Math.abs(W.c) && g * q === Math.abs(W.d)));
+    return Object.assign(o, { xy, negG: id === 4, c: (id === 4 ? -1 : 1) * g * p, d: (id === 3 || id === 4 ? -1 : 1) * g * q });
+  }
+  checkGx() {
+    const p = this.state.gx, A = this.fAns(p), E = this.fE(p), G = this.m(A.g), n = f => this.num(p[f]), bad = text => this.upd('gx', { fb: { ok: false, text } }), T = [Math.abs(p.c), Math.abs(p.d)].concat(p.tri ? [p.e] : []);
+    if (p.k === 0) {
+      const g = n('g'); if (g == null) return bad('Type a whole number.');
+      if (g === A.g) return this.upd('gx', { k: 1, fb: { ok: true, text: 'Yes, ' + G + ' goes outside. Now divide each term by it.' } });
+      if (g === -A.g) return bad(p.negG ? 'Right size, but both terms are negative. Use a negative number.' : 'Use a positive number outside.');
+      const ag = Math.abs(g);
+      if (ag < 2) return bad('1 divides every number, so it does not help. Look for a larger common factor.');
+      if (T.every(v => v % ag === 0)) return bad(ag + ' is a common factor, but there is a greater one.');
+      return bad(ag + ' does not divide ' + T.find(v => v % ag) + '.');
+    }
+    const s2 = p.k === 2 ? '2' : '', a = n('p' + s2), b = n('q' + s2), r = p.tri ? n('r' + s2) : 0;
+    if (a == null || b == null || r == null || (p.k === 2 && n('g2') == null)) return bad('Fill in every box with whole numbers.');
+    if (p.k === 1) {
+      if (a === A.a && b === A.b && r === A.r) return this.upd('gx', { k: 2, fb: { ok: true, text: 'Yes, those go inside.' } });
+      if (a !== A.a) return bad('Look at the first box. Divide ' + this.m(p.c) + ' by ' + G + '.');
+      if (b !== A.b) return bad(b === -A.b ? 'Check the sign of the second box: ' + this.m(p.d) + ' ÷ ' + (A.g < 0 ? '(' + G + ')' : G) + '.' : b === p.d ? 'Every term is divided by ' + G + ', not just the first one.' : 'Look at the second box. Divide ' + this.m(p.d) + ' by ' + G + '.');
+      return bad('Look at the last box. Divide ' + p.e + ' by ' + G + '.');
+    }
+    const g = n('g2');
+    if (g === A.g && a === A.a && b === A.b && r === A.r) return this.setState(s => { const exDone = s.exDone.slice(); exDone[p.id] = true; return { exDone, gx: Object.assign({}, s.gx, { k: 3, done: true, fb: { ok: true, text: 'Correct. ' + E + ' = ' + this.fG(p, A.g, A.a, A.b, A.r) + ', factored completely.' } }) }; });
+    if (g * a === p.c && g * b === p.d && g * r === (p.e || 0)) return bad('That does equal ' + E + ', but it is not factored completely. Use ' + G + ' outside.');
+    bad('Use your last two steps: ' + G + ' goes outside, and the terms you found go inside.');
+  }
+  CH = [{ t: 'w', c: 6, d: 12 }, { t: 'f', c: 6, d: 9 }, { t: 'e', a: 3, b: 2 }, { t: 'w', c: 4, d: 8 }, { t: 'f', c: 4, d: 10 }, { t: 'e', a: 2, px: 2, b: 3 }, { t: 'w', c: 8, d: 12 }, { t: 'f', c: 9, d: 12 }, { t: 'e', a: 4, b: -1 }];
+  motion() { return (this.props.animations ?? true) && !(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); }
+  mkCh(id) {
+    const c = this.CH[id], E = c.t === 'e' ? this.grp(c.a, c.px || 1, c.b) : this.expr(c.c, c.d), n = c.t === 'w' ? this.factors(this.gcd(c.c, c.d)).length - 1 : 0;
+    return Object.assign({ id, text: 'Challenge ' + (id + 1) + ' of 9: ' + (c.t === 'e' ? 'build ' + E + '.' : c.t === 'f' ? 'arrange ' + E + ' into the greatest number of equal rows.' : 'build ' + E + ' as a rectangle in ' + n + ' different ways. One row does not count.') }, c);
+  }
+  nextCh() {
+    this.setState(s => {
+      const cur = s.sb.ch && s.sb.ch.id != null ? s.sb.ch.id : -1; let id = -1;
+      for (let j = 1; j <= 9 && id < 0; j++) { const i = (cur + j) % 9; if (!s.badges[i]) id = i; }
+      return { sb: Object.assign({}, s.sb, { ch: id < 0 ? this.newCh() : this.mkCh(id), found: [], rows: [{ x: 0, u: 0, nx: 0, nu: 0 }], active: 0 }) };
+    });
+  }
+  sbStat(o) {
+    const nets = o.rows.map(r => [r.x - r.nx, r.u - r.nu]), Rn = nets.length, tX = nets.reduce((a, n) => a + n[0], 0), tU = nets.reduce((a, n) => a + n[1], 0), c = o.ch;
+    const ok = nets.every(n => n[0] === nets[0][0] && n[1] === nets[0][1]) && !o.rows.some(r => (r.x && r.nx) || (r.u && r.nu));
+    if (!c) return { won: false, way: null, need: [] };
+    if (c.t === 'e') return { won: ok && Rn === c.a && nets[0][0] === (c.px || 1) && nets[0][1] === c.b, way: null, need: [] };
+    if (c.t === 'f') return { won: ok && Rn === this.gcd(c.c, c.d) && tX === c.c && tU === c.d, way: null, need: [] };
+    const need = this.factors(this.gcd(c.c, c.d)).filter(f => f > 1), f = o.found || [];
+    return { need, way: ok && Rn > 1 && tX === c.c && tU === c.d ? Rn : null, won: need.every(n => f.includes(n)) };
+  }
+  flip() {
+    if (!this.motion()) { this._tiles = null; return; }
+    const s = this.state, now = Array.from(document.querySelectorAll('[data-tile]')).map(el => { const b = el.closest('[data-board]'); return { el, k: el.getAttribute('data-tile'), x: el.offsetLeft - (b ? b.offsetLeft : 0), y: el.offsetTop - (b ? b.offsetTop : 0), bg: getComputedStyle(el).backgroundColor, fg: getComputedStyle(el).color }; });
+    now.sig = s.sec + ':' + s.sub[s.sec] + ':' + s.iTab;
+    const prev = this._tiles, pop = this._pop, base = k => k.replace('n', ''); this._tiles = now; this._pop = false;
+    if (pop) return now.forEach((q, i) => q.el.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.2)' }, { transform: 'scale(1)' }], { duration: 600, delay: Math.min(i, 30) * 12, easing: 'ease-out' }));
+    if (!prev || !now.length || prev.length !== now.length || prev.sig !== now.sig) return;
+    if (now.every((q, i) => q.k !== prev[i].k && base(q.k) === base(prev[i].k))) return now.forEach((q, i) => q.el.animate([{ transform: 'rotateY(0deg)', backgroundColor: prev[i].bg, color: 'transparent' }, { transform: 'rotateY(90deg)', backgroundColor: prev[i].bg, color: 'transparent', offset: .5 }, { transform: 'rotateY(90deg)', backgroundColor: q.bg, color: 'transparent', offset: .5 }, { transform: 'rotateY(0deg)', backgroundColor: q.bg, color: q.fg }], { duration: 600, delay: Math.min(i, 30) * 10, fill: 'backwards' }));
+    const pool = {}; prev.forEach(p => { (pool[base(p.k)] = pool[base(p.k)] || []).push(p); });
+    now.forEach(q => { const p = (pool[base(q.k)] || []).shift(); if (!p) return; const dx = p.x - q.x, dy = p.y - q.y; if (dx || dy) q.el.animate([{ transform: 'translate(' + dx + 'px,' + dy + 'px)' }, { transform: 'none' }], { duration: 600, easing: 'cubic-bezier(.2,.8,.2,1)' }); });
+  }
+  fuFp(tag) {
+    if (tag === 'sign') return Object.assign(this.newFp(this.ri(0, 1), true), { fu: true });
+    if (tag.slice(0, 3) === 'mk:') { const a = tag.split(':'); return Object.assign(this.newMk(0, a[2] === '1', a[1]), { fu: true }); }
+    let g, p, q; do { g = [4, 6, 8][this.ri(0, 2)]; p = this.ri(1, 2); q = this.ri(1, 3); } while (this.gcd(p, q) !== 1 || g * p > 8 || g * q > 12);
+    return { fu: true, c: g * p, d: g * q, rows: 1, g: '', p: '', q: '', miss: 0, fb: null, done: false };
+  }
+  componentDidMount() {
+    try {
+      const d = JSON.parse(localStorage.getItem('tilelab-progress-v4') || 'null');
+      if (d && Array.isArray(d.correct) && d.correct.length === 6 && Array.isArray(d.iMax)) {
+        if (!d.mig) { d.correct[0] += d.correct[5]; d.correct[5] = 0; d.mig = 1; }
+        if (d.iMax.length < 4) d.iMax = d.iMax.slice(0, 3).concat([d.iMax[0] >= 4 && d.iMax[1] >= 3 && d.iMax[2] >= 3 ? 1 : 0]);
+        delete d.teacher; delete d.signedIn; delete d.confirmReset;
+        this.setState(d);
+      }
+    } catch (e) {}
+    // Teacher mode follows the Math Hub sign-in (hub-state.js): any signed-in role may turn it on,
+    // and it turns off when the sign-in ends. It is never saved on the device.
+    this.onHub = () => {
+      const H = window.HubState; if (!H) return;
+      const v = H.get(), on = !!v.signedIn;
+      this.paint(v.theme === 'light');
+      if (!on) { if (this.state.signedIn || this.state.teacher) this.setState({ signedIn: false, teacher: false, confirmReset: false }); return; }
+      const wants = this.pendingTeacher; this.pendingTeacher = false;
+      if (!this.state.signedIn || (wants && !this.state.teacher)) this.setState(x => ({ signedIn: true, teacher: x.teacher || !!wants }));
+    };
+    // If the sign-in dialog was cancelled, the next tap or key press in the lab drops the request.
+    this.onUse = e => { const el = this.labRef.current; if (el && el.contains(e.target)) this.pendingTeacher = false; };
+    window.addEventListener('hubchange', this.onHub);
+    window.addEventListener('hubstate-ready', this.onHub);
+    window.addEventListener('pointerdown', this.onUse, true);
+    window.addEventListener('keydown', this.onUse, true);
+    this.onHub();
+    requestAnimationFrame(() => this.flip());
+  }
+  componentWillUnmount() {
+    window.removeEventListener('hubchange', this.onHub);
+    window.removeEventListener('hubstate-ready', this.onHub);
+    window.removeEventListener('pointerdown', this.onUse, true);
+    window.removeEventListener('keydown', this.onUse, true);
+  }
+  // Colors that change with the hub's dark and light themes. Tile colors stay the same in both.
+  paint(light) {
+    if (this._light === light) return; this._light = light;
+    const c = light ? { edge: '#2B2140', shadow: '#2B2140', acc: '#6B4EE6', 'on-acc': '#ffffff', 'acc-soft': '#F4F0FF', 'acc-ring': '#D9D0FF', line2: '#C9C0E0', xs: '#BFE8C9', us: '#FFE99A', ns: '#F7C4C2', xh: '#e4f5e8', uh: '#fff6d1', nh: '#FBDCDB', eq: '#FFF3C4', ok: '#1F7A38', okbg: '#DDF5E3', bad: '#B02A28', badbg: '#FDE3E2', star: '#8A6700', p1: 'oklch(0.62 0.19 25)', p2: 'oklch(0.58 0.14 160)', p3: 'oklch(0.6 0.15 240)' }
+                    : { edge: '#6a6a7a', shadow: '#000000', acc: '#b9a6ff', 'on-acc': '#15151a', 'acc-soft': '#2a2540', 'acc-ring': '#5a4a9a', line2: '#55556a', xs: '#1f4a2b', us: '#4d4010', ns: '#5a2423', xh: '#183a22', uh: '#3b3210', nh: '#47201f', eq: '#3b3210', ok: '#6fd6a0', okbg: '#173524', bad: '#ff8a8a', badbg: '#432020', star: '#FFD23F', p1: 'oklch(0.75 0.16 25)', p2: 'oklch(0.75 0.13 160)', p3: 'oklch(0.75 0.13 240)' };
+    const r = document.documentElement; for (const k in c) r.style.setProperty('--tl-' + k, c[k]);
+  }
+  toggleTeacher() {
+    const H = window.HubState, s = this.state;
+    if (s.teacher) return this.setState({ teacher: false, confirmReset: false });
+    if (H && H.get().signedIn) return this.setState({ teacher: true, signedIn: true });
+    if (!H) return;
+    this.pendingTeacher = true;
+    H.openSignin();
+  }
+  componentDidUpdate() {
+    const s = this.state;
+    try { localStorage.setItem('tilelab-progress-v4', JSON.stringify({ sec: s.sec, iMax: s.iMax, unlocked: s.unlocked, correct: s.correct, stars: s.stars, streak: s.streak, best: s.best, name: s.name, mig: 1, badges: s.badges, exDone: s.exDone, eNeg: s.eNeg, fNegSeen: s.fNegSeen })); } catch (e) {}
+    if (s.cele && this._ct !== s.cele.t) { const ct = this._ct = s.cele.t; setTimeout(() => this.setState(q => q.cele && q.cele.t === ct ? { cele: null } : null), 2600); }
+    const st = this.sbStat(s.sb), ch = s.sb.ch;
+    if (st.way && !(s.sb.found || []).includes(st.way)) this.upd('sb', { found: (s.sb.found || []).concat([st.way]) });
+    else if (st.won && ch.id != null && !s.badges[ch.id]) this.setState(q => { const b = q.badges.slice(); b[ch.id] = true; return { badges: b }; });
+    requestAnimationFrame(() => this.flip());
+  }
+  ri(a, b) { return a + Math.floor(Math.random() * (b - a + 1)); }
+  gcd(a, b) { a = Math.abs(a); b = Math.abs(b); while (b) { const t = a % b; a = b; b = t; } return a; }
+  factors(n) { const r = []; for (let i = 1; i <= n; i++) if (n % i === 0) r.push(i); return r; }
+  primes(n) { const r = []; let p = 2; while (n > 1) { if (n % p === 0) { r.push(p); n /= p; } else p++; } return r; }
+  num(v) { const t = String(v).replace(/−/g, '-').trim(); if (!/^-?\d+$/.test(t)) return null; return parseInt(t, 10); }
+  m(n) { return n < 0 ? '−' + (-n) : '' + n; }
+  term(c, v) { return (c === 1 ? '' : c === -1 ? '−' : this.m(c)) + v; }
+  expr(c, d, v, w) { return this.term(c, v || 'x') + (d < 0 ? ' − ' : ' + ') + (w ? this.term(Math.abs(d), w) : Math.abs(d)); }
+  grp(a, p, q, w) { return this.m(a) + '(' + this.expr(p, q, 'x', w) + ')'; }
+  fmt(a, b) { if (!a && !b) return '0'; if (!a) return this.m(b); if (!b) return this.term(a, 'x'); return this.expr(a, b); }
+  pl(n, w) { return n + ' ' + w + (n === 1 ? '' : 's'); }
+
+  newGcf(prev, tag) {
+    const multi = !tag && !!prev && Math.random() < .2, low = tag === 'low', v = tag && tag.slice(0, 3) === 'nd:' ? +tag.slice(3) : 0; let g, m, n, same, bad, tries = 0;
+    do { g = low ? [4, 6, 8, 9][this.ri(0, 3)] : this.ri(2, 9); m = multi ? 1 : this.ri(2, 5); n = this.ri(2, 5); if (Math.random() < .5) { const x = m; m = n; n = x; } same = !!prev && ((prev.a === g * m && prev.b === g * n) || (prev.a === g * n && prev.b === g * m)); bad = v > 1 && tries++ < 300 && ((g * m) % v === 0) === ((g * n) % v === 0); } while (m === n || this.gcd(m, n) !== 1 || g * Math.max(m, n) > 30 || same || bad);
+    return { a: g * m, b: g * n, fu: !!tag, ans: '', miss: 0, fb: null, done: false };
+  }
+  newEb(neg, first, tag) {
+    const okT = (a, b) => !tag || (Math.abs(b) >= 2 && a + b !== a * b); let a, b;
+    if (neg) { do { a = this.ri(2, 4) * (Math.random() < .5 ? -1 : 1); b = this.ri(1, 5) * (Math.random() < .5 ? -1 : 1); } while ((a > 0 && b > 0) || !okT(a, b)); return { neg: true, first: !!first, fu: !!tag, a, b, in1: '', in2: '', miss: 0, fb: null, done: false }; }
+    do { a = this.ri(2, 4); b = this.ri(1, 4); } while (!okT(a, b));
+    return { a, b, fu: !!tag, phase: 0, rows: [{ x: 0, u: 0, nx: 0, nu: 0 }], active: 0, in1: '', in2: '', miss: 0, fb: null, done: false };
+  }
+  newHist() { const o = {}; ['gp', 'eb', 'fp', 'np', 'wf', 'mk'].forEach(k => { o[k] = { past: [], future: [] }; }); return o; }
+  newWf(prev, tag) {
+    let ns = [6, 8, 9, 10, 12, 14, 15, 16, 18, 20], n; const k = tag && tag.slice(0, 4) === 'non:' ? +tag.slice(4) : 0;
+    if (tag === 'missed') ns = [12, 16, 18, 20]; else if (k > 1) { const f = ns.filter(x => x > k && x % k); if (f.length > 1) ns = f; }
+    do { n = ns[this.ri(0, ns.length - 1)]; } while (prev && prev.n === n);
+    return { n, fu: !!tag, rows: 1, sel: [], miss: 0, fb: null, done: false };
+  }
+  newMk(n, neg, forced) {
+    const type = forced ? forced : neg ? (Math.random() < .6 ? 'sign' : 'ok') : ['one', 'ok', 'partial', 'noone', 'ok'][n % 5]; let g, p, q;
+    do { g = type === 'partial' ? [4, 6, 8, 9][this.ri(0, 3)] : this.ri(2, 6); p = this.ri(1, 3); q = type === 'noone' ? 1 : this.ri(type === 'one' ? 2 : 1, 4); } while (this.gcd(p, q) !== 1);
+    let sg = g, sa = p, sb = neg ? -q : q;
+    if (type === 'partial') { sg = g % 2 ? 3 : 2; sa = p * g / sg; sb = q * g / sg; }
+    if (type === 'one') sb = g * q;
+    if (type === 'noone') sb = 0;
+    if (type === 'sign') sb = q;
+    return { kind: 'm', neg: !!neg, type, c: g * p, d: (neg ? -1 : 1) * g * q, G: g, sg, sa, sb, phase: 0, miss: 0, fb: null, done: false };
+  }
+  newFp(n, neg, first) {
+    let g, p, q, r;
+    if (neg) {
+      const j = first ? 0 : n % 2;
+      do { g = this.ri(2, 5); p = this.ri(1, 3); q = this.ri(1, 4); } while (this.gcd(p, q) !== 1 || g * p > 8 || g * q > 12);
+      return { kind: 'f', first: !!first, negG: j === 1, c: (j === 1 ? -1 : 1) * g * p, d: -g * q, rows: 1, g: '', p: '', q: '', miss: 0, fb: null, done: false };
+    }
+    const k = n % 4, xy = k === 2, tri = k === 3;
+    if (tri) { do { g = this.ri(2, 6); p = this.ri(1, 4); q = this.ri(1, 4); r = this.ri(1, 4); } while (this.gcd(this.gcd(p, q), r) !== 1); return { tri, c: g * p, d: g * q, e: g * r, g: '', p: '', q: '', r: '', miss: 0, fb: null, done: false }; }
+    do { g = this.ri(2, xy ? 9 : 6); p = this.ri(1, xy ? 5 : 3); q = this.ri(1, xy ? 5 : 4); } while (this.gcd(p, q) !== 1 || (!xy && (g * p > 8 || g * q > 12)));
+    return { xy, c: g * p, d: g * q, rows: 1, g: '', p: '', q: '', miss: 0, fb: null, done: false };
+  }
+  newNp(n) {
+    const k = n % 4;
+    if (k === 0) {
+      let a, b; do { a = this.ri(2, 4) * (Math.random() < .5 ? -1 : 1); b = this.ri(1, 5) * (Math.random() < .5 ? -1 : 1); } while (a > 0 && b > 0);
+      return { kind: 'e', a, b, in1: '', in2: '', miss: 0, fb: null, done: false };
+    }
+    if (k === 3) return this.newMk(0, true);
+    let g, p, q; do { g = this.ri(2, 5); p = this.ri(1, 3); q = this.ri(1, 4); } while (this.gcd(p, q) !== 1 || g * p > 8 || g * q > 12);
+    return { kind: 'f', negG: k === 2, c: (k === 2 ? -1 : 1) * g * p, d: -g * q, rows: 1, g: '', p: '', q: '', miss: 0, fb: null, done: false };
+  }
+  vt(text) {
+    if (!text || typeof text !== 'string') return text;
+    const parts = text.split(/\b(greatest common factors?|factor(?:s|ed|ing)?|terms?|GCF|expand(?:s|ed|ing)?)\b/i);
+    if (parts.length < 2) return text;
+    const key = t => { t = t.toLowerCase(); return t === 'gcf' || t[0] === 'g' ? 'gcf' : t[0] === 't' ? 'term' : t[0] === 'e' ? 'expand' : 'factor'; };
+    return React.createElement('span', null, ...parts.map((t, i) => i % 2 ? React.createElement('button', { key: i, type: 'button', onClick: () => this.setState({ vocab: key(t) }), style: { font: 'inherit', color: 'inherit', background: 'none', border: 0, borderBottom: '2px dotted var(--tl-acc)', padding: 0, margin: 0, cursor: 'pointer' } }, t) : t));
+  }
+  newCh() {
+    if (Math.random() < .5) { const a = this.ri(2, 4); let b; do { b = this.ri(-4, 4); } while (!b); return { t: 'e', a, b, text: 'Challenge: build ' + this.grp(a, 1, b) + '.' }; }
+    let g, p, q; do { g = this.ri(2, 4); p = this.ri(1, 2); q = this.ri(1, 3); } while (this.gcd(p, q) !== 1);
+    return { t: 'f', g, c: g * p, d: g * q, text: 'Challenge: arrange ' + this.expr(g * p, g * q) + ' into the greatest number of equal rows.' };
+  }
+
+  upd(key, patch) { this.setState(s => ({ [key]: Object.assign({}, s[key], patch) })); }
+  miss(key, p, text, tag) { const mt = tag || (p.kind === 'm' ? 'mk:' + p.type + ':' + (p.neg ? 1 : 0) : null) || p.mt; this.setState(s => ({ streak: 0, [key]: Object.assign({}, s[key], { miss: p.miss + 1, mt, tip: text, fb: { ok: false, text: 'Not yet. Try again.' } }) })); }
+  award(level, key, p, text) {
+    const target = this.props.unlockTarget ?? 3, n = Math.max(1, 3 - p.miss); this._pop = true;
+    this.setState(s => {
+      const correct = s.correct.slice(); correct[level]++;
+      const streak = p.miss === 0 ? s.streak + 1 : 0;
+      return { cele: [3, 5, 10].includes(streak) ? { n: streak, t: Date.now() } : s.cele, correct, stars: s.stars + n, streak, best: Math.max(s.best, streak), unlocked: correct[level] >= target ? Math.max(s.unlocked, [0, 5, 1, 2, 3, 6, 7].indexOf(level) + 1) : s.unlocked, [key]: Object.assign({}, s[key], { done: true, fb: { ok: true, text, stars: n } }) };
+    });
+  }
+  checkGcf() {
+    const p = this.state.gp, v = this.num(p.ans), g = this.gcd(p.a, p.b);
+    if (v == null || v < 1) return this.upd('gp', { fb: { ok: false, text: 'Type a whole number.' } });
+    if (v === g) return this.award(2, 'gp', p, 'Correct. The GCF of ' + p.a + ' and ' + p.b + ' is ' + g + '.');
+    this.miss('gp', p, p.a % v === 0 && p.b % v === 0 ? v + ' is a common factor, but there is a greater one.' : v + ' does not divide both ' + p.a + ' and ' + p.b + '.', p.a % v === 0 && p.b % v === 0 ? 'low' : 'nd:' + v);
+  }
+  checkBuild() {
+    const p = this.state.eb;
+    if (p.rows.length === p.a && p.rows.every(r => r.x === 1 && r.u === p.b && !r.nx && !r.nu)) return this.upd('eb', { phase: 1, fb: { ok: true, text: 'That is ' + this.pl(p.a, 'row') + ' of x + ' + p.b + '. Now count all the tiles.' } });
+    this.miss('eb', p, p.rows.length !== p.a ? 'You need ' + this.pl(p.a, 'row') + ', one for each group.' : 'Every row should have one x tile and ' + this.pl(p.b, 'unit tile') + '.');
+  }
+  checkExpand(key, level) {
+    const p = this.state[key], c = this.num(p.in1), d = this.num(p.in2), a = p.a, b = p.b, A = Math.abs(a), B = Math.abs(b);
+    if (c == null || d == null) return this.upd(key, { fb: { ok: false, text: 'Fill in both boxes with whole numbers.' } });
+    if (c === a && d === a * b) return this.award(level, key, p, 'Correct. ' + this.grp(a, 1, b) + ' = ' + this.expr(a, a * b) + '.');
+    let t = 'Not yet. Count the x tiles, then count the unit tiles.';
+    if (c === a && d === b) t = 'The ' + this.m(a) + ' multiplied x, but not the ' + this.m(b) + '. Each of the ' + this.pl(A, 'row') + ' has ' + this.pl(B, 'unit tile') + '. How many is that in all?';
+    else if (c === a && d === a + b) t = 'Multiply instead of adding: ' + this.m(a) + ' × ' + this.m(b) + '.';
+    else if (c === a && d === -a * b) t = 'Check the sign of the second term: ' + this.m(a) + ' × ' + this.m(b) + '.';
+    else if (c === -a) t = 'Check the sign of the x term.';
+    else if (c === 1) t = 'Count the x tiles: there is one in each of the ' + this.pl(A, 'row') + '.';
+    this.miss(key, p, t, c === a && d === b ? 'first' : c === a && d === a + b ? 'add' : (c === a && d === -a * b) || c === -a ? 'sign' : null);
+  }
+  fE(p) { return p.tri ? this.term(p.c, 'x') + ' + ' + this.term(p.d, 'y') + ' + ' + p.e : this.expr(p.c, p.d, 'x', p.xy ? 'y' : ''); }
+  fG(p, g, a, b, r) { return p.tri ? this.m(g) + '(' + this.term(a, 'x') + ' + ' + this.term(b, 'y') + ' + ' + r + ')' : this.grp(g, a, b, p.xy ? 'y' : ''); }
+  fAns(p) { const g = this.gcd(this.gcd(p.c, p.d), p.e || 0) * (p.negG ? -1 : 1); return { g, a: p.c / g, b: p.d / g, r: (p.e || 0) / g }; }
+  chkEq(p) {
+    const A = this.fAns(p), dot = t => (A.g < 0 ? '(' + this.m(A.g) + ')' : A.g) + ' · ' + (t[0] === '−' ? '(' + t + ')' : t), ts = [this.term(A.a, 'x'), p.xy || p.tri ? this.term(A.b, 'y') : this.m(A.b)].concat(p.tri ? ['' + A.r] : []);
+    return this.fG(p, A.g, A.a, A.b, A.r) + ' = ' + ts.map(dot).join(' + ') + ' = ' + this.fE(p);
+  }
+  checkFactor(key, level) {
+    const p = this.state[key], g = this.num(p.g), a = this.num(p.p), b = this.num(p.q), r = p.tri ? this.num(p.r) : 0, A = this.fAns(p), E = this.fE(p);
+    if (g == null || a == null || b == null || r == null) return this.upd(key, { fb: { ok: false, text: 'Fill in every box with whole numbers.' } });
+    if (g * a === p.c && g * b === p.d && g * r === (p.e || 0)) {
+      if (g === A.g) return this.award(level, key, p, 'Correct. ' + E + ' = ' + this.fG(p, g, a, b, r) + ', factored completely.');
+      if (g === 1) return this.upd(key, { fb: { ok: false, text: 'That is the same expression. Use a common factor greater than 1.' } });
+      if (p.negG && g > 0) return this.upd(key, { mt: 'sign', fb: { ok: false, text: 'This problem asks for a negative number outside the parentheses.' } });
+      if (g < 0 && !p.negG) return this.upd(key, { mt: p.c < 0 || p.d < 0 ? 'sign' : p.mt, fb: { ok: false, text: 'Use a positive common factor outside the parentheses.' } });
+      return this.upd(key, { mt: 'partial', fb: { ok: true, text: this.fG(p, g, a, b, r) + ' does equal ' + E + '. Is it fully factored? The terms inside still share a factor.' } });
+    }
+    this.miss(key, p, Math.abs(g) > 1 && p.c % g === 0 && p.d % g === 0 && (p.e || 0) % g === 0 ? this.m(g) + ' is a common factor. Now divide each term by ' + this.m(g) + ' to find what goes inside.' : 'The number outside must divide every term.', (p.c < 0 || p.d < 0) && !p.tri && Math.abs(g) === Math.abs(A.g) && Math.abs(a) === Math.abs(A.a) && Math.abs(b) === Math.abs(A.b) ? 'sign' : null);
+  }
+  checkWf() {
+    const p = this.state.wf, fs = this.factors(p.n), bad = p.sel.filter(f => p.n % f).sort((x, y) => x - y)[0];
+    if (!p.sel.length) return this.upd('wf', { fb: { ok: false, text: 'Tap at least one number.' } });
+    if (bad == null && p.sel.length === fs.length) return this.award(1, 'wf', p, 'Correct. The factors of ' + p.n + ' are ' + fs.join(', ') + '.');
+    this.miss('wf', p, bad != null ? bad + ' rows leave tiles over, so ' + bad + ' is not a factor of ' + p.n + '.' : 'Every number you picked is a factor, but some are missing. Each factor has a partner: 1 pairs with ' + p.n + '.', bad != null ? 'non:' + bad : 'missed');
+  }
+  checkMk(key, level, ch) {
+    const p = this.state[key], W = this.grp(p.sg, p.sa, p.sb), E = this.expr(p.c, p.d), ex = W + ' expands to ' + this.expr(p.sg * p.sa, p.sg * p.sb) + '.';
+    if (p.phase === 0) {
+      if (p.type === 'ok') return ch === 'r' ? this.award(level, key, p, 'Correct. ' + ex + ' That matches, and nothing more can be factored out.') : this.miss(key, p, 'Expand the answer shown and compare it with ' + E + '. Then check whether the terms inside share a factor.');
+      return ch === 'w' ? this.upd(key, { phase: 1, hintOn: false, tip: null, fb: { ok: true, text: 'Yes, there is a mistake. Now say what went wrong.' } }) : this.miss(key, p, p.type === 'partial' ? 'Look inside the parentheses. Do those two numbers share a factor?' : 'Expand the answer shown and compare it with ' + E + '.');
+    }
+    if (ch === p.type) return this.award(level, key, p, 'Correct. ' + (p.type === 'partial' ? '' : ex + ' ') + 'The complete factoring is ' + E + ' = ' + this.grp(p.G, p.c / p.G, p.d / p.G) + '.');
+    this.miss(key, p, p.type === 'partial' ? 'The answer shown does expand to ' + E + '. Look at the numbers inside the parentheses.' : ex + ' Which part does not match ' + E + '?');
+  }
+
+  tile(kind, sc, extra) {
+    const U = Math.round(34 * sc), isX = kind === 'x' || kind === 'nx', neg = kind[0] === 'n';
+    return Object.assign({ width: isX ? Math.round(U * 2.5) : U, height: U, borderRadius: Math.round(6 * sc) + 2, border: '2px solid ' + (neg ? '#8F1F1D' : isX ? '#1F7A38' : '#B88A00'), background: neg ? '#D23532' : isX ? '#3DB55B' : '#FFD23F', color: neg ? '#fff' : isX ? '#0B3316' : '#4A3800', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font)', fontWeight: 800, fontSize: Math.round(15 * sc), lineHeight: 1, flex: 'none', boxSizing: 'border-box', transition: this.motion() ? 'opacity .6s, transform .6s' : 'none', userSelect: 'none' }, extra || {});
+  }
+  tname(kind) { return { x: 'x tile', u: 'unit tile', nx: 'negative x tile', nu: 'negative unit tile' }[kind]; }
+  onKey(fn) { return e => { if (e.target === e.currentTarget && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); e.stopPropagation(); fn(e); } }; }
+  label(kind, sc) { if (this.props.tileLabels === false || (sc || 1) < .6) return ''; return { x: 'x', u: '1', nx: '−x', nu: '−1' }[kind]; }
+  board(r, nx, nu, o) {
+    o = o || {}; const sc = o.scale || 1, rows = [], xk = nx < 0 ? 'nx' : 'x', uk = nu < 0 ? 'nu' : 'u', ax = Math.abs(nx), au = Math.abs(nu);
+    for (let i = 0; i < r; i++) {
+      const tiles = [], hid = o.hideFrom != null && i >= o.hideFrom;
+      const add = (kind, tot) => {
+        const cnt = Math.floor(tot / r) + (i < tot % r ? 1 : 0);
+        for (let j = 0; j < cnt; j++) {
+          const ex = { transitionDelay: (hid ? 0 : i * 140) + 'ms' };
+          if (j >= Math.floor(tot / r)) { ex.opacity = .45; ex.borderStyle = 'dashed'; }
+          if (hid) { ex.opacity = 0; ex.transform = 'scale(.5)'; }
+          tiles.push({ kind, style: this.tile(kind, sc, ex), label: this.label(kind, sc) });
+        }
+      };
+      add(xk, ax); add(uk, au); rows.push({ tiles });
+    }
+    return rows;
+  }
+  area(o) {
+    const cell = (w, neg, first) => ({ minWidth: w, whiteSpace: 'nowrap', height: o.h, display: 'flex', alignItems: 'center', justifyContent: 'center', border: '3px solid var(--tl-edge)', boxSizing: 'border-box', background: neg ? 'var(--tl-ns)' : first && !o.plain1 ? 'var(--tl-xs)' : 'var(--tl-us)', boxShadow: (first ? o.ring1 : o.ring2) ? 'inset 0 0 0 4px ' + (first ? o.ring1 : o.ring2) : 'none', borderRadius: 0, marginLeft: first ? 0 : -3, fontSize: 20, padding: '0 6px', transition: 'background .4s' });
+    const hd = (v, bg, ex) => Object.assign({ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 44, padding: '0 12px', boxSizing: 'border-box', background: v === '?' ? 'var(--surface2)' : /^[−-]/.test(String(v)) ? 'var(--tl-nh)' : bg, transition: 'background .4s' }, ex);
+    const three = o.t3 != null, none = { display: 'none' };
+    return { grid: { display: 'grid', gridTemplateColumns: three ? 'auto auto auto auto' : 'auto auto auto', justifyContent: 'start', fontFamily: 'var(--font)', fontWeight: 800, fontSize: 22 }, t3: three ? o.t3 : '', c3: three ? o.c3 : '', h3: three ? hd(o.t3, 'var(--tl-uh)', { marginRight: 3 }) : none, s3: three ? cell(o.w3, false, false) : none, side: o.side, t1: o.t1, t2: o.t2, c1: o.c1, c2: o.c2, h1: hd(o.t1, o.plain1 ? 'var(--tl-uh)' : 'var(--tl-xh)', { borderLeft: '3px solid var(--tl-edge)' }), h2: hd(o.t2, 'var(--tl-uh)', { marginRight: three ? 0 : 3 }), hs: hd(o.side, 'var(--tl-uh)', { borderTop: '3px solid var(--tl-edge)', minWidth: 52 }), s1: cell(o.w1, o.neg1, true), s2: cell(o.w2, o.neg2, false), wrap: { display: 'flex', flexDirection: 'column', gap: 8, opacity: o.hidden ? 0 : 1, transition: 'opacity .5s' } };
+  }
+  tree(n, step) {
+    const ps = this.primes(n), nodes = [], lines = [];
+    let x = 62, y = 0, rest = n;
+    const node = (v, x, y, prime) => nodes.push({ v, style: { position: 'absolute', left: x - 23, top: y, width: 46, height: 46, borderRadius: prime ? 23 : 12, border: '3px solid var(--tl-edge)', background: prime ? '#FFD23F' : 'var(--surface2)', color: prime ? '#2B2140' : 'var(--ink)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font)', fontWeight: 800, fontSize: 20, boxSizing: 'border-box' } });
+    const line = (x1, y1, x2, y2) => { const dx = x2 - x1, dy = y2 - y1; lines.push({ style: { position: 'absolute', left: x1, top: y1 - 1.5, width: Math.hypot(dx, dy), height: 3, background: 'var(--tl-edge)', transformOrigin: '0 50%', transform: 'rotate(' + Math.atan2(dy, dx) + 'rad)' } }); };
+    node(n, x, y, ps.length === 1);
+    for (let k = 0; k < ps.length - 1 && k < step; k++) {
+      rest /= ps[k]; const ny = y + 70;
+      line(x, y + 44, x - 36, ny + 4); line(x, y + 44, x + 36, ny + 4);
+      node(ps[k], x - 36, ny, true); node(rest, x + 36, ny, k === ps.length - 2);
+      x += 36; y = ny;
+    }
+    const done = step >= ps.length - 1;
+    return { nodes, lines, ps, done, caption: done ? n + ' = ' + ps.join(' × ') : '', style: { position: 'relative', width: 62 + 36 * ps.length + 30, height: 70 * Math.max(ps.length - 1, 0) + 50, flex: 'none' } };
+  }
+  rowAdd(key, i, k, d) {
+    this.setState(s => { const o = s[key]; const rows = o.rows.map((r, j) => j === i ? Object.assign({}, r, { [k]: Math.max(0, Math.min(10, r[k] + d)) }) : r); return { [key]: Object.assign({}, o, { rows, active: i }) }; });
+  }
+  ibuild(key, sc) {
+    const o = this.state[key];
+    return o.rows.map((r, i) => {
+      const tiles = ['x', 'nx', 'u', 'nu'].flatMap(k => Array.from({ length: r[k] }, () => ({ label: this.label(k, sc), aria: 'Remove ' + this.tname(k) + ' from row ' + (i + 1), style: this.tile(k, sc, { cursor: 'pointer' }), remove: e => { e.stopPropagation(); this.rowAdd(key, i, k, -1); }, key: this.onKey(() => this.rowAdd(key, i, k, -1)) })));
+      return {
+        tiles, hint: tiles.length ? '' : 'Empty row', aria: 'Row ' + (i + 1) + (o.active === i ? ', selected' : '') + '. Press Enter to select this row.', key: this.onKey(() => this.upd(key, { active: i })), pick: () => this.upd(key, { active: i }), over: e => e.preventDefault(),
+        drop: e => { e.preventDefault(); if (this._drag) this.rowAdd(key, i, this._drag, 1); this._drag = null; },
+        del: e => { e.stopPropagation(); this.setState(s => { const q = s[key]; if (q.rows.length < 2) return { [key]: Object.assign({}, q, { rows: [{ x: 0, u: 0, nx: 0, nu: 0 }], active: 0 }) }; const rows = q.rows.filter((_, j) => j !== i); return { [key]: Object.assign({}, q, { rows, active: Math.min(q.active, rows.length - 1) }) }; }); },
+        style: { display: 'flex', flexWrap: 'wrap', gap: 4, alignItems: 'center', minHeight: 50, padding: '6px 10px', borderRadius: 14, border: '3px dashed ' + (o.active === i ? 'var(--tl-acc)' : 'var(--tl-line2)'), background: o.active === i ? 'var(--tl-acc-soft)' : 'var(--surface)', cursor: 'pointer', boxSizing: 'border-box' }
+      };
+    });
+  }
+  palette(key, kinds) {
+    return kinds.map(k => ({ aria: 'Add ' + this.tname(k) + ' to the selected row', key: this.onKey(() => this.rowAdd(key, this.state[key].active, k, 1)), label: this.label(k, 1), style: this.tile(k, 1.15, { cursor: 'grab', boxShadow: '0 3px 0 var(--tl-shadow)' }), start: e => { this._drag = k; try { e.dataTransfer.setData('text/plain', k); } catch (x) {} }, add: () => this.rowAdd(key, this.state[key].active, k, 1) }));
+  }
+  addRow(key) { this.setState(s => { const o = s[key]; if (o.rows.length >= 6) return null; return { [key]: Object.assign({}, o, { rows: o.rows.concat([{ x: 0, u: 0, nx: 0, nu: 0 }]), active: o.rows.length }) }; }); }
+
+  renderVals() {
+    const s = this.state, target = this.props.unlockTarget ?? 3, teacher = !!s.teacher;
+    const names = ['Expand', 'Factors', 'GCF', 'Factoring', 'Find the mistake', 'Negatives', 'Sandbox', 'Progress'];
+    const iTabs = ['Algebra tiles', 'Area model', 'Together', 'Zero pairs'], lastK = [4, 3, 3, 1], fin = i => s.iMax[i] >= lastK[i], introDone = fin(0) && fin(1) && fin(2) && fin(3);
+    const goTab = i => () => this.setState(q => { const m = q.iMax.slice(); if (i === 3) m[3] = 1; return { iTab: i, iMax: m }; });
+    const ord = [0, 1, 2, 3, 6], rk = i => ord.indexOf(i), u = [0, 1, 2, 3, 9].findIndex(i => i === 9 || s.correct[i] < target), nx = i => ord[rk(i) + 1];
+    const locked = i => i === 4 || i === 5 || (i >= 0 && i !== 7 && !teacher && (!introDone || Math.min(rk(i), 5) > u));
+    const sec = locked(s.sec) ? (introDone ? ord[Math.min(u, 4)] : -1) : s.sec;
+    const pracLocked = false, sub = sec === 3 && s.sub[3] === 2 && pracLocked ? 0 : sec === 2 && s.sub[2] === 2 && !teacher ? 1 : s.sub[sec];
+    const V = { prompt: '', note: '', eq: '', steppers: [], actions: [], palette: [], irows: [], boards: [], am: null, answer: [], check: null, lists: [], trees: [], pf: null, picker: [], gfb: null };
+    const btn = (label, go, primary) => ({ label, go, style: { background: primary ? 'var(--tl-acc)' : 'var(--surface2)', color: primary ? 'var(--tl-on-acc)' : 'var(--ink)', border: '3px solid var(--tl-edge)', borderRadius: 14, padding: '9px 22px', fontSize: 18, fontWeight: 800, boxShadow: '0 4px 0 var(--tl-shadow)', cursor: 'pointer' } });
+    const prev = (key, k) => { const b = btn('Previous step', () => this.setState({ [key]: Math.max(0, k - 1) })); b.disabled = k <= 0; if (b.disabled) Object.assign(b.style, { opacity: 0.45, cursor: 'not-allowed' }); return b; };
+    const tx = text => ({ isText: true, isInput: false, text });
+    const inp = (key, f) => ({ isText: false, isInput: true, value: s[key][f], disabled: s[key].done, change: e => this.upd(key, { [f]: e.target.value }), key: e => { if (e.key === 'Enter' && V.check) V.check(); } });
+    const st = (label, key, min, max, reset, skip0) => {
+      const v = s[key], set = d => () => { let n = v + d; if (skip0 && n === 0) n += d; if (n < min || n > max) return; this.setState(Object.assign({ [key]: n }, reset || {})); };
+      return { label, val: this.m(v), dec: set(-1), inc: set(1) };
+    };
+    const rowsSt = (key, max) => { const p = s[key], set = d => () => { const n = p.rows + d; if (n >= 1 && n <= (max || 6)) this.upd(key, { rows: n }); }; return { label: 'Rows', val: '' + p.rows, dec: set(-1), inc: set(1) }; };
+    const aw = (px, q, r) => ({ w1: Math.max(84, Math.min(200, px * 70)), w2: Math.max(64, Math.min(220, Math.abs(q) * 30)), h: Math.max(60, Math.min(170, r * 38)) });
+    const chkAm = p => { const A = this.fAns(p); return this.area(Object.assign({ side: this.m(A.g), t1: this.term(A.a, 'x'), t2: this.m(A.b), c1: this.term(p.c, 'x'), c2: this.m(p.d), neg1: p.c < 0, neg2: p.d < 0 }, aw(A.a, A.b, Math.abs(A.g)))); };
+    const mkView = (key, level) => {
+      const p = s[key], E = this.expr(p.c, p.d), W = this.grp(p.sg, p.sa, p.sb), ch = c => () => this.checkMk(key, level, c);
+      const why = p.neg ? [['sign', 'A sign was dropped.'], ['one', 'Only one term was divided by the outside number.'], ['partial', 'It is not factored completely.']] : [['partial', 'It is not factored completely.'], ['one', 'Only one term was divided by the outside number.'], ['noone', 'A term divided by itself is 1, not 0.'], ['gcf', 'The outside number is not a factor of both terms.']];
+      V.prompt = p.done ? 'A student factored ' + E + ' completely. The work is ' + (p.type === 'ok' ? 'right.' : 'wrong.') : p.phase === 0 ? 'A student factored ' + E + ' completely. Is the work right or wrong?' : 'What went wrong?';
+      V.eq = E + ' = ' + W;
+      V.am = this.area({ side: p.sg, t1: this.term(p.sa, 'x'), t2: this.m(p.sb), c1: this.term(p.c, 'x'), c2: this.m(p.d), neg2: p.d < 0, w1: 120, w2: 110, h: 90 });
+      if (!p.done) V.actions = p.phase === 0 ? [btn('Right', ch('r')), btn('Wrong', ch('w'))] : why.map(w => btn(w[1], ch(w[0])));
+      V.note = p.phase === 0 && !p.done ? 'The labels on the area model come from the answer shown. Multiply the left label by each top label to check the boxes.' : '';
+      V.pf = { p, level, key: p.type === 'ok' ? 'Right.' : 'Wrong. ' + why.find(w => w[0] === p.type)[1] + ' Correct: ' + E + ' = ' + this.grp(p.G, p.c / p.G, p.d / p.G) + '.', hint: p.phase === 0 ? 'Multiply ' + p.sg + ' by each term inside the parentheses and compare with ' + E + '. Then ask whether the terms inside still share a factor.' : 'Compare each box with ' + p.sg + ' times its top label.' };
+    };
+    const pickEx = (tab, i) => () => this.setState(q => { const f = q.fEx.slice(); f[tab] = i; return { fEx: f, gx: null, ex: { id: -1, k: 0 } }; });
+    const setSub = i => () => this.setState(q => { const a = q.sub.slice(); a[sec] = i; return { sub: a }; });
+    const seeEx = id => () => this.setState(q => { const a = q.sub.slice(), f = q.fEx.slice(), tb = id < 5 ? 0 : 1; a[3] = tb; f[tb] = id < 5 ? id + 1 : id - 4; return { sub: a, fEx: f, gx: null, ex: { id, k: 0 } }; });
+    const exView = id => {
+      const gd = s.gx && s.gx.id === id ? s.gx : null, p = gd || this.EX[id], k = gd ? gd.k : s.ex.id === id ? s.ex.k : 0, A = this.fAns(p), E = this.fE(p), ag = Math.abs(A.g), G = this.m(A.g), tiles = !p.xy && !p.tri, yv = p.xy || p.tri;
+      const nums = p.tri ? p.c + ', ' + p.d + ' and ' + p.e : Math.abs(p.c) + ' and ' + Math.abs(p.d), t2 = yv ? this.term(A.b, 'y') : this.m(A.b), c2 = yv ? this.term(p.d, 'y') : this.m(p.d), dv = v => v + ' ÷ ' + (A.g < 0 ? '(' + G + ')' : G);
+      if (tiles) V.boards = [{ label: 'Algebra tiles', rows: this.board(k >= 1 ? ag : 1, p.c, p.d, { scale: .65 }) }];
+      V.am = this.area(Object.assign({ side: k >= 1 ? G : '?', t1: k >= 2 ? this.term(A.a, 'x') : '?', t2: k >= 2 ? t2 : '?', c1: this.term(p.c, 'x'), c2, neg1: p.c < 0, neg2: p.d < 0, w1: 120, w2: 120, h: 90 }, p.tri ? { t3: k >= 2 ? A.r : '?', c3: p.e, w3: 100 } : {}));
+      if (!gd) {
+        const setK = n => () => this.setState({ ex: { id, k: n } }), pb = btn('Previous step', setK(k - 1)); pb.disabled = k <= 0; if (pb.disabled) Object.assign(pb.style, { opacity: 0.45, cursor: 'not-allowed' });
+        V.prompt = ['Worked example: factor ' + E + '. ' + (tiles ? 'The tiles show the expression. The area model has each term in a box.' : 'Each term goes in a box of the area model.'), (p.negG ? 'Both terms are negative, so take out a negative number. ' : '') + 'The GCF of ' + nums + ' is ' + ag + '. ' + (tiles ? 'The tiles make ' + this.pl(ag, 'equal row') + ', and ' + G + ' is the left label.' : 'So ' + G + ' is the left label.'), 'Divide each term by ' + G + ': ' + dv(this.term(p.c, 'x')) + ' = ' + this.term(A.a, 'x') + (p.tri ? ', ' : ' and ') + dv(c2) + ' = ' + t2 + (p.tri ? ' and ' + dv(p.e) + ' = ' + A.r : '') + '.' + (A.a === 1 ? ' ' + ag + ' ÷ ' + ag + ' = 1, and 1x is written x.' : ''), 'The left label goes outside and the top labels go inside the parentheses.'][k];
+        if (k === 3) { V.eq = E + ' = ' + this.fG(p, A.g, A.a, A.b, A.r); V.note = 'Check by expanding: ' + this.chkEq(p) + '.'; }
+        V.actions = [pb, k < 3 ? btn('Next step', setK(k + 1), true) : btn('Try one like it', () => this.setState({ gx: this.newGx(id) }), true)];
+        V.stepLabel = 'Step ' + (k + 1) + ' of 4';
+      } else {
+        const tail = sfx => p.tri ? [tx('y +'), inp('gx', 'r' + sfx), tx(')')] : [tx(p.xy ? 'y )' : ')')];
+        V.prompt = gd.done ? 'You factored ' + E + '.' : ['Your turn. Factor ' + E + '. ' + (p.negG ? 'Both terms are negative. What negative number goes outside?' : 'What is the GCF of ' + nums + '?'), 'Divide each term by ' + G + '. What goes inside the parentheses?', 'Now write the whole factored form.'][k];
+        if (gd.done) V.eq = E + ' = ' + this.fG(p, A.g, A.a, A.b, A.r);
+        else V.answer = k === 0 ? [tx(p.negG ? 'Number outside =' : 'GCF ='), inp('gx', 'g')] : k === 1 ? [tx(G + '('), inp('gx', 'p'), tx('x +'), inp('gx', 'q')].concat(tail('')) : [tx(E + ' ='), inp('gx', 'g2'), tx('('), inp('gx', 'p2'), tx('x +'), inp('gx', 'q2')].concat(tail('2'));
+        V.check = () => this.checkGx(); V.gfb = gd.fb;
+        V.actions = [btn('Back to the worked example', () => this.setState({ gx: null, ex: { id, k: 0 } }))];
+        if (gd.done) {
+          V.actions.push(btn('Try another like it', () => this.setState({ gx: this.newGx(id) })));
+          if (id === 4) V.actions.push(btn('Go to Area model', setSub(1), true));
+          else if (id < 7) V.actions.push(btn('Next example', pickEx(id < 5 ? 0 : 1, id < 5 ? id + 2 : id - 3), true));
+          else if (!pracLocked || s.exDone.every(Boolean)) V.actions.push(btn('Go to Practice', setSub(2), true));
+        } else V.stepLabel = 'Step ' + (k + 1) + ' of 3';
+        if (!gd.done && k > 0) V.note = tiles ? 'The tiles and labels fill in as you go.' : 'The labels fill in as you go.';
+      }
+    };
+    const D = [['Why can a row of unit tiles never measure an x tile exactly?', 'How does a rectangle show multiplication?'], ['Why does the number outside multiply every term inside?', 'A student says 3(x + 2) = 3x + 2. What would you show them with tiles?', 'Why does a negative number outside flip every tile?'], ['Why does 7 make only one rectangle?', 'How do you know when you have found every factor of a number?'], ['Can the GCF of two numbers be one of the numbers? When?', 'Why is the GCF never larger than the smaller number?'], ['How are expanding and factoring related?', '2(3x + 6) equals 6x + 12. Why is it not fully factored?', 'Is −3(x + 3) the same as 3(−x − 3)? How do you know?'], ['Which mistake is easiest to make? Why?', 'How can you check a factoring without being told the answer?'], ['Why does a negative number outside flip every tile?', 'Is −3(x + 3) the same as 3(−x − 3)? How do you know?'], ['Build an expression that cannot be arranged into equal rows. What do its numbers have in common?'], []][sec + 1];
+    let title = '', blurb = '';
+
+    if (sec === -1) {
+      title = 'Intro'; blurb = 'Algebra tiles and the area model both show multiplication as a rectangle. This level introduces each one, then puts them together.';
+      const tab = s.iTab, k = s.iStep[tab], L = lastK[tab];
+      const setK = n => () => this.setState(q => { const a = q.iStep.slice(), m = q.iMax.slice(); a[tab] = n; m[tab] = Math.max(m[tab], n); return { iStep: a, iMax: m }; });
+      const mk = (kind, n, sc) => ({ tiles: Array.from({ length: n }, () => ({ label: this.label(kind, sc), style: this.tile(kind, sc) })) });
+      if (tab === 0) {
+        const X = s.iX, U = s.iU;
+        V.prompt = ['This is a unit tile. It is a small square, 1 by 1, and it stands for the number 1.', 'This is an x tile. It stands for x, a number we do not know yet.', 'The x tile is 1 wide and x long. Because x is unknown, its length does not line up with a whole number of unit tiles.', 'Count the tiles to write an expression.', 'Red tiles are negative. The long red tile stands for −x and the red square stands for −1. You will use them in the Expand and Factoring levels.'][k];
+        V.boards = [{ label: 'Algebra tiles', rows: k === 0 ? [mk('u', 1, 1.3)] : k === 1 ? [mk('x', 1, 1.3)] : k === 2 ? [mk('x', 1, 1.3), mk('u', 2, 1.3), mk('u', 3, 1.3)] : k === 3 ? [{ tiles: mk('x', X, 1).tiles.concat(mk('u', U, 1).tiles) }] : [mk('nx', 1, 1.3), mk('nu', 1, 1.3)] }];
+        if (k === 2) V.note = 'Two unit tiles are too short and three are too long.';
+        if (k === 3) { V.steppers = [st('x tiles', 'iX', 0, 5), st('Unit tiles', 'iU', 0, 8)]; V.eq = this.fmt(X, U); V.note = this.pl(X, 'x tile') + ' and ' + this.pl(U, 'unit tile') + ' make ' + this.fmt(X, U) + '.'; }
+      } else if (tab === 1) {
+        const R = s.iR, C = s.iC, h = aw(1, 1, R).h;
+        V.steppers = [st('Rows', 'iR', 1, 5), st('Columns', 'iC', 1, 6)];
+        V.prompt = ['Unit tiles can be arranged into a rectangle. This one has ' + this.pl(R, 'row') + ' of ' + C + '. Count the tiles: ' + R * C + '.', 'The area of a rectangle is its length times its width. Multiplying gives the same count.', 'Make the rectangle 2 wider, then split it into two boxes. Find the area of each box and add them.', 'Now swap the ' + C + ' for x. The boxes work the same way, even though x is unknown.'][k];
+        if (k < 3) V.boards = [{ label: 'Unit tiles', rows: this.board(R, 0, R * (k === 2 ? C + 2 : C)) }];
+        if (k === 1) V.eq = R + ' × ' + C + ' = ' + R * C;
+        if (k === 2) { V.am = this.area({ side: R, t1: C, t2: 2, c1: R + ' · ' + C, c2: R + ' · 2', plain1: true, w1: Math.max(84, C * 30), w2: 84, h }); V.eq = R + ' × (' + C + ' + 2) = ' + R * C + ' + ' + R * 2 + ' = ' + R * (C + 2); }
+        if (k === 3) { V.am = this.area({ side: R, t1: 'x', t2: 2, c1: R + ' · x', c2: R + ' · 2', w1: 110, w2: 84, h }); V.eq = this.grp(R, 1, 2) + ' = ' + this.expr(R, R * 2); }
+      } else if (tab === 3) {
+        const P = s.zP, N = s.zN, z = Math.min(P, N), zk = (kind, n) => ({ tiles: Array.from({ length: n }, (_, j) => ({ label: this.label(kind, 1), style: this.tile(kind, 1, s.zCancel && j < z ? { opacity: .12, transform: 'scale(.7)' } : {}) })) });
+        V.steppers = [st('Positive tiles', 'zP', 0, 8, { zCancel: false }), st('Negative tiles', 'zN', 0, 8, { zCancel: false })];
+        V.prompt = P + ' + (−' + N + ')';
+        V.boards = [{ label: 'Algebra tiles', rows: [zk('u', P), zk('nu', N)] }];
+        V.actions = [btn(s.zCancel ? 'Put them back' : 'Cancel zero pairs', () => this.setState({ zCancel: !s.zCancel }))];
+        if (s.zCancel) V.eq = P + ' + (−' + N + ') = ' + this.m(P - N);
+        V.note = s.zCancel ? this.pl(z, 'zero pair') + ' cancelled. ' + (P === N ? 'Nothing is left.' : this.pl(Math.abs(P - N), P > N ? 'positive tile' : 'negative tile') + (Math.abs(P - N) === 1 ? ' is' : ' are') + ' left.') : 'A positive tile and a negative tile of the same size add to zero. That is a zero pair.';
+      } else {
+        const A = s.iA, B = s.iB, G = this.grp(A, 1, B), c1 = 'var(--tl-acc)', c2 = 'var(--tl-p3)', rows = this.board(A, A, A * B);
+        V.steppers = [st('Rows', 'iA', 1, 4), st('Units in each row', 'iB', 1, 5)];
+        V.prompt = ['Here ' + (A === 1 ? 'is 1 row' : 'are ' + A + ' rows') + ' of x + ' + B + ', built with tiles.', 'The area model shows the same rectangle: ' + A + ' tall and x + ' + B + ' wide.', 'Match them. The x tiles fill the ' + A + ' · x box. The unit tiles fill the ' + A + ' · ' + B + ' box.', 'Both pictures say the same thing.'][k];
+        if (k >= 2) rows.forEach(r => r.tiles.forEach((q, j) => { q.style = Object.assign({}, q.style, { boxShadow: '0 0 0 3px ' + (j === 0 ? c1 : c2) }); }));
+        V.boards = [{ label: 'Algebra tiles', rows }];
+        V.am = this.area(Object.assign({ side: A, t1: 'x', t2: B, c1: A + ' · x', c2: A + ' · ' + B, hidden: k < 1, ring1: k >= 2 ? c1 : null, ring2: k >= 2 ? c2 : null }, aw(1, B, A)));
+        if (k === 3) { V.eq = G + ' = ' + this.expr(A, A * B); V.note = 'The Expand level practices this next.'; }
+      }
+      if (tab === 3) V.actions.push(btn('Go to Expand', () => this.setState({ sec: 0 }), true)); else {
+      const pb = btn('Previous step', setK(Math.max(0, k - 1))); pb.disabled = k <= 0; if (pb.disabled) Object.assign(pb.style, { opacity: 0.45, cursor: 'not-allowed' });
+      V.actions = [pb, k < L ? btn('Next step', setK(k + 1), true) : btn('Start over', setK(0))];
+      if (k === L) V.actions.push(btn('Go to ' + iTabs[tab + 1], goTab(tab + 1), true));
+      V.stepLabel = 'Step ' + (k + 1) + ' of ' + (L + 1); }
+    } else if (sec === 1) {
+      title = 'Factors'; blurb = 'A factor is a number that multiplies with another number to make a product. With tiles, the factors of a number are the side lengths of the rectangles it can make.';
+      if (sub === 0) {
+        const N = s.wN, R = Math.min(s.wR, N), k = s.wStep, fits = N % R === 0, fs = this.factors(N);
+        V.steppers = k === 3 ? [] : [st('Number', 'wN', 2, 24, { wR: 1 })].concat(k === 1 ? [st('Rows', 'wR', 1, Math.min(6, N))] : []);
+        V.prompt = ['Here are ' + N + ' unit tiles in one row. One row of ' + N + ' is a rectangle, so 1 × ' + N + ' = ' + N + '.', 'Change the number of rows. When every row is full, the tiles make a rectangle.', 'Every rectangle gives two factors: the number of rows and the number of tiles in each row.', 'The same idea works with x tiles. 3x is 3 rows of x, so 3 and x are factors of 3x.'][k];
+        if (k === 0) { V.boards = [{ label: 'Unit tiles', rows: this.board(1, 0, N, { scale: .8 }) }]; V.eq = '1 × ' + N + ' = ' + N; }
+        if (k === 1) { V.boards = [{ label: 'Unit tiles', rows: this.board(R, 0, N, { scale: .8 }) }]; if (fits) V.eq = R + ' × ' + N / R + ' = ' + N; V.note = fits ? R + ' and ' + N / R + ' are factors of ' + N + '.' : R + ' rows leave tiles over (the dashed ones), so ' + R + ' is not a factor of ' + N + '.'; }
+        if (k === 2) { V.boards = fs.filter(f => f * f <= N).map(f => ({ label: f + ' × ' + N / f, rows: this.board(f, 0, N, { scale: .5 }) })); V.note = 'Factors of ' + N + ': ' + fs.join(', ') + '.' + (fs.length === 2 ? ' ' + N + ' makes only one rectangle. A number like this is called prime.' : ''); }
+        if (k === 3) { V.boards = [{ label: 'Algebra tiles', rows: this.board(3, 3, 0) }]; V.eq = '3 · x = 3x'; V.note = 'The GCF level looks for the largest factor that two numbers share.'; }
+        V.actions = [prev('wStep', k), k < 3 ? btn('Next step', () => this.setState({ wStep: k + 1 }), true) : btn('Start over', () => this.setState({ wStep: 0 }))];
+        V.stepLabel = 'Step ' + (k + 1) + ' of 4';
+      } else {
+        const p = s.wf, fs = this.factors(p.n), fits = p.n % p.rows === 0;
+        V.prompt = 'Find every factor of ' + p.n + '. Use the Rows control to test each number of rows.';
+        V.steppers = [rowsSt('wf', Math.min(p.n, 10))];
+        V.boards = [{ label: fits ? p.rows + ' × ' + p.n / p.rows : this.pl(p.rows, 'row') + ', tiles left over', rows: this.board(p.rows, 0, p.n, { scale: .7 }) }];
+        V.lists = [{ title: 'Tap every factor of ' + p.n, wrap: { display: 'flex', flexDirection: 'column', gap: 4, maxWidth: '100%' }, row: { display: 'flex', flexWrap: 'wrap', gap: 8, paddingBottom: 4 }, w: 0, h: 0, arcs: [], chips: Array.from({ length: p.n }, (_, i) => { const f = i + 1, on = p.sel.includes(f); return { n: f, pick: () => { if (!p.done) this.upd('wf', { sel: on ? p.sel.filter(x => x !== f) : p.sel.concat([f]) }); }, style: { flex: '0 0 46px', width: 46, height: 46, padding: 0, borderRadius: 12, border: '3px solid var(--tl-edge)', background: on ? 'var(--tl-acc)' : 'var(--surface2)', color: on ? 'var(--tl-on-acc)' : 'var(--ink)', fontFamily: 'var(--font)', fontWeight: 800, fontSize: 20, cursor: 'pointer', boxShadow: '0 3px 0 var(--tl-shadow)' } }; }) }];
+        if (!p.done) V.actions = [btn('Check', () => this.checkWf(), true)];
+        V.pf = { p, level: 1, key: 'Factors of ' + p.n + ': ' + fs.join(', '), hint: 'Start with 1 row and go up. Each time the tiles make a full rectangle, tap the number of rows and the number in each row.', next: () => this.setState(q => ({ wf: this.newWf(q.wf, q.wf.mt && !q.wf.fu ? q.wf.mt : null) })) };
+      }
+    } else if (sec === 2) {
+      title = 'Greatest common factor'; blurb = 'The greatest common factor (GCF) of two numbers is the largest number that divides both of them. In the next level, it is the number you pull out front when you factor.';
+      const a = s.gA, b = s.gB, g = this.gcd(a, b), reset = { gPick: null, tStep: 0 };
+      if (sub < 3) V.steppers = [st('First number', 'gA', 2, 30, reset), st('Second number', 'gB', 2, 30, reset)];
+      if (sub <= 1) {
+        const W = sub === 0, k0 = s.gStep, pickV = W ? (k0 >= 2 ? g : null) : s.gPick, showV = W ? k0 >= 1 : s.gShow;
+        V.prompt = W ? ['Start by listing every factor of ' + a + ' and ' + b + '.', 'The yellow numbers are in both lists. They are the common factors.', 'The largest common factor is the greatest common factor (GCF). For ' + a + ' and ' + b + ', it is ' + g + '.', 'Both numbers make a rectangle that is ' + g + ' wide. No wider rectangle works for both.'][k0] : 'Tap the greatest factor that appears in both lists. Each factor is joined to the partner it multiplies with to make the number.';
+        const pc = ['var(--tl-acc)', 'var(--tl-p1)', 'var(--tl-p2)', 'var(--tl-p3)'];
+        V.lists = [a, b].map(n => { const fs = this.factors(n), N = fs.length, H = 16 + (N - 1) * 7, cx = i => 25 + 58 * i, arcs = [];
+          for (let i = 0; i < N - 1 - i; i++) { const j = N - 1 - i, c = (10 + (j - i) * 7) / 0.75; arcs.push({ d: 'M' + cx(i) + ' ' + H + ' C' + cx(i) + ' ' + (H - c) + ' ' + cx(j) + ' ' + (H - c) + ' ' + cx(j) + ' ' + H, color: pc[i % 4] }); }
+          if (N % 2) { const m = (N - 1) / 2, x = cx(m); arcs.push({ d: 'M' + (x - 7) + ' ' + H + ' C' + (x - 16) + ' ' + (H - 20) + ' ' + (x + 16) + ' ' + (H - 20) + ' ' + (x + 7) + ' ' + H, color: pc[m % 4] }); }
+          return { title: 'Factors of ' + n, wrap: { display: 'flex', flexDirection: 'column', gap: 4, width: 'max-content' }, row: { display: 'flex', gap: 8 }, n, w: 58 * N - 8, h: H, arcs, chips: fs.map((f, i) => { const sh = a % f === 0 && b % f === 0, on = pickV === f, col = pc[Math.min(i, N - 1 - i) % 4]; return { n: f, pick: () => { if (!W) this.setState({ gPick: f }); }, style: { flex: '0 0 50px', width: 50, height: 50, padding: 0, borderRadius: 14, border: '3px solid ' + col, background: on ? 'var(--tl-acc)' : showV && sh ? '#FFD23F' : 'var(--surface2)', color: on ? 'var(--tl-on-acc)' : showV && sh ? '#2B2140' : 'var(--ink)', fontFamily: 'var(--font)', fontWeight: 800, fontSize: 22, cursor: 'pointer', boxShadow: '0 3px 0 ' + col } }; }) }; });
+        V.actions = [btn(s.gShow ? 'Hide shared factors' : 'Highlight shared factors', () => this.setState({ gShow: !s.gShow }))];
+        if (W) {
+          V.actions = [prev('gStep', k0), k0 < 3 ? btn('Next step', () => this.setState({ gStep: k0 + 1 }), true) : btn('Start over', () => this.setState({ gStep: 0 }))];
+          V.stepLabel = 'Step ' + (k0 + 1) + ' of 4';
+          if (k0 >= 2) V.eq = 'GCF of ' + a + ' and ' + b + ' = ' + g;
+          if (k0 === 3) { V.lists = []; V.boards = [a, b].map(n => ({ label: n + ' = ' + n / g + ' × ' + g, rows: this.board(n / g, 0, n, { scale: .5 }) })); V.note = 'In the Factoring level, the GCF is the number that goes outside the parentheses.'; }
+        }
+        const k = W ? null : s.gPick;
+        if (k != null) V.note = k === g ? 'Yes. ' + g + ' is the greatest common factor of ' + a + ' and ' + b + '.' : a % k === 0 && b % k === 0 ? k + ' is a common factor, but there is a greater one.' : k + ' is not a factor of both numbers.';
+      } else if (sub === 2) {
+        V.prompt = 'Split each number until every branch ends in a prime. Circles are prime.';
+        V.trees = [this.tree(a, s.tStep), this.tree(b, s.tStep)];
+        const done = V.trees[0].done && V.trees[1].done;
+        V.actions = [prev('tStep', s.tStep), done ? btn('Start over', () => this.setState({ tStep: 0 })) : btn('Split', () => this.setState({ tStep: s.tStep + 1 }), true)];
+        const tN = Math.max(V.trees[0].ps.length, V.trees[1].ps.length);
+        V.stepLabel = 'Step ' + Math.min(s.tStep + 1, tN) + ' of ' + tN;
+        if (done) { const rest = V.trees[1].ps.slice(), sh = []; V.trees[0].ps.forEach(p => { const i = rest.indexOf(p); if (i >= 0) { sh.push(p); rest.splice(i, 1); } }); V.note = sh.length ? 'Shared primes: ' + sh.join(' × ') + (sh.length > 1 ? ' = ' + g : '') + '. The GCF is ' + g + '.' : 'There are no shared primes, so the GCF is 1.'; }
+      } else {
+        const p = s.gp;
+        V.prompt = 'What is the greatest common factor of ' + p.a + ' and ' + p.b + '?';
+        V.answer = [tx('GCF ='), inp('gp', 'ans')]; V.check = () => this.checkGcf();
+        V.pf = { p, level: 2, key: 'GCF = ' + this.gcd(p.a, p.b), hint: 'Factors of ' + p.a + ': ' + this.factors(p.a).join(', ') + '. Factors of ' + p.b + ': ' + this.factors(p.b).join(', ') + '.', next: () => this.setState({ gp: this.newGcf(p, p.mt && !p.fu ? p.mt : null) }) };
+      }
+    } else if (sec === 0) {
+      title = 'Expanding'; blurb = 'The distributive property: the number outside the parentheses multiplies every term inside.';
+      if (sub === 0) {
+        const a = s.eA, b = s.eB, k = s.eStep, A = Math.abs(a), G = this.grp(a, 1, b), inner = this.expr(1, b), fl = a < 0 && (k >= 3 || (k === 2 && s.nFlip)), sg = fl ? -1 : 1, rs = { eStep: 0, nFlip: false };
+        V.steppers = [st('Number outside', 'eA', -5, 5, rs, true), st('Units in each group', 'eB', -6, 6, rs, true)];
+        V.prompt = ['Start with one group: ' + inner + '.', a > 0 ? G + ' means ' + this.pl(a, 'group') + ' of ' + inner + '. Stack them into a rectangle.' : G + ' starts as ' + this.pl(A, 'group') + ' of ' + inner + '. Stack them into a rectangle.', a > 0 ? 'The rectangle is ' + a + ' tall and ' + inner + ' wide. The green part is ' + a + ' · x and the ' + (b > 0 ? 'yellow part is ' + a + ' · ' + b : 'red part is ' + a + ' · (' + this.m(b) + ')') + '.' : fl ? 'Every tile flips to its opposite.' : 'The negative sign outside means take the opposite of every tile.', 'Count the tiles: ' + this.pl(A, a < 0 ? 'negative x tile' : 'x tile') + ' and ' + this.pl(Math.abs(a * b), a * b < 0 ? 'negative unit tile' : 'unit tile') + '.'][k];
+        V.boards = [{ label: 'Algebra tiles', rows: this.board(A, A * sg, A * b * sg, { hideFrom: k === 0 ? 1 : null }) }];
+        V.am = this.area(Object.assign({ side: this.m(a), t1: 'x', t2: this.m(b), c1: this.m(a) + ' · x', c2: this.m(a) + ' · ' + (b < 0 ? '(' + this.m(b) + ')' : b), neg1: a < 0, neg2: a * b < 0, hidden: k < (a > 0 ? 2 : 3) }, aw(1, b, A)));
+        if (k >= 3) V.eq = G + ' = ' + this.expr(a, a * b);
+        V.actions = [prev('eStep', k), k < 3 ? btn('Next step', () => this.setState({ eStep: k + 1 }), true) : btn('Start over', () => this.setState(rs))].concat(a < 0 && k === 2 ? [btn(s.nFlip ? 'Flip back' : 'Flip all tiles', () => this.setState({ nFlip: !s.nFlip }))] : []);
+        V.stepLabel = 'Step ' + (k + 1) + ' of 4';
+      } else {
+        const p = s.eb, G = this.grp(p.a, 1, p.b);
+        if (p.neg) {
+          const A = Math.abs(p.a);
+          V.prompt = 'Expand ' + G + '.';
+          V.boards = [{ label: p.a < 0 ? this.pl(A, 'group') + ' of (' + this.expr(1, p.b) + '), before taking the opposite' : 'Algebra tiles', rows: this.board(A, A, A * p.b) }];
+          V.answer = [tx(G + ' ='), inp('eb', 'in1'), tx('x +'), inp('eb', 'in2')]; V.check = () => this.checkExpand('eb', 0);
+          V.note = 'To show subtraction, type a negative number in the second box.';
+          V.pf = { p, level: 0, key: G + ' = ' + this.expr(p.a, p.a * p.b), hint: 'Multiply ' + this.m(p.a) + ' by x, then multiply ' + this.m(p.a) + ' by ' + this.m(p.b) + '. A negative times a negative is positive.' };
+        } else {
+          if (p.phase === 0) {
+            V.prompt = 'Build ' + G + ' with tiles.';
+            V.palette = this.palette('eb', ['x', 'u']); V.irows = this.ibuild('eb', 1);
+            V.actions = [btn('Add row', () => this.addRow('eb')), btn('Check rectangle', () => this.checkBuild(), true)];
+          } else {
+            V.prompt = 'Now write ' + G + ' in expanded form.';
+            V.boards = [{ label: 'Your rectangle', rows: this.board(p.a, p.a, p.a * p.b) }];
+            V.am = this.area(Object.assign({ side: p.a, t1: 'x', t2: p.b, c1: p.a + ' · x', c2: p.a + ' · ' + p.b }, aw(1, p.b, p.a)));
+            V.answer = [tx(G + ' ='), inp('eb', 'in1'), tx('x +'), inp('eb', 'in2')]; V.check = () => this.checkExpand('eb', 0);
+          }
+          V.pf = { p, level: 0, key: G + ' = ' + this.expr(p.a, p.a * p.b), hint: p.phase === 0 ? 'Make ' + this.pl(p.a, 'row') + '. Put one x tile and ' + this.pl(p.b, 'unit tile') + ' in each row.' : 'There are ' + this.pl(p.a, 'x tile') + '. For the unit tiles, count ' + this.pl(p.a, 'row') + ' of ' + p.b + '.' };
+        }
+        V.pf.next = () => this.setState(q => { const pr = q.eb; if (pr.mt && !pr.fu) return { eb: this.newEb(!!pr.neg, false, pr.mt) }; const neg = q.correct[0] >= target; return { eb: this.newEb(neg, neg && !q.eNeg), eNeg: q.eNeg || neg }; });
+      }
+    } else if (sec === 3) {
+      title = 'Factoring'; blurb = 'Factoring runs the distributive property backwards. The same rectangle can be read in both directions. Reminder: the GCF of the two terms is the number that goes outside.';
+      if (teacher && sub < 2) { const b0 = sub === 0 ? 0 : 5, n = sub === 0 ? 5 : 3; V.picker = [sub === 0 ? 'Explore' : 'How it works'].concat(this.EX.slice(b0, b0 + n).map(e => this.fE(e))).map((label, i) => ({ label, on: s.fEx[sub] === i, go: pickEx(sub, i) })); }
+      if (teacher && sub < 2 && s.fEx[sub] > 0) exView(sub === 0 ? s.fEx[0] - 1 : s.fEx[1] + 4);
+      else if (sub === 0) {
+        const c = s.fC, d = s.fD, r = s.fRows, ok = c % r === 0 && d % r === 0, g = this.gcd(c, d), E = this.expr(c, d), both = c < 0 && d < 0, ng = both && s.fNeg, Rr = ng ? -r : r, ac = Math.abs(c), ad = Math.abs(d);
+        V.steppers = [st('x tiles', 'fC', -8, 8, { fRows: 1 }, true), st('Unit tiles', 'fD', -12, 12, { fRows: 1 }, true), st('Rows', 'fRows', 1, 6)];
+        V.boards = [{ label: 'Algebra tiles', rows: this.board(r, c, d, { scale: .65 }) }];
+        if (ok) {
+          const inner = this.expr(c / Rr, d / Rr), G = this.grp(Rr, c / Rr, d / Rr);
+          V.prompt = s.fDir === 0 ? 'Factoring: ' + E + (ng ? ' written with ' + this.m(Rr) + ' outside. The terms inside are the opposite of the tiles in each row.' : ' arranged into ' + this.pl(r, 'equal row') + ' of (' + inner + ').') : 'Expanding: ' + (ng ? this.m(Rr) + ' times (' + inner + ') makes ' : this.pl(r, 'row') + ' of (' + inner + ') make ') + E + '.';
+          V.eq = s.fDir === 0 ? E + ' = ' + G : G + ' = ' + E;
+          V.am = this.area(Object.assign({ side: this.m(Rr), t1: this.term(c / Rr, 'x'), t2: this.m(d / Rr), c1: this.term(c, 'x'), c2: this.m(d), neg1: c < 0, neg2: d < 0 }, aw(ac / r, d / r, r)));
+          V.note = r === 1 && ng ? 'One row. Only the negative sign is outside so far.' + (g > 1 ? ' Add rows.' : '') : r === 1 ? (g === 1 ? 'One row. ' + ac + ' and ' + ad + ' have no common factor greater than 1, so nothing can be factored out.' : 'One row. Nothing is factored out yet. Add rows.') : r === g ? r + ' is the GCF of ' + ac + ' and ' + ad + ', so this is factored completely.' + (ng ? ' Taking a negative number outside makes the terms inside positive.' : both ? ' Every tile is red, so a negative number can go outside instead.' : '') : r + ' rows work, but each row can still be split into equal parts. Try more rows.';
+        } else V.prompt = E + ' cannot be split into ' + r + ' equal rows. The dashed tiles are left over.';
+        V.actions = [btn(s.fDir === 0 ? 'Read it as expanding' : 'Read it as factoring', () => this.setState({ fDir: 1 - s.fDir }), true)].concat(both ? [btn(s.fNeg ? 'Use a positive number outside' : 'Use a negative number outside', () => this.setState({ fNeg: !s.fNeg }))] : []);
+      } else if (sub === 1) {
+        const g = s.bG, c = 2 * g, d = 3 * g, k = s.bStep, E = this.expr(c, d);
+        V.steppers = [st('Common factor', 'bG', 2, 6)];
+        V.prompt = ['Expanding fills in the inside boxes. Factoring starts with the inside boxes filled in and works out the labels.', 'The left label multiplies both boxes, so it is a factor of both ' + c + ' and ' + d + '. Use the GCF: ' + g + '.', 'Divide to find each top label: ' + c + 'x ÷ ' + g + ' = 2x and ' + d + ' ÷ ' + g + ' = 3.', 'Read the labels. The left label goes outside and the top labels go inside the parentheses.'][k];
+        V.am = this.area({ side: k >= 1 ? g : '?', t1: k >= 2 ? '2x' : '?', t2: k >= 2 ? 3 : '?', c1: c + 'x', c2: d, w1: 130, w2: 110, h: 90 });
+        if (k === 3) { V.eq = E + ' = ' + this.grp(g, 2, 3); V.note = 'Check by expanding: ' + g + ' · 2x = ' + c + 'x and ' + g + ' · 3 = ' + d + '.'; }
+        V.actions = [prev('bStep', k), k < 3 ? btn('Next step', () => this.setState({ bStep: k + 1 }), true) : btn('Start over', () => this.setState({ bStep: 0 }))];
+        V.stepLabel = 'Step ' + (k + 1) + ' of 4';
+      } else {
+        const p = s.fp, E = this.fE(p), A = this.fAns(p), sol = p.done;
+        if (p.kind === 'm') mkView('fp', 3);
+        else if (p.kind === 'f') {
+          V.prompt = p.negG ? 'Factor ' + E + ' using a negative number outside the parentheses.' : 'Factor ' + E + ' completely.';
+          V.steppers = [rowsSt('fp')];
+          V.boards = [{ label: 'Algebra tiles', rows: this.board(p.rows, p.c, p.d, { scale: .65 }) }];
+          V.answer = [tx(E + ' ='), inp('fp', 'g'), tx('('), inp('fp', 'p'), tx('x +'), inp('fp', 'q'), tx(')')]; V.check = () => this.checkFactor('fp', 3);
+          V.note = p.negG ? 'Every tile is red. Taking a negative number outside makes the terms inside positive.' : 'The red tiles are negative, so the second box inside the parentheses needs a negative number.';
+          if (sol && p.chk) { V.eq = this.chkEq(p); V.am = chkAm(p); }
+          V.pf = { p, level: 3, expand: true, key: this.chkEq(p).split(' = ').reverse().filter((x, i) => i !== 1).join(' = '), hint: (p.negG ? 'Both terms are negative. Take out the negative GCF, then divide each term by it. A negative divided by a negative is positive. ' : '') + 'Find the GCF of ' + Math.abs(p.c) + ' and ' + Math.abs(p.d) + '. Arrange the tiles into that many rows and read one row.' };
+        } else {
+        V.prompt = 'Factor ' + E + ' completely.';
+        if (p.tri) {
+          V.am = this.area({ side: sol ? A.g : '?', t1: sol ? this.term(A.a, 'x') : '?', t2: sol ? this.term(A.b, 'y') : '?', t3: sol ? A.r : '?', c1: this.term(p.c, 'x'), c2: this.term(p.d, 'y'), c3: p.e, w1: 120, w2: 120, w3: 100, h: 90 });
+          V.note = 'This one has three terms. The left label must divide all three boxes.';
+          V.answer = [tx(E + ' ='), inp('fp', 'g'), tx('('), inp('fp', 'p'), tx('x +'), inp('fp', 'q'), tx('y +'), inp('fp', 'r'), tx(')')];
+        } else if (p.xy) {
+          V.am = this.area({ side: sol ? A.g : '?', t1: sol ? this.term(A.a, 'x') : '?', t2: sol ? this.term(A.b, 'y') : '?', c1: this.term(p.c, 'x'), c2: this.term(p.d, 'y'), w1: 130, w2: 130, h: 90 });
+          V.note = 'This one uses the area model. The height is the common factor. The two widths go inside the parentheses.';
+          V.answer = [tx(E + ' ='), inp('fp', 'g'), tx('('), inp('fp', 'p'), tx('x +'), inp('fp', 'q'), tx('y )')];
+        } else {
+          V.steppers = [rowsSt('fp')];
+          V.boards = [{ label: 'Algebra tiles', rows: this.board(p.rows, p.c, p.d, { scale: .65 }) }];
+          V.note = 'Use the Rows control to arrange the tiles into equal rows.';
+          V.answer = [tx(E + ' ='), inp('fp', 'g'), tx('('), inp('fp', 'p'), tx('x +'), inp('fp', 'q'), tx(')')];
+          if (sol && p.chk) V.am = chkAm(p);
+        }
+        V.check = () => this.checkFactor('fp', 3);
+        if (sol && p.chk) V.eq = this.chkEq(p);
+        V.pf = { p, level: 3, expand: true, key: E + ' = ' + this.fG(p, A.g, A.a, A.b, A.r), hint: p.tri ? 'Find the GCF of ' + p.c + ', ' + p.d + ' and ' + p.e + '. That is the left label. Divide each box by it to find the top labels.' : p.xy ? 'List the factors of ' + p.c + ' and ' + p.d + '. The largest shared factor goes outside.' : 'Find the GCF of ' + p.c + ' and ' + p.d + '. Arrange the tiles into that many rows and read one row.' };
+        }
+        if (teacher) V.actions = V.actions.concat([btn('See an example like this', seeEx(p.kind === 'm' ? (p.neg ? 3 : 0) : p.kind === 'f' ? (p.negG ? 4 : 3) : p.tri ? 7 : p.xy ? 5 : p.c === A.g ? 2 : 0))]);
+        V.pf.next = () => this.setState(q => {
+          const pr = q.fp; if (pr.mt && !pr.fu) return { fp: this.fuFp(pr.mt) };
+          if (q.correct[3] < target) return { fPos: q.fPos + 1, fp: this.newFp(q.fPos) };
+          const rot = q.fRot, o = { fRot: (rot + 1) % 4 };
+          if (rot === 1) return Object.assign(o, { fNi: q.fNi + 1, fp: this.newFp(q.fNi, true, !q.fNegSeen), fNegSeen: true });
+          if (rot === 3) return Object.assign(o, { fMk: q.fMk + 1, fp: this.newMk(q.fMk, q.fMk % 3 === 2) });
+          return Object.assign(o, { fPos: q.fPos + 1, fp: this.newFp(q.fPos) });
+        });
+      }
+    } else if (sec === 4) {
+      title = 'Find the mistake'; blurb = 'Each problem shows how a student factored an expression. Decide whether the work is right. If it is wrong, say what went wrong.';
+      mkView('mk', 4);
+      V.pf.next = () => this.setState(q => ({ mN: q.mN + 1, mk: this.newMk(q.mN + 1) }));
+    } else if (sec === 6) {
+      title = 'Sandbox'; blurb = 'Build anything you like. When every row matches, the rectangle shows a factored form.';
+      const o = s.sb, nets = o.rows.map(r => [r.x - r.nx, r.u - r.nu]), tX = nets.reduce((t, n) => t + n[0], 0), tU = nets.reduce((t, n) => t + n[1], 0), R = o.rows.length;
+      const same = nets.every(n => n[0] === nets[0][0] && n[1] === nets[0][1]), zero = o.rows.some(r => (r.x && r.nx) || (r.u && r.nu)), px = nets[0][0], q = nets[0][1];
+      V.palette = this.palette('sb', ['x', 'u', 'nx', 'nu']); V.irows = this.ibuild('sb', 1);
+      V.prompt = o.ch ? o.ch.text : 'Free play';
+      V.eq = R > 1 && same && (px || q) ? R + '(' + this.fmt(px, q) + ') = ' + this.fmt(tX, tU) : this.fmt(tX, tU);
+      if (same && !zero && px > 0 && q) V.am = this.area(Object.assign({ side: R, t1: this.term(px, 'x'), t2: this.m(q), c1: this.term(R * px, 'x'), c2: this.m(R * q), neg2: q < 0 }, aw(px, q, R)));
+      V.actions = [btn('Add row', () => this.addRow('sb')), btn('Remove zero pairs', () => this.upd('sb', { rows: o.rows.map(r => { const a = Math.min(r.x, r.nx), b = Math.min(r.u, r.nu); return { x: r.x - a, nx: r.nx - a, u: r.u - b, nu: r.nu - b }; }) })), btn('Clear', () => this.upd('sb', { rows: [{ x: 0, u: 0, nx: 0, nu: 0 }], active: 0 })), btn('New challenge', () => this.nextCh(), true)];
+      if (o.ch) V.actions.push(btn('Free play', () => this.upd('sb', { ch: null })));
+      const c = o.ch, st = this.sbStat(o), won = st.won, fnd = o.found || [];
+      V.note = won ? 'Challenge complete.' + (c.id != null ? ' Badge earned.' : '') : zero ? 'Some rows contain zero pairs. They add to zero.' : '';
+      if (c && c.t === 'w') V.note = (won ? 'Challenge complete. Badge earned. ' : '') + fnd.length + ' of ' + st.need.length + ' ways found' + (fnd.length ? ': ' + fnd.map(r => this.grp(r, c.c / r, c.d / r)).join(', ') : '') + '.' + (!won && st.way ? ' Clear the board and try a different number of rows.' : '');
+    } else { title = 'Progress'; blurb = 'Show this screen to your teacher.'; }
+
+    if (V.pf && V.pf.p.first && !V.pf.p.done) V.note = 'New: from here on, problems include negatives. ' + (V.note || '');
+    let pf = { show: false };
+    if (V.pf) {
+      const p = V.pf.p, lvl = V.pf.level, n = Math.min(s.correct[lvl], target), fb = p.fb, lvlDone = s.correct[lvl] >= target;
+      const hk = ['gp', 'eb', 'fp', 'np', 'wf', 'mk'].find(k => s[k] === p), H = s.hist[hk], fresh = V.pf.next, setH = (q, past, future) => Object.assign({}, q.hist, { [hk]: { past, future } });
+      const back = () => this.setState(q => { const h = q.hist[hk]; if (!h.past.length) return null; return { [hk]: h.past[h.past.length - 1], hist: setH(q, h.past.slice(0, -1), [q[hk]].concat(h.future)) }; });
+      const fwd = () => { if (this.state.hist[hk].future.length) this.setState(q => { const h = q.hist[hk]; return { [hk]: h.future[0], hist: setH(q, h.past.concat([q[hk]]), h.future.slice(1)) }; }); else { this.setState(q => ({ hist: setH(q, q.hist[hk].past.concat([q[hk]]), []) })); fresh(); } };
+      const noBack = H.past.length === 0;
+      pf = { show: true, fbShow: !!fb, fbText: fb ? fb.text : '', starText: fb && fb.stars ? '★'.repeat(fb.stars) : '', fbStyle: { display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '6px 14px', maxWidth: 820, borderRadius: 14, padding: '10px 16px', fontWeight: 700, border: '3px solid ' + (fb && fb.ok ? 'var(--tl-ok)' : 'var(--tl-bad)'), background: fb && fb.ok ? 'var(--tl-okbg)' : 'var(--tl-badbg)' }, hintShow: !!p.hintOn && !p.done, hint: this.vt(p.tip || V.pf.hint), hintBtn: !p.done && !p.hintOn, askHint: () => this.upd(hk, { hintOn: true }), keyShow: teacher && !!V.pf.key, key: V.pf.key || '', chkShow: !!V.pf.expand && p.done, chkText: p.chk ? 'Hide the check' : 'Check by expanding', chk: () => this.upd(hk, { chk: !p.chk }), done: p.done || H.future.length > 0, next: fwd, back, backOff: noBack, count: 'Problem ' + (H.past.length + 1) + ' of ' + (H.past.length + 1 + H.future.length), backStyle: { background: 'var(--surface2)', color: 'var(--ink)', border: '3px solid var(--tl-edge)', borderRadius: 14, padding: '9px 24px', fontSize: 18, fontWeight: 800, boxShadow: '0 4px 0 var(--tl-shadow)', cursor: noBack ? 'not-allowed' : 'pointer', opacity: noBack ? 0.45 : 1 }, lvlDone, lvlText: 'Go to ' + names[nx(lvl)], goNext: () => this.setState({ sec: nx(lvl) }), progress: lvlDone ? 'Level complete' : n + ' of ' + target + ' correct to unlock ' + names[nx(lvl)] };
+    }
+    const tabStyle = (on, lk) => ({ padding: '7px 18px', borderRadius: 999, border: '3px solid var(--tl-edge)', background: on ? 'var(--ink)' : lk ? 'var(--bg)' : 'var(--surface2)', color: on ? 'var(--bg)' : lk ? 'var(--muted)' : 'var(--ink)', fontSize: 17, fontWeight: 800, cursor: lk ? 'not-allowed' : 'pointer' });
+    const mo = this.motion(), ce = s.cele, nB = s.badges.filter(Boolean).length;
+    const cele = ce ? React.createElement('div', { key: ce.t, style: { position: 'fixed', left: 0, right: 0, top: 96, display: 'flex', justifyContent: 'center', pointerEvents: 'none', zIndex: 50 } }, React.createElement('div', { style: { background: '#FFD23F', color: '#2B2140', border: '3px solid var(--tl-edge)', borderRadius: 16, boxShadow: '0 5px 0 var(--tl-shadow)', padding: '8px 26px', fontFamily: 'var(--font)', fontWeight: 800, fontSize: 26, animation: mo ? 'tl-pop .5s ease-out' : 'none' } }, ce.n + ' in a row!'), ...(mo ? Array.from({ length: 28 }, (_, i) => React.createElement('span', { key: i, style: { position: 'fixed', top: -20, left: (4 + (i * 37) % 92) + '%', width: 10, height: 16, borderRadius: 3, background: ['#6B4EE6', '#FFD23F', '#3DB55B', '#D23532'][i % 4], animation: 'tl-fall ' + (1.4 + (i % 5) * .15) + 's ' + ((i % 7) * .06) + 's ease-in forwards' } })) : [])) : null;
+    const tabNames = sec === -1 ? iTabs : [['Watch', 'Build'], ['Watch', 'Practice'], ['Watch', 'Factor lists', 'Factor trees (teacher only)', 'Practice'], ['Watch', 'Area model', 'Practice'], [], ['Zero pairs', 'Watch', 'Practice'], [], []][sec];
+    return {
+      cele, badgeTitle: 'Sandbox badges: ' + nB + ' of 9', badges: this.CH.map((c, i) => ({ label: s.badges[i] ? '★' : '' + (i + 1), title: 'Challenge ' + (i + 1) + (s.badges[i] ? ', earned' : ', not earned yet'), style: { width: 44, height: 44, borderRadius: 22, border: '3px solid var(--tl-edge)', boxSizing: 'border-box', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font)', fontWeight: 800, fontSize: 20, background: s.badges[i] ? '#FFD23F' : 'var(--bg)', color: s.badges[i] ? '#2B2140' : 'var(--muted)' } })),
+      teacher, stars: s.stars, streak: s.streak, title, blurb: this.vt(blurb), name: s.name,
+      vocab: s.vocab ? { show: true, word: { factor: 'Factor', term: 'Term', gcf: 'GCF (greatest common factor)', expand: 'Expand' }[s.vocab], def: { factor: 'A number or expression that multiplies with another to make a product. 3 and 4 are factors of 12. To factor an expression is to write it as a product.', term: 'A part of an expression separated by + or −. 6x + 9 has two terms: 6x and 9.', gcf: 'The largest number that divides every term. The GCF of 6 and 9 is 3.', expand: 'Multiply the number outside the parentheses by every term inside. 3(2x + 3) expands to 6x + 9.' }[s.vocab], close: () => this.setState({ vocab: null }) } : { show: false },
+      disc: teacher && D.length ? { show: true, text: D[s.dIdx % D.length], count: (s.dIdx % D.length + 1) + ' of ' + D.length, next: () => this.setState({ dIdx: s.dIdx + 1 }) } : { show: false },
+      labRef: this.labRef, zoom: teacher ? 1.2 : 1, toggleTeacher: () => this.toggleTeacher(),
+      teacherLabel: teacher ? 'Teacher mode: on' : 'Teacher mode', teacherBg: teacher ? 'var(--tl-acc)' : 'transparent', teacherFg: teacher ? 'var(--tl-on-acc)' : 'var(--ink)', teacherBorder: teacher ? 'var(--tl-acc)' : 'var(--line)',
+      teacherIcon: teacher ? 'lock_open' : (s.signedIn ? 'school' : 'lock'), teacherPressed: teacher ? 'true' : 'false',
+      teacherTip: teacher ? 'Turn Teacher mode off' : (s.signedIn ? 'Turn Teacher mode on' : 'Sign in with a PIN to turn on Teacher mode'),
+      resetLabel: s.confirmReset ? 'Tap again to erase progress' : 'Reset progress',
+      resetAll: () => { if (!s.confirmReset) return this.setState({ confirmReset: true }); this.setState({ confirmReset: false, hist: this.newHist(), sec: -1, iTab: 0, iStep: [0, 0, 0, 0], iMax: [0, 0, 0, 0], unlocked: 0, correct: [0, 0, 0, 0, 0, 0], stars: 0, streak: 0, best: 0, eNeg: false, fNegSeen: false, eb: this.newEb(), fp: this.newFp(0), fPos: 1, fNi: 0, fN: 0, fEx: [0, 0], ex: { id: -1, k: 0 }, gx: null, exDone: [false, false, false, false, false, false, false, false], fRot: 1, fMk: 0, badges: [false, false, false, false, false, false, false, false, false], sb: { rows: [{ x: 0, u: 0, nx: 0, nu: 0 }], active: 0, ch: null, found: [] }, wf: this.newWf(), gp: this.newGcf() }); },
+      goProgress: () => this.setState({ sec: 7 }),
+      setName: e => this.setState({ name: e.target.value }),
+      nav: [{ label: 'Intro', i: -1 }].concat(ord.map(i => ({ label: names[i], i }))).map(({ label, i }, j) => { const lk = locked(i), on = i === sec; return { cur: on ? 'page' : 'false', label: (j + 1) + '  ' + label, sub: lk ? 'Locked' : i < 0 ? (introDone ? 'Done' : 'Start here') : i < 6 ? Math.min(s.correct[i], target) + ' / ' + target : 'Open', go: () => { if (!lk) this.setState({ sec: i }); }, style: { display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 2, flex: '1 1 130px', padding: '8px 14px', borderRadius: 16, border: '3px solid var(--tl-edge)', background: on ? 'var(--tl-acc)' : lk ? 'var(--bg)' : 'var(--surface2)', color: on ? 'var(--tl-on-acc)' : lk ? 'var(--muted)' : 'var(--ink)', boxShadow: on ? '0 2px 0 var(--tl-shadow)' : '0 5px 0 var(--tl-shadow)', transform: on ? 'translateY(3px)' : 'none', cursor: lk ? 'not-allowed' : 'pointer', textAlign: 'left', whiteSpace: 'pre' } }; }),
+      tabs: sec === -1 ? iTabs.map((label, i) => { const lk = !teacher && i > 0 && !fin(i - 1); return { label: (fin(i) ? '✓ ' : '') + label, go: () => { if (!lk) goTab(i)(); }, style: tabStyle(i === s.iTab, lk) }; }) : tabNames.map((label, i) => { const lk = sec === 3 && i === 2 && pracLocked; return { label: lk ? label + ' · finish every example first' : label, go: () => { if (!lk) setSub(i)(); }, style: tabStyle(i === sub, lk) }; }).filter((x, i) => teacher || sec !== 2 || i !== 2),
+      picker: V.picker.map(o => ({ label: o.label, go: o.go, style: Object.assign(tabStyle(o.on, false), { borderRadius: 12, fontSize: 16, padding: '6px 14px', fontFamily: 'var(--font)' }, o.on ? { background: 'var(--tl-acc)', color: 'var(--tl-on-acc)' } : {}) })),
+      gfb: V.gfb ? { show: true, text: V.gfb.text, style: { alignSelf: 'flex-start', maxWidth: 820, borderRadius: 14, padding: '10px 16px', fontWeight: 700, border: '3px solid ' + (V.gfb.ok ? 'var(--tl-ok)' : 'var(--tl-bad)'), background: V.gfb.ok ? 'var(--tl-okbg)' : 'var(--tl-badbg)' } } : { show: false },
+      stepLabel: V.stepLabel || '', hasStep: !!V.stepLabel, steppers: V.steppers, prompt: this.vt(V.prompt), lists: V.lists, trees: V.trees, palette: V.palette, irows: V.irows, boards: V.boards, am: V.am || {}, eq: V.eq, answer: V.answer, check: V.check, actions: V.actions, note: this.vt(V.note), pf,
+      show: { badges: sec === 6 || sec === 7, picker: V.picker.length > 0, tabs: tabNames.length > 0, steppers: V.steppers.length > 0, prompt: !!V.prompt, lists: V.lists.length > 0, trees: V.trees.length > 0, palette: V.palette.length > 0, irows: V.irows.length > 0, stage: V.boards.length > 0 || !!V.am, am: !!V.am, eq: !!V.eq, answer: V.answer.length > 0, check: !!V.check && !(V.pf && V.pf.p.done), actions: V.actions.length > 0, note: !!V.note, finish: sec === 7 },
+      stats: [{ label: 'Stars earned', val: '★ ' + s.stars }, { label: 'Best streak', val: s.best }].concat(ord.filter(i => i < 6).map(i => ({ label: names[i] + ' problems correct', val: s.correct[i] }))),
+      finishDate: new Date().toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })
+    };
+  }
+}
+</script>
+</body>
+</html>
